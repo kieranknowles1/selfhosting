@@ -1,0 +1,3 @@
+# Private user information
+.env.user
+.vscode/sftp.json

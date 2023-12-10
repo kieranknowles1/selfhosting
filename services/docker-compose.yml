@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  nginx:
+    image: nginx:1.25.3
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - type: bind
+        source: ./nginx/nginx.conf
+        target: /etc/nginx/nginx.conf
+    command: [nginx, '-g', 'daemon off;']
+  trilium:
+    image: zadam/trilium:0.62-latest
+    ports:
+      - "${TRILIUM_PORT}:8080"
+    volumes:
+      - ${DATA_ROOT}/trilium:/home/node/trilium-data
