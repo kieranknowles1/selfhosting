@@ -9,3 +9,10 @@ The following environment variables must be defined in `.env.user`:
 export DOMAIN_NAME=example.com
 export FREE_MY_IP_UPDATE_URL=https://freemyip.com/update?token=1234567890&domain=example.com
 ```
+
+### Install
+Once the secrets are defined, simply run the setup script as root to install the dependencies
+and start everything up:
+```bash
+sudo ./setup.sh
+```

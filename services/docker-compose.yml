@@ -9,6 +9,8 @@ services:
       - type: bind
         source: ./nginx/nginx.conf
         target: /etc/nginx/nginx.conf
+      # TODO: Would be nice to have a proper dashboard for this
+      - ./nginx/public_html:/var/www/html:ro
     command: [nginx, '-g', 'daemon off;']
   trilium:
     image: zadam/trilium:0.62-latest
