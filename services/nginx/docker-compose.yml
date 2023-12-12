@@ -11,4 +11,5 @@ services:
         target: /etc/nginx/nginx.conf
       # TODO: Would be nice to have a proper dashboard for this
       - ./data/public_html:/var/www/html:ro
+    restart: unless-stopped
     command: [nginx, '-g', 'daemon off;']

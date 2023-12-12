@@ -6,3 +6,4 @@ services:
       - "${TRILIUM_PORT}:8080"
     volumes:
       - ${DATA_ROOT}/trilium:/home/node/trilium-data
+    restart: unless-stopped

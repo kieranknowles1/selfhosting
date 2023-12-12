@@ -19,9 +19,17 @@ echo "Creating containers"
 source .env
 source .env.user
 
+# TODO: Want a backup system for containers content
+
 for dir in services/*; do
   echo "Creating container for $dir"
   docker-compose -f $dir/docker-compose.yml up --detach --remove-orphans --force-recreate
 done
 
-#docker-compose -f services/docker-compose.yml up -d --remove-orphans
+start_dir=$(pwd)
+
+# Create a superuser for the paperless container
+cd services/paperlessngx
+docker-compose run --rm webserver createsuperuser
+
+cd $start_dir
