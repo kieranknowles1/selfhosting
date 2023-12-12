@@ -16,6 +16,12 @@ apt-get update
 apt-get install -y $DEPS
 
 echo "Creating containers"
+source .env
 source .env.user
 
-docker-compose -f services/docker-compose.yml up -d --remove-orphans
+for dir in services/*; do
+  echo "Creating container for $dir"
+  docker-compose -f $dir/docker-compose.yml up --detach --remove-orphans --force-recreate
+done
+
+#docker-compose -f services/docker-compose.yml up -d --remove-orphans
