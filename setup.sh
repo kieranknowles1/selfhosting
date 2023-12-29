@@ -52,9 +52,16 @@ echo "Installing dependencies $DEPS"
 apt-get update
 apt-get install -y $DEPS
 
-echo "Creating containers"
 source .env
 source .env.user
+
+echo "Replacing variables in .template files"
+for file in $(find services -name "*.template"); do
+  echo "Replacing variables in $file"
+  envsubst < $file | sed 's/§/$/g' > ${file%.template}
+done
+
+echo "Creating containers"
 
 # TODO: Want a backup system for containers content
 

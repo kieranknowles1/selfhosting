@@ -1,3 +1,6 @@
 # Private user information
 .env.user
 .vscode/sftp.json
+
+# Template output files
+nginx.conf
