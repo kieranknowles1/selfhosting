@@ -42,6 +42,13 @@ if [ "$show_help" = true ]; then
   exit
 fi
 
+# Check for .env.user
+if [ ! -f .env.user ]; then
+  echo "ERROR: .env.user not found" >&2
+  echo "Please create a .env.user file. See readme.md for more information" >&2
+  exit
+fi
+
 
 if [ "$EUID" -ne 0 ]
   then echo "ERROR: Please run as root"
