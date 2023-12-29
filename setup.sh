@@ -1,4 +1,6 @@
 #!/bin/bash
+# Exit on error
+set -e
 
 # Setup script for self-hosted runner
 # Installs dependencies and creates containers
