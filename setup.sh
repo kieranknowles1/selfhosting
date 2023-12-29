@@ -60,7 +60,7 @@ source .env.user
 
 for dir in services/*; do
   echo "Creating container for $dir"
-  docker-compose -f $dir/docker-compose.yml up --detach --remove-orphans --force-recreate
+  docker-compose -f $dir/docker-compose.yml up --detach --remove-orphans
 done
 
 start_dir=$(pwd)

@@ -4,8 +4,8 @@ services:
     image: ghcr.io/ajnart/homarr:latest
     restart: unless-stopped
     volumes:
-      - ${DATA_ROOT}/homarr/configs:/app/data/configs
-      - ${DATA_ROOT}/homarr/icons:/app/public/icons
+      - ./data/configs:/app/data/configs
+      - ./data/icons:/app/public/icons
       - ${DATA_ROOT}/homarr/data:/data
     ports:
       - ${HOMARR_PORT}:7575
