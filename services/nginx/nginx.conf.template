@@ -9,7 +9,7 @@ http {
         listen 80;
 
         location / {
-            proxy_pass http://${LOCAL_IP}:${HOMARR_PORT}/;
+            proxy_pass http://${LOCAL_IP}:${HOMEPAGE_PORT}/;
         }
 
         location /paperless/ {

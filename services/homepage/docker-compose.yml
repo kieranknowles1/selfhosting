@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    ports:
+      - ${HOMEPAGE_PORT}:3000
+    volumes:
+      - ${DATA_ROOT}/homepage/logs:/app/config/logs/
+      - ./config/:/app/config/
