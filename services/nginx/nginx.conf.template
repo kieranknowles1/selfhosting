@@ -2,6 +2,7 @@ events {
 
 }
 
+# TODO: Support HTTPS
 http {
     include     mime.types;
 
@@ -29,6 +30,11 @@ http {
             proxy_set_header X-Forwarded-Host §server_name;
             add_header Referrer-Policy "strict-origin-when-cross-origin";
         }
+
+        # TODO: Put this on a subdomain. Jellyfin doesn't like being on a subdirectory.
+        # location /jellyfin/ {
+        #     proxy_pass http://${LOCAL_IP}:${JELLYFIN_PORT}/jellyfin/;
+        # }
 
         location /trilium/ {
             proxy_pass http://${LOCAL_IP}:${TRILIUM_PORT}/;

@@ -8,7 +8,11 @@ set -e
 
 DEPS="docker docker-compose"
 
-# Parse arguments
+MEDIA_SUBDIRS="movies music tv books photos music_videos"
+
+#===============================================================================
+### Arguments
+#===============================================================================
 show_help=false
 update=false
 while getopts ":h-:" opt; do
@@ -42,7 +46,10 @@ if [ "$show_help" = true ]; then
   exit
 fi
 
-# Check for .env.user
+#===============================================================================
+### Readiness checks
+#===============================================================================
+
 if [ ! -f .env.user ]; then
   echo "ERROR: .env.user not found" >&2
   echo "Please create a .env.user file. See readme.md for more information" >&2
@@ -61,6 +68,9 @@ if [ "$update" = false ]; then
   apt-get install -y $DEPS
 fi
 
+#===============================================================================
+### Container creation
+#===============================================================================
 source .env
 source .env.user
 
@@ -73,21 +83,33 @@ done
 echo "Creating containers"
 
 # TODO: Want a backup system for containers content
+# TODO: Probably shouldn't be running containers as root
 
 for dir in services/*; do
   echo "Creating container for $dir"
   docker-compose -f $dir/docker-compose.yml up --detach --remove-orphans
 done
 
-echo "Restarting nginx"
-docker-compose -f services/nginx/docker-compose.yml restart
-
-start_dir=$(pwd)
+#===============================================================================
+### Configuration
+#===============================================================================
 
 if [ "$update" = false ]; then
+  start_dir=$(pwd)
   # Create a superuser for the paperless container
   cd services/paperlessngx
   docker-compose run --rm webserver createsuperuser
+  cd $start_dir
 fi
 
-cd $start_dir
+for dir in $MEDIA_SUBDIRS; do
+  echo "Creating $DATA_ROOT/jellyfin/$dir"
+  mkdir -p "$DATA_ROOT/jellyfin/media/$dir"
+done
+
+#===============================================================================
+### Maintenance
+#===============================================================================
+
+echo "Restarting nginx"
+docker-compose -f services/nginx/docker-compose.yml restart

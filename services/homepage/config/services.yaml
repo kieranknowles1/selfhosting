@@ -13,3 +13,11 @@
       description: Personal knowledge base
       icon: trilium
       container: trilium
+
+- Entertainment:
+    - Jellyfin:
+        # TODO: This should be a subdomain. Jellyfin doesn't like being hosted at a subpath.
+        href: "http://192.168.0.202:8009"
+        description: Home media server
+        icon: jellyfin
+        container: jellyfin
