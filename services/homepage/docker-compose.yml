@@ -6,4 +6,6 @@ services:
       - ${HOMEPAGE_PORT}:3000
     volumes:
       - ${DATA_ROOT}/homepage/logs:/app/config/logs/
-      - ./config/:/app/config/
+      - ./config/:/app/config/:ro
+      # For docker
+      - /var/run/docker.sock:/var/run/docker.sock

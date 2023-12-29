@@ -41,6 +41,7 @@ services:
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     restart: unless-stopped
+    container_name: paperless
     depends_on:
       - broker
       - gotenberg

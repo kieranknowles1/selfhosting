@@ -3,10 +3,20 @@
 # https://gethomepage.dev/latest/configs/service-widgets
 
 - resources:
+    expanded: true
     cpu: true
     memory: true
     disk: /
+    # This always returns 0 on my system
+    # cputemp: true
+    uptime: true
 
 - search:
-    provider: duckduckgo
+    provider: google
     target: _blank
+
+- datetime:
+    format:
+        dateStyle: medium
+        timeStyle: short
+        hourCycle: h23

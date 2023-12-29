@@ -2,6 +2,17 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/latest/configs/settings
 
-providers:
-  openweathermap: openweathermapapikey
-  weatherapi: weatherapiapikey
+language: en-GB
+
+theme: dark
+
+layout:
+  Productivity:
+    icon: mdi-briefcase
+    style: row
+    columns: 2
+
+quickLaunch:
+  searchDescriptions: true
+
+showStats: true
