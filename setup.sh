@@ -10,7 +10,7 @@ DEPS="docker docker-compose"
 
 # Parse arguments
 show_help=false
-update_only=false
+update=false
 while getopts ":h-:" opt; do
   case "$opt" in
     h)
@@ -18,8 +18,8 @@ while getopts ":h-:" opt; do
       ;;
     -)
       case "${OPTARG}" in
-        update-only)
-          update_only=true
+        update)
+          update=true
           ;;
         *)
           echo "ERROR: Invalid option: --${OPTARG}" >&2
@@ -37,7 +37,7 @@ done
 if [ "$show_help" = true ]; then
   echo "Usage: $0"
   echo "  -h, --help: Show this help message"
-  echo "  --update-only: Only update containers, do not perform additional setup"
+  echo "  --update: Update containers without reinstalling everything"
 
   exit
 fi
@@ -55,9 +55,11 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
-echo "Installing dependencies $DEPS"
-apt-get update
-apt-get install -y $DEPS
+if [ "$update" = false ]; then
+  echo "Installing dependencies $DEPS"
+  apt-get update
+  apt-get install -y $DEPS
+fi
 
 source .env
 source .env.user
@@ -82,7 +84,7 @@ docker-compose -f services/nginx/docker-compose.yml restart
 
 start_dir=$(pwd)
 
-if [ "$update_only" = false ]; then
+if [ "$update" = false ]; then
   # Create a superuser for the paperless container
   cd services/paperlessngx
   docker-compose run --rm webserver createsuperuser
