@@ -12,76 +12,6 @@
   ],
   "apps": [
     {
-      "id": "26bcdc9c-79ec-41c3-8200-c8d8b589533b",
-      "name": "Trilium",
-      "url": "http://192.168.0.202/trilium",
-      "appearance": {
-        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/trilium.svg",
-        "appNameStatus": "normal",
-        "positionAppName": "column",
-        "lineClampAppName": 1,
-        "appNameFontSize": 16
-      },
-      "network": {
-        "enabledStatusChecker": true,
-        "statusCodes": [
-          "200",
-          "301",
-          "302",
-          "304",
-          "307",
-          "308"
-        ]
-      },
-      "behaviour": {
-        "isOpeningNewTab": true,
-        "externalUrl": "http://192.168.0.202/trilium",
-        "tooltipDescription": "Personal knowledge base."
-      },
-      "area": {
-        "type": "wrapper",
-        "properties": {
-          "id": "default"
-        }
-      },
-      "shape": {
-        "lg": {
-          "location": {
-            "x": 0,
-            "y": 1
-          },
-          "size": {
-            "width": 2,
-            "height": 2
-          }
-        },
-        "sm": {
-          "location": {
-            "x": 2,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        },
-        "md": {
-          "location": {
-            "x": 0,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        }
-      },
-      "integration": {
-        "type": null,
-        "properties": []
-      }
-    },
-    {
       "id": "2c58c3bb-178b-4f9c-82b8-bf08b6cf92b4",
       "name": "Paperless",
       "url": "http://192.168.0.202/paperless",
@@ -117,8 +47,8 @@
       "shape": {
         "lg": {
           "location": {
-            "x": 2,
-            "y": 1
+            "x": 8,
+            "y": 0
           },
           "size": {
             "width": 2,
@@ -128,7 +58,7 @@
         "sm": {
           "location": {
             "x": 2,
-            "y": 1
+            "y": 3
           },
           "size": {
             "width": 1,
@@ -138,7 +68,77 @@
         "md": {
           "location": {
             "x": 1,
+            "y": 3
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      },
+      "integration": {
+        "type": null,
+        "properties": []
+      }
+    },
+    {
+      "id": "26bcdc9c-79ec-41c3-8200-c8d8b589533b",
+      "name": "Trilium",
+      "url": "http://192.168.0.202/trilium",
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/trilium.svg",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "lineClampAppName": 1,
+        "appNameFontSize": 16
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "statusCodes": [
+          "200",
+          "301",
+          "302",
+          "304",
+          "307",
+          "308"
+        ]
+      },
+      "behaviour": {
+        "isOpeningNewTab": true,
+        "externalUrl": "http://192.168.0.202/trilium",
+        "tooltipDescription": "Personal knowledge base."
+      },
+      "area": {
+        "type": "wrapper",
+        "properties": {
+          "id": "default"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 6,
             "y": 0
+          },
+          "size": {
+            "width": 2,
+            "height": 2
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 2,
+            "y": 2
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 0,
+            "y": 3
           },
           "size": {
             "width": 1,
@@ -177,7 +177,7 @@
         "sm": {
           "location": {
             "x": 0,
-            "y": 1
+            "y": 3
           },
           "size": {
             "width": 2,
@@ -187,7 +187,7 @@
         "md": {
           "location": {
             "x": 0,
-            "y": 0
+            "y": 2
           },
           "size": {
             "width": 1,
@@ -196,11 +196,11 @@
         },
         "lg": {
           "location": {
-            "x": 0,
-            "y": 0
+            "x": 4,
+            "y": 1
           },
           "size": {
-            "width": 3,
+            "width": 2,
             "height": 1
           }
         }
@@ -228,7 +228,7 @@
         "sm": {
           "location": {
             "x": 0,
-            "y": 0
+            "y": 2
           },
           "size": {
             "width": 2,
@@ -237,22 +237,112 @@
         },
         "md": {
           "location": {
-            "x": 0,
-            "y": 0
+            "x": 1,
+            "y": 2
           },
           "size": {
-            "width": 1,
+            "width": 2,
             "height": 1
           }
         },
         "lg": {
           "location": {
-            "x": 3,
+            "x": 4,
+            "y": 0
+          },
+          "size": {
+            "width": 2,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "6cee2f15-534d-49b5-9b8f-f984d735e828",
+      "type": "dashdot",
+      "properties": {
+        "dashName": "Server Status",
+        "url": "http://192.168.0.202:8005/",
+        "usePercentages": true,
+        "columns": 1,
+        "graphHeight": 115,
+        "graphsOrder": [
+          {
+            "key": "storage",
+            "subValues": {
+              "enabled": true,
+              "compactView": true,
+              "span": 2,
+              "multiView": false
+            }
+          },
+          {
+            "key": "network",
+            "subValues": {
+              "enabled": true,
+              "compactView": true,
+              "span": 2
+            }
+          },
+          {
+            "key": "cpu",
+            "subValues": {
+              "enabled": true,
+              "multiView": false,
+              "span": 1
+            }
+          },
+          {
+            "key": "ram",
+            "subValues": {
+              "enabled": true,
+              "span": 1
+            }
+          },
+          {
+            "key": "gpu",
+            "subValues": {
+              "enabled": false,
+              "span": 1
+            }
+          }
+        ]
+      },
+      "area": {
+        "type": "wrapper",
+        "properties": {
+          "id": "default"
+        }
+      },
+      "shape": {
+        "sm": {
+          "location": {
+            "x": 0,
             "y": 0
           },
           "size": {
             "width": 3,
-            "height": 1
+            "height": 2
+          }
+        },
+        "md": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 3,
+            "height": 2
+          }
+        },
+        "lg": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 4,
+            "height": 2
           }
         }
       }

@@ -1,0 +1,13 @@
+# Dashdot docker-compose
+# NOTE: This is not exposed via nginx, it is only used internally by Homarr.
+version: '3.8'
+services:
+  dash:
+    image: mauricenino/dashdot
+    privileged: true
+    volumes:
+      # Required for the container to access the host's disk information.
+      # This is mounted read-only for security reasons.
+     - ./:/mnt/host:ro
+    ports:
+      - ${DASH_PORT}:3001

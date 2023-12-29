@@ -63,6 +63,9 @@ for dir in services/*; do
   docker-compose -f $dir/docker-compose.yml up --detach --remove-orphans
 done
 
+echo "Restarting nginx"
+docker-compose -f services/nginx/docker-compose.yml restart
+
 start_dir=$(pwd)
 
 if [ "$update_only" = false ]; then
