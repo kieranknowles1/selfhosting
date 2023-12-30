@@ -11,6 +11,8 @@ layout:
     icon: mdi-briefcase
     style: row
     columns: 2
+  Media:
+    icon: mdi-camera
 
 quickLaunch:
   searchDescriptions: true
