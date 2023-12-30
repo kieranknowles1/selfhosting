@@ -8,8 +8,6 @@ set -e
 
 DEPS="docker docker-compose"
 
-MEDIA_SUBDIRS="movies music tv books photos music_videos"
-
 #===============================================================================
 ### Arguments
 #===============================================================================
@@ -53,13 +51,13 @@ fi
 if [ ! -f .env.user ]; then
   echo "ERROR: .env.user not found" >&2
   echo "Please create a .env.user file. See readme.md for more information" >&2
-  exit
+  exit 1
 fi
 
 
 if [ "$EUID" -ne 0 ]
   then echo "ERROR: Please run as root"
-  exit
+  exit 1
 fi
 
 if [ "$update" = false ]; then
@@ -101,11 +99,6 @@ if [ "$update" = false ]; then
   docker-compose run --rm webserver createsuperuser
   cd $start_dir
 fi
-
-for dir in $MEDIA_SUBDIRS; do
-  echo "Creating $DATA_ROOT/jellyfin/$dir"
-  mkdir -p "$DATA_ROOT/jellyfin/media/$dir"
-done
 
 #===============================================================================
 ### Maintenance

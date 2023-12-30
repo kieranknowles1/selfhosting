@@ -11,8 +11,6 @@ layout:
     icon: mdi-briefcase
     style: row
     columns: 2
-  Entertainment:
-    icon: mdi-popcorn
 
 quickLaunch:
   searchDescriptions: true

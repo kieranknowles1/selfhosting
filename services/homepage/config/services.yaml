@@ -13,18 +13,3 @@
       description: Personal knowledge base
       icon: trilium
       container: trilium
-
-- Entertainment:
-    - Jellyfin:
-        # TODO: This should be a subdomain. Jellyfin doesn't like being hosted at a subpath.
-        href: "http://192.168.0.202:8009"
-        description: Home media server
-        icon: jellyfin
-        container: jellyfin
-        widget:
-            type: jellyfin
-            # TODO: Point this to the correct URL
-            url: "http://192.168.0.202:8009"
-            # TODO: Config script to guide user through setting up Jellyfin and generating a token
-            key: 5f18b8d0a920426d9448e8026e8fab05
-            enableBlocks: true
