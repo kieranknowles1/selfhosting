@@ -13,3 +13,17 @@
       description: Personal knowledge base
       icon: trilium
       container: trilium
+
+- Media:
+  - Immich:
+      # TODO: Subdomain, immich doesn't like being in a subdirectory
+      href: "http://192.168.0.202:8010"
+      description: Personal photo gallery
+      container: immich_server
+      icon: immich
+      # TODO: Widget
+      widget:
+        type: immich
+        # TODO: Subdomain,
+        url: "http://192.168.0.202:8010"
+        key: "${IMMICH_API_KEY}"
