@@ -4,7 +4,6 @@ set -e
 
 # Setup script for self-hosted runner
 # Installs dependencies and creates containers
-# Requires root privileges
 
 DEPS="docker docker-compose"
 
@@ -56,16 +55,11 @@ if [ ! -f .env.user ]; then
   exit 1
 fi
 
-
-if [ "$EUID" -ne 0 ]
-  then echo "ERROR: Please run as root"
-  exit 1
-fi
-
 if [ "$update" = false ]; then
   echo "Installing dependencies $DEPS"
-  apt-get update
-  apt-get install -y $DEPS
+  echo "This requires root privileges"
+  sudo apt-get update
+  sudo apt-get install -y $DEPS
 fi
 
 #===============================================================================
@@ -83,7 +77,6 @@ done
 echo "Creating containers"
 
 # TODO: Want a backup system for containers content
-# TODO: Probably shouldn't be running containers as root
 
 for dir in services/*; do
   echo "Creating container for $dir"
@@ -95,11 +88,11 @@ done
 #===============================================================================
 
 if [ "$update" = false ]; then
-  start_dir=$(pwd)
-  # Create a superuser for the paperless container
-  cd services/paperlessngx
-  docker-compose run --rm webserver createsuperuser
-  cd $start_dir
+  (
+    # Create a superuser for the paperless container
+    cd services/paperlessngx
+    docker-compose run --rm webserver createsuperuser
+  )
 fi
 
 #===============================================================================

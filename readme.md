@@ -13,7 +13,7 @@ export IMMICH_DB_PASSWORD=something_secure
 ```
 
 ### Install
-Once the secrets are defined, simply run the setup script as root to install the dependencies
+Once the secrets are defined, simply run the setup script to install the dependencies
 and start everything up:
 ```bash
 sudo ./setup.sh
