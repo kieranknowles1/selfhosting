@@ -13,11 +13,6 @@
         # TODO: HTTPS
         url: "http://${LOCAL_IP}/paperless"
         key: ${PAPERLESS_API_KEY}
-  - Trilium:
-      href: /trilium
-      description: Personal knowledge base
-      icon: trilium
-      container: trilium
   - Joplin:
       href: /joplin
       description: Note taking app
