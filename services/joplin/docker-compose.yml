@@ -18,21 +18,9 @@
 version: '3'
 
 services:
-    # db:
-    #     image: postgres:16
-    #     volumes:
-    #         - ./data/postgres:/var/lib/postgresql/data
-    #     # ports:
-    #     #     - "${JOPLIN_DB_PORT}:5432"
-    #     restart: unless-stopped
-    #     env_file: docker-compose.env
-    #     environment:
-    #         - POSTGRES_PASSWORD=${JOPLIN_DB_PASSWORD}
     app:
         container_name: joplin
         image: joplin/server:latest
-        # depends_on:
-        #     - db
         ports:
             - "${JOPLIN_PORT}:${JOPLIN_PORT}"
         restart: unless-stopped
