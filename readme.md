@@ -30,11 +30,17 @@ The following environment variables must be defined in `.env.user`:
 # The domain name of the server
 export DOMAIN_NAME=example.com
 export LOCAL_IP=192.168.0.123
+# Your personal email address
+export OWNER_EMAIL=mail@example.com
 
-# Passwords for the services and databases. Use a password generator for these.
+# Passwords for the databases. Use a password generator for these.
 # Make sure to use a different password for each service.
+export FIREFLY_DB_PASSWORD=something_secure
 export IMMICH_DB_PASSWORD=something_secure
 export JOPLIN_DB_PASSWORD=something_secure
+
+# This must be exactly 32 characters long and url-safe (i.e., [a-zA-Z0-9_-] only)])
+export FIREFLY_STATIC_CRON_TOKEN=Exactly32UrlSafeCharactersPlease
 ```
 
 

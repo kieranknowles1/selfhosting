@@ -18,6 +18,18 @@
       description: Note taking app
       icon: joplin
       container: joplin_app
+  - Firefly:
+      # TODO: Subdomain
+      href: "http://${LOCAL_IP}:${FIREFLY_APP_PORT}"
+      description: Personal finance manager
+      icon: firefly
+      container: firefly_iii_core
+  - Firefly Data Importer:
+      # TODO: Subdomain
+      href: "http://${LOCAL_IP}:${FIREFLY_IMPORTER_PORT}"
+      description: Data importer for Firefly
+      icon: firefly
+      container: firefly_iii_importer
 
 - Media:
   - Immich:

@@ -1,0 +1,75 @@
+version: '3.3'
+
+#
+# The Firefly III Data Importer will ask you for the Firefly III URL and a "Client ID".
+# You can generate the Client ID at http://localhost/profile (after registering)
+# The Firefly III URL is: http://app:8080
+#
+# Other URL's will give 500 | Server Error
+#
+
+services:
+  app:
+    image: fireflyiii/core:latest
+    hostname: app
+    container_name: firefly_iii_core
+    networks:
+      - firefly_iii
+    restart: always
+    volumes:
+      - firefly_iii_upload:/var/www/html/storage/upload
+    env_file: .env
+    environment:
+      - DB_PASSWORD=${FIREFLY_DB_PASSWORD}
+      - DEFAULT_LANGUAGE=en_GB
+      - SITE_OWNER=${OWNER_EMAIL}
+      - STATIC_CRON_TOKEN=${FIREFLY_STATIC_CRON_TOKEN}
+      - TZ=${TIME_ZONE}
+    ports:
+      - '${FIREFLY_APP_PORT}:8080'
+    depends_on:
+      - db
+  db:
+    image: mariadb
+    hostname: db
+    container_name: firefly_iii_db
+    networks:
+      - firefly_iii
+    restart: always
+    env_file: .db.env
+    environment:
+      - MYSQL_PASSWORD=${FIREFLY_DB_PASSWORD}
+    volumes:
+      - firefly_iii_db:/var/lib/mysql
+
+  importer:
+    image: fireflyiii/data-importer:latest
+    hostname: importer
+    restart: always
+    container_name: firefly_iii_importer
+    networks:
+      - firefly_iii
+    ports:
+      - '${FIREFLY_IMPORTER_PORT}:8080'
+    depends_on:
+      - app
+    env_file: .importer.env
+    environment:
+      # TODO: Subdomain
+      - FIREFLY_III_URL=http://${LOCAL_IP}:${FIREFLY_APP_PORT}
+      - VANITY_URL=http://${LOCAL_IP}:${FIREFLY_APP_PORT}
+
+  cron:
+    image: alpine
+    container_name: firefly_iii_cron
+    restart: always
+    command: sh -c "echo \"0 3 * * * wget -qO- http://app:8080/api/v1/cron/${FIREFLY_STATIC_CRON_TOKEN}\" | crontab - && crond -f -L /dev/stdout"
+    networks:
+      - firefly_iii
+volumes:
+   firefly_iii_upload:
+   firefly_iii_db:
+
+networks:
+  firefly_iii:
+    driver: bridge
