@@ -12,6 +12,15 @@ export LOCAL_IP=192.168.0.123
 export IMMICH_DB_PASSWORD=something_secure
 ```
 
+### Paths and ports
+Paths and ports can be configured in `.env`.
+
+By default, container data is stored in `./data`. This can be changed by modifying the `DATA_ROOT` variable.
+
+Each container has a port defined in `.env` in the 8xxx range. Should you need to change these, you will need to
+re-run `setup.sh` with the `--update` flag to apply the changes. No service data will be lost and ports will be
+automatically inferred from the `.env` file.
+
 ### Install
 Once the secrets are defined, simply run the setup script to install the dependencies
 and start everything up:
