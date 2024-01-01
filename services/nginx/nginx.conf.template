@@ -44,5 +44,11 @@ http {
             proxy_set_header Host §host;
             proxy_cache_bypass §http_upgrade;
         }
+
+        location /joplin/ {
+            proxy_pass http://${LOCAL_IP}:${JOPLIN_PORT}/;
+
+            proxy_set_header Host §host;
+        }
     }
 }

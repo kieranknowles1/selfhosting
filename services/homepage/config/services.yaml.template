@@ -13,6 +13,11 @@
       description: Personal knowledge base
       icon: trilium
       container: trilium
+  - Joplin:
+      href: /joplin
+      description: Note taking app
+      icon: joplin
+      container: joplin
 
 - Media:
   - Immich:
