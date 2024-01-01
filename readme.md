@@ -10,6 +10,7 @@ export DOMAIN_NAME=example.com
 export LOCAL_IP=192.168.0.123
 
 export IMMICH_DB_PASSWORD=something_secure
+export JOPLIN_DB_PASSWORD=something_secure
 ```
 
 ### Paths and ports
@@ -35,4 +36,5 @@ After setting up and configuring containers, you can add API keys to enable widg
 to `.env.user`. Re-run `setup.sh` with the `--update` flag to apply the changes.
 ```bash
 IMMICH_API_KEY=1234567890abcdef
+PAPERLESS_API_KEY=1234567890abcdef
 ```

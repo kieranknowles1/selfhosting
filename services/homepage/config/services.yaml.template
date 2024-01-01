@@ -22,7 +22,7 @@
       href: /joplin
       description: Note taking app
       icon: joplin
-      container: joplin
+      container: joplin_app
 
 - Media:
   - Immich:
