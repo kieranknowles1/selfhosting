@@ -49,6 +49,12 @@ fi
 ### Readiness checks
 #===============================================================================
 
+# Disallow running as root
+if [ "$EUID" -eq 0 ]; then
+  echo "ERROR: This script should not be run as root" >&2
+  exit 1
+fi
+
 if [ ! -f .env.user ]; then
   echo "ERROR: .env.user not found" >&2
   echo "Please create a .env.user file. See readme.md for more information" >&2
