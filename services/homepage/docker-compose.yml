@@ -2,6 +2,7 @@ version: '3.8'
 services:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
+    restart: unless-stopped
     ports:
       - ${HOMEPAGE_PORT}:3000
     volumes:
