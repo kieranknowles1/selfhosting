@@ -8,6 +8,11 @@
       description: Document management system
       icon: paperless
       container: paperless
+      widget:
+        type: paperlessngx
+        # TODO: HTTPS
+        url: "http://${LOCAL_IP}/paperless"
+        key: ${PAPERLESS_API_KEY}
   - Trilium:
       href: /trilium
       description: Personal knowledge base
