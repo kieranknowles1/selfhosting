@@ -61,3 +61,7 @@ to `.env.user`. Re-run `setup.sh` with the `--update` flag to apply the changes.
 IMMICH_API_KEY=1234567890abcdef
 PAPERLESS_API_KEY=1234567890abcdef
 ```
+
+### Certificate Renewal
+The certificates issued by Let's Encrypt are valid for 90 days. To renew them, simply run the included
+`renew.sh` script. You will receive an email notification when the certificates are due to expire.
