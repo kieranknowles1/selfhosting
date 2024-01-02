@@ -94,8 +94,13 @@ done
 #===============================================================================
 
 if [ "$update" = false ]; then
+  echo "Configuring certbot"
+  docker-compose -f services/nginx/docker-compose.yml run --rm certbot \
+    certonly --webroot --webroot-path=/var/www/certbot \
+    --email ${OWNER_EMAIL} -d ${DOMAIN_NAME}
+
   (
-    # Create a superuser for the paperless container
+    echo "Creating superuser for paperless container"
     cd services/paperlessngx
     docker-compose run --rm webserver createsuperuser
   )

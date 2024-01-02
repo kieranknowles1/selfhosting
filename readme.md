@@ -31,7 +31,7 @@ The following environment variables must be defined in `.env.user`:
 # IP addresses are NOT supported.
 export DOMAIN_NAME=example.com
 export LOCAL_IP=192.168.0.123
-# Your personal email address
+# Your personal email address. This is used for Let's Encrypt services that require an email address.
 export OWNER_EMAIL=mail@example.com
 
 # Passwords for the databases. Use a password generator for these.

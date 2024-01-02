@@ -8,15 +8,24 @@ http {
 
     server {
         listen 80;
+        listen 443 ssl http2;
+        ssl_certificate /etc/letsencrypt/live/${DOMAIN_NAME}/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/${DOMAIN_NAME}/privkey.pem;
+
         server_name ${DOMAIN_NAME};
 
         location / {
             proxy_pass http://${LOCAL_IP}:${HOMEPAGE_PORT}/;
         }
+
+        location /.well-known/acme-challenge/ {
+            root /var/www/certbot;
+        }
     }
 
     server {
         listen 80;
+        # listen 443 ssl;
         server_name firefly.${DOMAIN_NAME};
 
         location / {
@@ -27,6 +36,7 @@ http {
 
     server {
         listen 80;
+        # listen 443 ssl;
         server_name firefly-importer.${DOMAIN_NAME};
 
         location / {
@@ -37,6 +47,7 @@ http {
 
     server {
         listen 80;
+        # listen 443 ssl;
         server_name joplin.${DOMAIN_NAME};
         client_max_body_size 100M;
 
@@ -48,6 +59,7 @@ http {
 
     server {
         listen 80;
+        # listen 443 ssl;
         server_name immich.${DOMAIN_NAME};
 
         location / {
@@ -58,6 +70,7 @@ http {
 
     server {
         listen 80;
+        # listen 443 ssl;
         server_name paperless.${DOMAIN_NAME};
         client_max_body_size 100M;
 
