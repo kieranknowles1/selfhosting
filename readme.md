@@ -27,7 +27,8 @@ The time zone is configured in `.env` through the `TIME_ZONE` and is set to `Eur
 #### Secrets
 The following environment variables must be defined in `.env.user`:
 ```bash
-# The domain name of the server
+# The domain name of the server. This must be pointing to the server's IP address.
+# IP addresses are NOT supported.
 export DOMAIN_NAME=example.com
 export LOCAL_IP=192.168.0.123
 # Your personal email address

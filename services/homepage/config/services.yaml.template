@@ -4,43 +4,38 @@
 
 - Productivity:
   - Paperless:
-      href: /paperless
+      href: "http://paperless.${DOMAIN_NAME}"
       description: Document management system
       icon: paperless
       container: paperless
       widget:
         type: paperlessngx
         # TODO: HTTPS
-        url: "http://${LOCAL_IP}/paperless"
+        url: "http://${LOCAL_IP}:${PAPERLESS_PORT}"
         key: ${PAPERLESS_API_KEY}
   - Joplin:
-      href: /joplin
+      href: "http://joplin.${DOMAIN_NAME}"
       description: Note taking app
       icon: joplin
       container: joplin_app
   - Firefly:
-      # TODO: Subdomain
-      href: "http://${LOCAL_IP}:${FIREFLY_APP_PORT}"
+      href: "http://firefly.${DOMAIN_NAME}"
       description: Personal finance manager
       icon: firefly
       container: firefly_iii_core
   - Firefly Data Importer:
-      # TODO: Subdomain
-      href: "http://${LOCAL_IP}:${FIREFLY_IMPORTER_PORT}"
+      href: "http://firefly-importer.${DOMAIN_NAME}"
       description: Data importer for Firefly
       icon: firefly
       container: firefly_iii_importer
 
 - Media:
   - Immich:
-      # TODO: Subdomain, immich doesn't like being in a subdirectory
-      href: "http://192.168.0.202:8010"
+      href: "http://immich.${DOMAIN_NAME}"
       description: Personal photo gallery
       container: immich_server
       icon: immich
-      # TODO: Widget
       widget:
         type: immich
-        # TODO: Subdomain,
-        url: "http://192.168.0.202:8010"
+        url: "http://${LOCAL_IP}:${IMMICH_PORT}"
         key: "${IMMICH_API_KEY}"
