@@ -2,6 +2,13 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/latest/configs/services
 
+- Development:
+  - Gitea:
+      href: "http://gitea.${DOMAIN_NAME}"
+      description: Git repository manager
+      icon: gitea
+      container: gitea
+
 - Productivity:
   - Paperless:
       href: "http://paperless.${DOMAIN_NAME}"

@@ -47,6 +47,17 @@ http {
 
     server {
         listen 80;
+        server_name gitea.${DOMAIN_NAME};
+
+        location / {
+            proxy_pass http://${LOCAL_IP}:${GITEA_WEB_PORT}/;
+            proxy_set_header Host §host;
+        }
+    }
+
+
+    server {
+        listen 80;
         # listen 443 ssl;
         server_name joplin.${DOMAIN_NAME};
         client_max_body_size 100M;
