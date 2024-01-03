@@ -8,5 +8,5 @@ services:
     volumes:
       - ${DATA_ROOT}/homepage/logs:/app/config/logs/
       - ./config/:/app/config/:ro
-      # For docker
+      # For docker status and stats monitoring
       - /var/run/docker.sock:/var/run/docker.sock

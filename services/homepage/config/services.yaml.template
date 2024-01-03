@@ -5,8 +5,9 @@
 - Development:
   - Gitea:
       href: "http://gitea.${DOMAIN_NAME}"
-      description: Git repository manager
+      description: Git repository hosting
       icon: gitea
+      server: local-docker
       container: gitea
 
 - Productivity:
@@ -14,6 +15,7 @@
       href: "http://paperless.${DOMAIN_NAME}"
       description: Document management system
       icon: paperless
+      server: local-docker
       container: paperless
       widget:
         type: paperlessngx
@@ -24,22 +26,26 @@
       href: "http://joplin.${DOMAIN_NAME}"
       description: Note taking app
       icon: joplin
+      server: local-docker
       container: joplin_app
   - Firefly:
       href: "http://firefly.${DOMAIN_NAME}"
       description: Personal finance manager
       icon: firefly
+      server: local-docker
       container: firefly_iii_core
   - Firefly Data Importer:
       href: "http://firefly-importer.${DOMAIN_NAME}"
       description: Data importer for Firefly
       icon: firefly
+      server: local-docker
       container: firefly_iii_importer
 
 - Media:
   - Immich:
       href: "http://immich.${DOMAIN_NAME}"
       description: Personal photo gallery
+      server: local-docker
       container: immich_server
       icon: immich
       widget:

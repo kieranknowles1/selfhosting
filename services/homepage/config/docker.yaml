@@ -8,3 +8,5 @@
 
 # my-docker:
 #   socket: /var/run/docker.sock
+local-docker:
+  socket: /var/run/docker.sock
