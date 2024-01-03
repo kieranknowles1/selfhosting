@@ -17,6 +17,8 @@ services:
       - ${DATA_ROOT}/immich/library:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
     env_file: .env
+    environment:
+      - DB_PASSWORD=${IMMICH_DB_PASSWORD}
     ports:
       - ${IMMICH_PORT}:3001
     depends_on:
@@ -35,6 +37,8 @@ services:
       - ${DATA_ROOT}/immich/library:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
     env_file: .env
+    environment:
+      - DB_PASSWORD=${IMMICH_DB_PASSWORD}
     depends_on:
       - redis
       - database
@@ -46,6 +50,8 @@ services:
     volumes:
       - ${DATA_ROOT}/immich/mlcache:/cache
     env_file: .env
+    environment:
+      - DB_PASSWORD=${IMMICH_DB_PASSWORD}
     restart: always
 
   redis:
