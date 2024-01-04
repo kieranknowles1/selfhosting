@@ -34,6 +34,7 @@ version: "3.4"
 services:
   broker:
     image: docker.io/library/redis:7
+    container_name: paperless_redis
     restart: unless-stopped
     volumes:
       - ${DATA_ROOT}/paperless/redis:/data
@@ -69,6 +70,7 @@ services:
 
   gotenberg:
     image: docker.io/gotenberg/gotenberg:7.10
+    container_name: paperless_gotenberg
     restart: unless-stopped
 
     # The gotenberg chromium route is used to convert .eml files. We do not
@@ -80,4 +82,5 @@ services:
 
   tika:
     image: ghcr.io/paperless-ngx/tika:latest
+    container_name: paperless_tika
     restart: unless-stopped

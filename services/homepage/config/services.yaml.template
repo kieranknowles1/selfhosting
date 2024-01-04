@@ -2,6 +2,10 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/latest/configs/services
 
+#------------------------------------------------------------
+### Internet Accessible ###
+#------------------------------------------------------------
+
 - Development:
   - Gitea:
       href: "http://gitea.${DOMAIN_NAME}"
@@ -52,3 +56,17 @@
         type: immich
         url: "http://${LOCAL_IP}:${IMMICH_PORT}"
         key: "${IMMICH_API_KEY}"
+
+
+#------------------------------------------------------------
+### Local Network Only ###
+# This is intentionally not exposed to the internet for security reasons.
+#------------------------------------------------------------
+
+- Administration:
+  - Yacht:
+      href: "http://${LOCAL_IP}:${YACHT_PORT}"
+      description: Web interface for managing docker containers
+      icon: yacht
+      server: local-docker
+      container: yacht
