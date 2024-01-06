@@ -114,8 +114,8 @@ fi
 ### Maintenance
 #===============================================================================
 
-echo "Restarting nginx"
-docker-compose -f services/nginx/docker-compose.yml restart
+echo "Reloading nginx configuration"
+docker-compose -f services/nginx/docker-compose.yml exec nginx nginx -s reload
 
 echo "========================================================================="
 echo "Setup complete"
