@@ -39,6 +39,7 @@ export OWNER_EMAIL=mail@example.com
 export FIREFLY_DB_PASSWORD=something_secure
 export IMMICH_DB_PASSWORD=something_secure
 export JOPLIN_DB_PASSWORD=something_secure
+export BORG_PASSPHRASE=something_secure
 
 # This must be exactly 32 characters long and url-safe (i.e., [a-zA-Z0-9_-] only)])
 export FIREFLY_STATIC_CRON_TOKEN=Exactly32UrlSafeCharactersPlease

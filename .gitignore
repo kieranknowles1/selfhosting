@@ -1,11 +1,14 @@
 # Private user information
 .env.user
 .vscode/sftp.json
+.borg-key
 
 # Template output files
 nginx.conf
 
 # Container data
+backups/
+cache/
 data/
 logs/
 
