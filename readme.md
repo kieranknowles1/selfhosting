@@ -63,6 +63,14 @@ export IMMICH_API_KEY=1234567890abcdef
 export PAPERLESS_API_KEY=1234567890abcdef
 ```
 
+### Backups
+Backups are done using [Borg](https://borgbackup.readthedocs.io/en/stable/). The backup script is
+located in `./backup.sh`. It is recommended to run this script on a cron job to ensure regular backups.
+Note that containers will be paused during the backup to ensure data consistency.
+```
+0 0 * * * /path/to/backup.sh
+```
+
 ### Certificate Renewal
 The certificates issued by Let's Encrypt are valid for 90 days. To renew them, simply run the included
 `renew.sh` script. You will receive an email notification when the certificates are due to expire.
