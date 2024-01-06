@@ -7,3 +7,6 @@ nginx.conf
 
 # Container data
 data/
+
+# Templated files
+services/homepage/config/services.yaml
