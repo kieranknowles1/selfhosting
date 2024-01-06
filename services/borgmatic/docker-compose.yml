@@ -12,7 +12,7 @@ services:
       - ./daemon/:/etc/borgmatic.d/:ro
       - ./borgconfig:/root/.config/borg
       - ${SSHKEYS}:/root/.ssh
-      - ${CACHE_ROOT}/:/root/.cache/borg
+      - ${CACHE_ROOT}/borgmatic/:/root/.cache/borg
     environment:
       - TZ=${TIME_ZONE}
       - BORG_PASSPHRASE=${BORG_PASSPHRASE}
