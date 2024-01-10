@@ -1,4 +1,4 @@
-# See https://github.com/borgmatic-collective/docker-borgmatic/tree/2a56a5b9ba0ee6a9c7806d7123a8d9cd2c63de55
+# See https://github.com/borgmatic-collective/docker-borgmatic/tree/2a56a5b9ba0ee6a9c7806d7123a8d9cd2c63de55#restoring-backups
 # for restore instructions
 # You will need to run `source .env` and `source .env.user` in the root of this repo before running
 
