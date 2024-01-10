@@ -8,8 +8,10 @@ nginx.conf
 
 # Container data
 backups/
+backups_old/
 cache/
 data/
+data_old/
 logs/
 
 # Templated files

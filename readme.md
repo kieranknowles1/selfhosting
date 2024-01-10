@@ -1,14 +1,21 @@
 # Self-hosted web services
 
+This repository is, first and foremost, a personal project. I am sharing it to help others who may be
+interested in self-hosting their own web services, but I will not be providing any support for it.
+Breaking changes may be introduced at any time without warning or migration instructions.
+
+Use this at your own risk.
+
 ## Setup
 
 ### Configuration
-Configuration is done through environment variables in `.env` and `.env.user`. `.env` can be used as-is
-or modified to suit your needs. `.env.user` is used to store secrets and is not tracked by git.
+Configuration is done through environment variables in `.env` and `.env.user`. `.env`, which is, by default,
+configured for my personal setup and should be modified to suit your needs. Namely, you should change the
+`DATA_ROOT` and `BACKUP_REPO` variables to point to appropriate locations for your setup.
 
 #### Paths
-Paths are configured in `.env` through the `DATA_ROOT` variable. This is set to `./data` and is used
-to store runtime data that should persist at the host level and be backed up. This includes databases
+Paths are configured in `.env` through the `DATA_ROOT` variable. This is set to `/mnt/extern/containers/data` and is
+used to store runtime data that should persist at the host level and be backed up. This includes databases
 and user data.
 
 #### Ports
@@ -70,6 +77,12 @@ Note that containers will be paused during the backup to ensure data consistency
 ```
 0 0 * * * /path/to/backup.sh
 ```
+
+The backup repository is located in `/mnt/extern/containers/backup` by default and is encrypted using
+your Borg and a key written to `.borg-key` during setup. You **must** back up all of:
+- The `.borg-key` file
+- The `.env.user` file
+- The backup repository (at `BACKUP_REPO` in `.env`)
 
 ### Certificate Renewal
 The certificates issued by Let's Encrypt are valid for 90 days. To renew them, simply run the included
