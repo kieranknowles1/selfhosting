@@ -6,10 +6,17 @@
     expanded: true
     cpu: true
     memory: true
-    disk: /
     # This always returns 0 on my system
     # cputemp: true
     uptime: true
+- resources:
+    label: Internal Disk
+    expanded: true
+    disk: /host
+- resources:
+    label: External Disk
+    expanded: true
+    disk: /host/mnt/extern
 
 - search:
     provider: google
