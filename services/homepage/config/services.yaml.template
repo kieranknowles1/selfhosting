@@ -6,6 +6,43 @@
 ### Internet Accessible ###
 #------------------------------------------------------------
 
+- Server Status:
+  - Glances:
+      href: "http://glances.${DOMAIN_NAME}"
+      description: System monitoring
+      icon: glances
+      server: local-docker
+      container: glances
+  - Internal Disk:
+      widget:
+        type: glances
+        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
+        metric: fs:/host
+        disk: /host
+        chart: false
+  - External Disk:
+      widget:
+        type: glances
+        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
+        metric: fs:/host/mnt/extern
+        disk: /host/mnt/extern
+        chart: false
+  - CPU:
+      widget:
+        type: glances
+        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
+        metric: cpu
+  - Memory:
+      widget:
+        type: glances
+        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
+        metric: memory
+  - Top Processes:
+      widget:
+        type: glances
+        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
+        metric: process
+
 - Development:
   - Gitea:
       href: "http://gitea.${DOMAIN_NAME}"

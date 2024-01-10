@@ -60,6 +60,16 @@ http {
         }
     }
 
+    server {
+        listen 80;
+        server_name glances.${DOMAIN_NAME};
+
+        location / {
+            proxy_pass http://${LOCAL_IP}:${GLANCES_PORT}/;
+            proxy_set_header Host §host;
+        }
+    }
+
 
     server {
         listen 80;

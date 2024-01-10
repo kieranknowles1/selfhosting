@@ -9,6 +9,10 @@ theme: dark
 statusStyle: dot
 
 layout:
+  Server Status:
+    tab: Internet Accessible
+    style: row
+    columns: 3
   Development:
     tab: Internet Accessible
     icon: mdi-code-braces
