@@ -11,3 +11,5 @@ services:
       - ./config/:/app/config/:ro
       # For docker status and stats monitoring
       - /var/run/docker.sock:/var/run/docker.sock
+      # For disk usage monitoring
+      - /:/host:ro

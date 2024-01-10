@@ -1,14 +1,19 @@
+# Nginx configuration for the reverse proxy
+# NOTE: Environment variables are replaced by the setup script,
+# Use § to escape $ in the config file. This will be replaced by $ after envsubst
+
 events {
 
 }
 
-# TODO: Support HTTPS
+# TODO: Support HTTPS for all services
 http {
     include     mime.types;
 
     server {
         listen 80;
-        listen 443 ssl http2;
+        listen 443 ssl;
+        http2 on;
         ssl_certificate /etc/letsencrypt/live/${DOMAIN_NAME}/fullchain.pem;
         ssl_certificate_key /etc/letsencrypt/live/${DOMAIN_NAME}/privkey.pem;
 

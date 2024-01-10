@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  borgmatic:
+    image: ghcr.io/borgmatic-collective/borgmatic
+    container_name: borgmatic
+    volumes:
+      # Read-only access to all files in the source directory
+      - ${DATA_ROOT}/:/mnt/source:ro
+      # Read-write access to the backup repository
+      - ${BACKUP_REPO}/:/mnt/repo
+      - ./daemon/:/etc/borgmatic.d/:ro
+      - ./borgconfig:/root/.config/borg
+      - ${SSHKEYS}:/root/.ssh
+      - ${CACHE_ROOT}/borgmatic/:/root/.cache/borg
+    environment:
+      - TZ=${TIME_ZONE}
+      - BORG_PASSPHRASE=${BORG_PASSPHRASE}

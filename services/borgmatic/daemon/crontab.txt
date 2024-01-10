@@ -1,0 +1,4 @@
+# This file is intentionally empty to disable Borgmatic's default cron job.
+# The host system is responsible for triggering backups as it needs to pause the
+# containers first.
+# 0 1 * * * PATH=$PATH:/usr/local/bin /usr/local/bin/borgmatic --stats -v 0 2>&1

@@ -104,11 +104,23 @@ if [ "$update" = false ]; then
     cd services/paperlessngx
     docker-compose run --rm webserver createsuperuser
   )
+
+  echo "Configuring borgmatic"
+  docker exec borgmatic borg init /mnt/repo --encryption repokey
+  docker exec borgmatic borg key export /mnt/repo > .borg-key
 fi
 
 #===============================================================================
 ### Maintenance
 #===============================================================================
 
-echo "Restarting nginx"
-docker-compose -f services/nginx/docker-compose.yml restart
+echo "Reloading nginx configuration"
+docker-compose -f services/nginx/docker-compose.yml exec nginx nginx -s reload
+
+echo "========================================================================="
+echo "Setup complete"
+echo "========================================================================="
+echo "Please back up the following files:"
+echo "  - .env.user"
+echo "  - .borg-key"
+echo "See readme.md for remaining setup steps"
