@@ -4,7 +4,7 @@ This repository is, first and foremost, a personal project. I am sharing it to h
 interested in self-hosting their own web services, but I will not be providing any support for it.
 Breaking changes may be introduced at any time without warning or migration instructions.
 
-Use this at your own risk.
+Use this at your own risk. I highly recommend using this as a reference and not as a copy-paste solution.
 
 ## Setup
 
