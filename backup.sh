@@ -1,5 +1,10 @@
 #!/bin/bash
 
+log() {
+  echo "[INFO] $1"
+  echo "[INFO] $1" >> backup.log
+}
+
 # Run from cron, so need to CD here from home directory
 cd "$(dirname "$0")"
 
@@ -20,18 +25,18 @@ source .env.user
 #===============================================================================
 ### Pause containers
 #===============================================================================
-echo "[INFO] Containers going PAUSED for backup"
+log "Containers going PAUSED for backup"
 for dir in services/*; do
   # We need the Borgmatic container, so don't pause it
   if [[ "$dir" == $BORG_SERVICE ]]; then
     continue
   fi
 
-  echo "[INFO] Pausing $dir"
-  docker-compose --file "$dir/docker-compose.yml" pause
+  log "Pausing $dir"
+  docker-compose --file "$dir/docker-compose.yml" pause >> backup.log
 done
 
-echo "[INFO] Containers paused. Starting backup"
+log "Containers paused. Starting backup"
 
 #===============================================================================
 ### Backup
@@ -42,12 +47,12 @@ docker-compose --file services/borgmatic/docker-compose.yml up --detach
 
 # Run Borgmatic
 docker-compose --file services/borgmatic/docker-compose.yml \
-  exec borgmatic borgmatic --stats --verbosity 1
+  exec borgmatic borgmatic --stats --verbosity 1 >> backup.log
 
 #===============================================================================
 ### Resume containers
 #===============================================================================
-echo "[INFO] Containers going UNPAUSED after backup"
+log "Containers going UNPAUSED after backup"
 for dir in services/*; do
   # It was never paused, so don't resume it
   if [[ "$dir" == $BORG_SERVICE ]]; then
@@ -55,5 +60,5 @@ for dir in services/*; do
   fi
 
   echo "[INFO] Unpausing $dir"
-  docker-compose --file "$dir/docker-compose.yml" unpause
+  docker-compose --file "$dir/docker-compose.yml" unpause >> backup.log
 done
