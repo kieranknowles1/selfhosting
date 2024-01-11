@@ -33,7 +33,7 @@ for dir in services/*; do
   fi
 
   log "Pausing $dir"
-  docker-compose --file "$dir/docker-compose.yml" pause >> backup.log
+  docker-compose --file "$dir/docker-compose.yml" pause | tee -a backup.log
 done
 
 log "Containers paused. Starting backup"
@@ -47,7 +47,7 @@ docker-compose --file services/borgmatic/docker-compose.yml up --detach
 
 # Run Borgmatic
 docker-compose --file services/borgmatic/docker-compose.yml \
-  exec borgmatic borgmatic --stats --verbosity 1 >> backup.log
+  exec borgmatic borgmatic --stats --verbosity 1 | tee -a backup.log
 
 #===============================================================================
 ### Resume containers
@@ -60,5 +60,5 @@ for dir in services/*; do
   fi
 
   echo "[INFO] Unpausing $dir"
-  docker-compose --file "$dir/docker-compose.yml" unpause >> backup.log
+  docker-compose --file "$dir/docker-compose.yml" unpause | tee -a backup.log
 done
