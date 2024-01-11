@@ -16,3 +16,6 @@ logs/
 
 # Templated files
 services/homepage/config/services.yaml
+
+# Script output
+*.log

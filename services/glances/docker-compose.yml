@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  glances:
+    image: nicolargo/glances:latest-alpine
+    container_name: glances
+    restart: unless-stopped
+    ports:
+      - ${GLANCES_PORT}:61208
+    volumes:
+      # Give access to the Docker socket to show container metrics
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Read-only access to the host filesystem
+      - /:/host:ro
+    environment:
+      # Run as a web server
+      - GLANCES_OPT=-w
