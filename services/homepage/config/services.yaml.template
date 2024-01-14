@@ -8,37 +8,37 @@
 
 - Server Status:
   - CPU:
-      href: "http://glances.${DOMAIN_NAME}"
+      href: "https://glances.${DOMAIN_NAME}"
       widget:
         type: glances
-        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
+        url: "https://${LOCAL_IP}:${GLANCES_PORT}"
         metric: cpu
   - Memory:
-      href: "http://glances.${DOMAIN_NAME}"
+      href: "https://glances.${DOMAIN_NAME}"
       widget:
         type: glances
-        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
+        url: "https://${LOCAL_IP}:${GLANCES_PORT}"
         metric: memory
   - Internal Disk:
-      href: "http://glances.${DOMAIN_NAME}"
+      href: "https://glances.${DOMAIN_NAME}"
       widget:
         type: glances
-        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
+        url: "https://${LOCAL_IP}:${GLANCES_PORT}"
         metric: fs:/host
         disk: /host
         chart: false
   - External Disk:
-      href: "http://glances.${DOMAIN_NAME}"
+      href: "https://glances.${DOMAIN_NAME}"
       widget:
         type: glances
-        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
+        url: "https://${LOCAL_IP}:${GLANCES_PORT}"
         metric: fs:/host/mnt/extern
         disk: /host/mnt/extern
         chart: false
 
 - Development:
   - Gitea:
-      href: "http://gitea.${DOMAIN_NAME}"
+      href: "https://gitea.${DOMAIN_NAME}"
       description: Git repository hosting
       icon: gitea
       server: local-docker
@@ -46,30 +46,29 @@
 
 - Productivity:
   - Paperless:
-      href: "http://paperless.${DOMAIN_NAME}"
+      href: "https://paperless.${DOMAIN_NAME}"
       description: Document management system
       icon: paperless
       server: local-docker
       container: paperless
       widget:
         type: paperlessngx
-        # TODO: HTTPS
-        url: "http://${LOCAL_IP}:${PAPERLESS_PORT}"
+        url: "https://${LOCAL_IP}:${PAPERLESS_PORT}"
         key: ${PAPERLESS_API_KEY}
   - Joplin:
-      href: "http://joplin.${DOMAIN_NAME}"
+      href: "https://joplin.${DOMAIN_NAME}"
       description: Note taking app
       icon: joplin
       server: local-docker
       container: joplin_app
   - Firefly:
-      href: "http://firefly.${DOMAIN_NAME}"
+      href: "https://firefly.${DOMAIN_NAME}"
       description: Personal finance manager
       icon: firefly
       server: local-docker
       container: firefly_iii_core
   - Firefly Data Importer:
-      href: "http://firefly-importer.${DOMAIN_NAME}"
+      href: "https://firefly-importer.${DOMAIN_NAME}"
       description: Data importer for Firefly
       icon: firefly
       server: local-docker
@@ -77,14 +76,14 @@
 
 - Media:
   - Immich:
-      href: "http://immich.${DOMAIN_NAME}"
+      href: "https://immich.${DOMAIN_NAME}"
       description: Personal photo gallery
       server: local-docker
       container: immich_server
       icon: immich
       widget:
         type: immich
-        url: "http://${LOCAL_IP}:${IMMICH_PORT}"
+        url: "https://${LOCAL_IP}:${IMMICH_PORT}"
         key: "${IMMICH_API_KEY}"
 
 
@@ -95,6 +94,7 @@
 
 - Administration:
   - Yacht:
+      # NOTE: SSL does not work without a domain name, so this is intentionally using HTTP.
       href: "http://${LOCAL_IP}:${YACHT_PORT}"
       description: Web interface for managing docker containers
       icon: yacht

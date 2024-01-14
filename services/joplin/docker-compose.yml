@@ -37,7 +37,7 @@ services:
         restart: unless-stopped
         environment:
             - APP_PORT=${JOPLIN_PORT}
-            - APP_BASE_URL=http://joplin.${DOMAIN_NAME}
+            - APP_BASE_URL=https://joplin.${DOMAIN_NAME}
             - DB_CLIENT=pg
             - POSTGRES_PASSWORD=${JOPLIN_DB_PASSWORD}
             - POSTGRES_DATABASE=joplin

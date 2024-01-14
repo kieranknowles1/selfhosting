@@ -55,8 +55,8 @@ services:
       - app
     env_file: .importer.env
     environment:
-      - FIREFLY_III_URL=http://firefly.${DOMAIN_NAME}
-      - VANITY_URL=http://firefly.${DOMAIN_NAME}
+      - FIREFLY_III_URL=https://firefly.${DOMAIN_NAME}
+      - VANITY_URL=https://firefly.${DOMAIN_NAME}
 
   cron:
     image: alpine

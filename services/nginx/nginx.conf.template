@@ -6,7 +6,6 @@ events {
 
 }
 
-# TODO: Support HTTPS for all services
 http {
     include     mime.types;
 
