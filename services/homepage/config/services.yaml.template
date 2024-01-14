@@ -11,19 +11,19 @@
       href: "https://glances.${DOMAIN_NAME}"
       widget:
         type: glances
-        url: "https://${LOCAL_IP}:${GLANCES_PORT}"
+        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
         metric: cpu
   - Memory:
       href: "https://glances.${DOMAIN_NAME}"
       widget:
         type: glances
-        url: "https://${LOCAL_IP}:${GLANCES_PORT}"
+        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
         metric: memory
   - Internal Disk:
       href: "https://glances.${DOMAIN_NAME}"
       widget:
         type: glances
-        url: "https://${LOCAL_IP}:${GLANCES_PORT}"
+        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
         metric: fs:/host
         disk: /host
         chart: false
@@ -31,7 +31,7 @@
       href: "https://glances.${DOMAIN_NAME}"
       widget:
         type: glances
-        url: "https://${LOCAL_IP}:${GLANCES_PORT}"
+        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
         metric: fs:/host/mnt/extern
         disk: /host/mnt/extern
         chart: false
@@ -53,7 +53,7 @@
       container: paperless
       widget:
         type: paperlessngx
-        url: "https://${LOCAL_IP}:${PAPERLESS_PORT}"
+        url: "http://${LOCAL_IP}:${PAPERLESS_PORT}"
         key: ${PAPERLESS_API_KEY}
   - Joplin:
       href: "https://joplin.${DOMAIN_NAME}"
@@ -83,7 +83,7 @@
       icon: immich
       widget:
         type: immich
-        url: "https://${LOCAL_IP}:${IMMICH_PORT}"
+        url: "http://${LOCAL_IP}:${IMMICH_PORT}"
         key: "${IMMICH_API_KEY}"
 
 
