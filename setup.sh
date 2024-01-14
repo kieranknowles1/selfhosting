@@ -7,6 +7,16 @@ set -e
 
 DEPS="docker docker-compose"
 
+SUBDOMAINS=(
+  "firefly"
+  "firefly-importer"
+  "gitea"
+  "glances"
+  "joplin"
+  "immich"
+  "paperless"
+)
+
 COMPOSE_PROJECT_NAME="self-hosted"
 
 #===============================================================================
@@ -82,8 +92,6 @@ done
 
 echo "Creating containers"
 
-# TODO: Want a backup system for containers content
-
 for dir in services/*; do
   echo "Creating container for $dir"
   docker-compose -f $dir/docker-compose.yml up --detach --remove-orphans
@@ -94,10 +102,13 @@ done
 #===============================================================================
 
 if [ "$update" = false ]; then
-  echo "Configuring certbot"
+  echo "Issuing SSL certificate"
+  # Need to issue a certificate that covers all subdomains
   docker-compose -f services/nginx/docker-compose.yml run --rm certbot \
     certonly --webroot --webroot-path=/var/www/certbot \
-    --email ${OWNER_EMAIL} -d ${DOMAIN_NAME}
+    --email ${OWNER_EMAIL} \
+    -d ${DOMAIN_NAME} \
+    $(for subdomain in "${SUBDOMAINS[@]}"; do echo "-d ${subdomain}.${DOMAIN_NAME}"; done) \
 
   (
     echo "Creating superuser for paperless container"

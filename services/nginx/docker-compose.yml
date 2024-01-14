@@ -7,9 +7,12 @@ services:
       - "80:80"
       - "443:443"
     volumes:
+      # Only mount the main nginx.conf file, don't overwrite the default includes
       - type: bind
         source: ./nginx.conf
         target: /etc/nginx/nginx.conf
+      # Provide additional includes in their own directory
+      - ./includes:/etc/nginx/includes
       - ${DATA_ROOT}/nginx/certbot/www:/var/www/certbot
       - ${DATA_ROOT}/nginx/certbot/conf:/etc/letsencrypt
     restart: unless-stopped
