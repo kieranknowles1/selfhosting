@@ -25,6 +25,10 @@ services:
       - redis
       - database
     restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: ${MAX_CPUS}
 
   immich-microservices:
     container_name: immich_microservices
@@ -43,6 +47,10 @@ services:
       - redis
       - database
     restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: ${MAX_CPUS}
 
   immich-machine-learning:
     container_name: immich_machine_learning
@@ -53,11 +61,21 @@ services:
     environment:
       - DB_PASSWORD=${IMMICH_DB_PASSWORD}
     restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: ${MAX_CPUS}
 
   redis:
     container_name: immich_redis
     image: redis:6.2-alpine@sha256:b6124ab2e45cc332e16398022a411d7e37181f21ff7874835e0180f56a09e82a
     restart: always
+    volumes:
+      - ${DATA_ROOT}/immich/redis:/data
+    deploy:
+      resources:
+        limits:
+          cpus: ${MAX_CPUS}
 
   database:
     container_name: immich_postgres
@@ -70,3 +88,7 @@ services:
     volumes:
       - ${DATA_ROOT}/immich/postgres:/var/lib/postgresql/data
     restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: ${MAX_CPUS}
