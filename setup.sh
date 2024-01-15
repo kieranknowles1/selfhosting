@@ -7,16 +7,6 @@ set -e
 
 DEPS="docker docker-compose"
 
-SUBDOMAINS=(
-  "firefly"
-  "firefly-importer"
-  "gitea"
-  "glances"
-  "joplin"
-  "immich"
-  "paperless"
-)
-
 COMPOSE_PROJECT_NAME="self-hosted"
 
 #===============================================================================
@@ -92,9 +82,9 @@ done
 
 echo "Creating containers"
 
-for dir in services/*; do
-  echo "Creating container for $dir"
-  docker-compose -f $dir/docker-compose.yml up --detach --remove-orphans
+for dir in ${ALL_SERVICES[@]}; do
+  echo "Creating or updating containers for $dir"
+  docker-compose -f "services/$dir/docker-compose.yml" up --detach --remove-orphans
 done
 
 #===============================================================================

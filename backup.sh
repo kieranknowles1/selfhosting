@@ -26,14 +26,9 @@ source .env.user
 ### Pause containers
 #===============================================================================
 log "Containers going PAUSED for backup"
-for dir in services/*; do
-  # We need the Borgmatic container, so don't pause it
-  if [[ "$dir" == $BORG_SERVICE ]]; then
-    continue
-  fi
-
+for dir in ${BACKUP_PAUSE_SERVICES[@]}; do
   log "Pausing $dir"
-  docker-compose --file "$dir/docker-compose.yml" pause | tee -a backup.log
+  docker-compose --file "services/$dir/docker-compose.yml" pause | tee -a backup.log
 done
 
 log "Containers paused. Starting backup"
@@ -53,14 +48,9 @@ docker-compose --file services/borgmatic/docker-compose.yml \
 ### Resume containers
 #===============================================================================
 log "Containers going UNPAUSED after backup"
-for dir in services/*; do
-  # It was never paused, so don't resume it
-  if [[ "$dir" == $BORG_SERVICE ]]; then
-    continue
-  fi
-
+for dir in ${BACKUP_PAUSE_SERVICES[@]}; do
   echo "[INFO] Unpausing $dir"
-  docker-compose --file "$dir/docker-compose.yml" unpause | tee -a backup.log
+  docker-compose --file "services/$dir/docker-compose.yml" unpause | tee -a backup.log
 done
 
 log "Backup complete"
