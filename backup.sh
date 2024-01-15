@@ -62,3 +62,5 @@ for dir in services/*; do
   echo "[INFO] Unpausing $dir"
   docker-compose --file "$dir/docker-compose.yml" unpause | tee -a backup.log
 done
+
+log "Backup complete"
