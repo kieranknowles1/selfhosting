@@ -42,12 +42,12 @@ log "Containers paused. Starting backup"
 ### Backup
 #===============================================================================
 
-# Start Borgmatic if it's not already running
+log "Starting Borgmatic"
 docker-compose --file services/borgmatic/docker-compose.yml up --detach
 
-# Run Borgmatic
+log "Running Borgmatic"
 docker-compose --file services/borgmatic/docker-compose.yml \
-  exec borgmatic borgmatic --stats --verbosity 1 | tee -a backup.log
+  exec -T borgmatic borgmatic --stats --verbosity 1 | tee -a backup.log
 
 #===============================================================================
 ### Resume containers
