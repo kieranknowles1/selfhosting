@@ -16,7 +16,7 @@ data_old/
 logs/
 
 # Templated files
-services/borgmatic/borgconfig/config.yaml
+services/borgmatic/daemon/config.yaml
 services/homepage/config/services.yaml
 
 # Script output
