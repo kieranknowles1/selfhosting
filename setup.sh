@@ -107,8 +107,9 @@ if [ "$update" = false ]; then
   )
 
   echo "Configuring borgmatic"
-  docker exec borgmatic borg init /mnt/repo --encryption repokey
-  docker exec borgmatic borg key export /mnt/repo > .borg-key
+  docker exec borgmatic borgmatic init --encryption repokey
+  docker exec borgmatic borg key export /mnt/repo > .borg-key.local
+  docker exec borgmatic borg key export ${BORGBASE_URL} > .borg-key.borgbase
 fi
 
 #===============================================================================
@@ -123,5 +124,6 @@ echo "Setup complete"
 echo "========================================================================="
 echo "Please back up the following files:"
 echo "  - .env.user"
-echo "  - .borg-key"
+echo "  - .borg-key.local"
+echo "  - .borg-key.borgbase"
 echo "See readme.md for remaining setup steps"

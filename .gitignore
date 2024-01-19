@@ -1,7 +1,8 @@
 # Private user information
 .env.user
 .vscode/sftp.json
-.borg-key
+.borg-key.borgbase
+.borg-key.local
 
 # Template output files
 nginx.conf
@@ -15,6 +16,7 @@ data_old/
 logs/
 
 # Templated files
+services/borgmatic/borgconfig/config.yaml
 services/homepage/config/services.yaml
 
 # Script output

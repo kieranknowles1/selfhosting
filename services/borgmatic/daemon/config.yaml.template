@@ -22,8 +22,8 @@ source_directories:
 # ReadWritePaths list. Prior to borgmatic 1.7.10, repositories was a
 # list of plain path strings.
 repositories:
-    # - path: ssh://user@backupserver/./sourcehostname.borg
-    #   label: backupserver
+    - path: ${BORGBASE_URL}
+      label: borgbase
     - path: /mnt/repo
       label: local
 

@@ -41,12 +41,19 @@ export LOCAL_IP=192.168.0.123
 # Your personal email address. This is used for Let's Encrypt services that require an email address.
 export OWNER_EMAIL=mail@example.com
 
+# Paths and keys for Borg
+export BORG_PASSPHRASE=something_secure
+# You must also generate a SSH key pair with ssh-keygen and add the public key to the BorgBase repository.
+# See https://docs.borgbase.com/faq/#all-connections-to-a-borgbase-repo-fail-with-an-error-immediately
+# if you are having issues connecting to the repository.
+# NOTE: You will not be able to get a shell on a BorgBase repository. This is normal.
+export BORGBASE_URL=ssh://something@something.reop.borgbase.com/./repo
+
 # Passwords for the databases. Use a password generator for these.
 # Make sure to use a different password for each service.
 export FIREFLY_DB_PASSWORD=something_secure
 export IMMICH_DB_PASSWORD=something_secure
 export JOPLIN_DB_PASSWORD=something_secure
-export BORG_PASSPHRASE=something_secure
 
 # This must be exactly 32 characters long and url-safe (i.e., [a-zA-Z0-9_-] only)])
 export FIREFLY_STATIC_CRON_TOKEN=Exactly32UrlSafeCharactersPlease
