@@ -72,7 +72,6 @@ http {
     server {
         include /etc/nginx/includes/global.conf;
         server_name joplin.${DOMAIN_NAME};
-        client_max_body_size 100M;
 
         location / {
             proxy_pass http://${LOCAL_IP}:${JOPLIN_PORT}/;
@@ -93,7 +92,6 @@ http {
     server {
         include /etc/nginx/includes/global.conf;
         server_name paperless.${DOMAIN_NAME};
-        client_max_body_size 100M;
 
         location / {
             proxy_pass http://${LOCAL_IP}:${PAPERLESS_PORT}/;
