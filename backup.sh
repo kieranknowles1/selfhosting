@@ -21,6 +21,10 @@ BORG_SERVICE="services/borgmatic"
 source .env
 source .env.user
 
+log "========================="
+log " --- Starting backup --- "
+log "Backup started at $(date)"
+log "========================="
 
 #===============================================================================
 ### Pause containers
