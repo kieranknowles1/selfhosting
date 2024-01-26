@@ -6,6 +6,10 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
     volumes:
       # Only mount the main nginx.conf file, don't overwrite the default includes
       - type: bind
