@@ -66,6 +66,9 @@ if [ "$update" = false ]; then
   echo "This requires root privileges"
   sudo apt-get update
   sudo apt-get install -y $DEPS
+
+  echo "Giving current user access to docker"
+  sudo usermod -aG docker $USER
 fi
 
 #===============================================================================
