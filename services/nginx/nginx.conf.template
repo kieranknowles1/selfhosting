@@ -7,11 +7,19 @@ events {
 }
 
 http {
-    # Redirect all http requests to https
+    # Redirect all http requests to https, except for the acme-challenge, which will be hosted by certbot
     server {
         listen 80;
         server_name ${DOMAIN_NAME};
-        return 301 https://§host$request_uri;
+
+        # Certbot challenge, takes precedence as it is more specific
+        location /.well-known/acme-challenge/ {
+            root /var/www/certbot;
+        }
+
+        location / {
+            return 301 https://§host$request_uri;
+        }
     }
 
     include     mime.types;

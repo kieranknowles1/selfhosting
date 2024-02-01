@@ -13,6 +13,7 @@ COMPOSE_PROJECT_NAME="self-hosted"
 ### Arguments
 #===============================================================================
 show_help=false
+expand_cert=false
 update=false
 while getopts ":h-:" opt; do
   case "$opt" in
@@ -21,6 +22,9 @@ while getopts ":h-:" opt; do
       ;;
     -)
       case "${OPTARG}" in
+        certbot)
+          expand_cert=true
+          ;;
         update)
           update=true
           ;;
@@ -40,10 +44,19 @@ done
 if [ "$show_help" = true ]; then
   echo "Usage: $0"
   echo "  -h, --help: Show this help message"
+  echo "  --certbot: Update/expand SSL certificate"
   echo "  --update: Update containers without reinstalling everything"
 
   exit
 fi
+
+#===============================================================================
+### Functions
+#===============================================================================
+reload_nginx() {
+  echo "Reloading nginx configuration"
+  docker-compose -f services/nginx/docker-compose.yml exec nginx nginx -s reload
+}
 
 #===============================================================================
 ### Readiness checks
@@ -94,14 +107,23 @@ done
 ### Configuration
 #===============================================================================
 
-if [ "$update" = false ]; then
+# not updating or user has requested certbot update
+if [ "$expand_cert" = true ] || [ "$update" = false ]; then
   echo "Issuing SSL certificate"
+
+  # Reload nginx in case the config has changed
+  # Need to reload again after issuing certificate to ensure the latest cert is used
+  reload_nginx
+
   # Need to issue a certificate that covers all subdomains
   docker-compose -f services/nginx/docker-compose.yml run --rm certbot \
     certonly --webroot --webroot-path=/var/www/certbot \
     --email ${OWNER_EMAIL} \
     -d ${DOMAIN_NAME} \
-    $(for subdomain in "${SUBDOMAINS[@]}"; do echo "-d ${subdomain}.${DOMAIN_NAME}"; done) \
+    $(for subdomain in "${SUBDOMAINS[@]}"; do echo "-d ${subdomain}.${DOMAIN_NAME}"; done)
+fi
+
+if [ "$update" = false ]; then
 
   (
     echo "Creating superuser for paperless container"
@@ -119,8 +141,7 @@ fi
 ### Maintenance
 #===============================================================================
 
-echo "Reloading nginx configuration"
-docker-compose -f services/nginx/docker-compose.yml exec nginx nginx -s reload
+reload_nginx
 
 echo "========================================================================="
 echo "Setup complete"
