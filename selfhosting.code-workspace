@@ -12,5 +12,13 @@
 			"nginx.conf.template": "apacheconf",
 			"*.yaml.template": "yaml",
 		}
+	},
+	"extensions": {
+		"recommendations": [
+			"gruntfuggly.todo-tree",
+			"ms-azuretools.vscode-docker",
+			"redhat.vscode-yaml",
+			"yzhang.markdown-all-in-one",
+		]
 	}
 }
