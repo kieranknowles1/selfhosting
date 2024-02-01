@@ -4,8 +4,8 @@
 
 - resources:
     # Other metrics are provided by Glances
-    # This always returns 0 on my system
-    # cputemp: true
+    cputemp: true
+    units: metric
     uptime: true
 
 - search:
