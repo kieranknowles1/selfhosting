@@ -38,6 +38,26 @@ http {
 
     server {
         include /etc/nginx/includes/global.conf;
+        server_name chefapi.${DOMAIN_NAME};
+
+        location / {
+            proxy_pass http://${LOCAL_IP}:${CHEF_BACKEND_PORT}/;
+            proxy_set_header Host §host;
+        }
+    }
+
+    server {
+        include /etc/nginx/includes/global.conf;
+        server_name chef.${DOMAIN_NAME};
+
+        location / {
+            proxy_pass http://${LOCAL_IP}:${CHEF_WEB_PORT}/;
+            proxy_set_header Host §host;
+        }
+    }
+
+    server {
+        include /etc/nginx/includes/global.conf;
         server_name firefly.${DOMAIN_NAME};
 
         location / {

@@ -26,6 +26,9 @@ layout:
   Media:
     tab: Internet Accessible
     icon: mdi-camera
+  Food:
+    tab: Internet Accessible
+    icon: mdi-food-drumstick
 
   Administration:
     tab: Local Network Only

@@ -92,6 +92,14 @@
         url: "http://${LOCAL_IP}:${IMMICH_PORT}"
         key: "${IMMICH_API_KEY}"
 
+# TODO: Find a nicer icon to be consistent with other services
+- Food:
+  - CHEF:
+      href: "https://chef.${DOMAIN_NAME}"
+      server: local-docker
+      container: chef_app
+      icon: mdi-chef-hat
+
 
 #------------------------------------------------------------
 ### Local Network Only ###
