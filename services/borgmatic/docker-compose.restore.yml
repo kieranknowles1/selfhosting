@@ -4,6 +4,8 @@
 # The respository is mounted at /mnt/repo
 # The restore directory is mounted at /restore
 
+# TODO: Need to test restore process, for both local and remote backups. Think local
+# is working, but only done a ls so far
 # =================================================================================================
 # MAKE A BACKUP OF THE BACKUP BEFORE RESTORING!
 # This has WRITE ACCESS to the backup repository, so it can overwrite your backup!
