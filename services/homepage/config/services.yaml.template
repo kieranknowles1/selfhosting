@@ -19,6 +19,12 @@
         type: glances
         url: "http://${LOCAL_IP}:${GLANCES_PORT}"
         metric: memory
+  - Network:
+      href: "https://glances.${DOMAIN_NAME}"
+      widget:
+        type: glances
+        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
+        metric: network:eth0
   - Internal Disk:
       href: "https://glances.${DOMAIN_NAME}"
       widget:

@@ -5,13 +5,13 @@ services:
     image: nicolargo/glances:latest
     container_name: glances
     restart: unless-stopped
-    ports:
-      - ${GLANCES_PORT}:61208
+    # Give access to the host network to show network metrics
+    network_mode: host
     volumes:
       # Give access to the Docker socket to show container metrics
       - /var/run/docker.sock:/var/run/docker.sock
-      # Read-only access to the host filesystem
+      # Read-only access to the host filesystem. Needed to read fs usage
       - /:/host:ro
     environment:
       # Run as a web server
-      - GLANCES_OPT=-w
+      - GLANCES_OPT=-w --port ${GLANCES_PORT}
