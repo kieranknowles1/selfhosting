@@ -5,6 +5,7 @@
 language: en-GB
 
 theme: dark
+color: slate
 
 statusStyle: dot
 
