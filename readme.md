@@ -6,6 +6,9 @@ Breaking changes may be introduced at any time without warning or migration inst
 
 Use this at your own risk. I highly recommend using this as a reference and not as a copy-paste solution.
 
+Only ARM architectures, such as the Raspberry Pi, are supported. My deployment is on a Raspberry Pi 5 with
+8GB of RAM and a 64-bit OS.
+
 ## Setup
 
 ### Configuration
