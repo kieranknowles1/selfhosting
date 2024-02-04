@@ -3,6 +3,7 @@
 .vscode/sftp.json
 .borg-key.borgbase
 .borg-key.local
+secrets.yml
 
 # Script output
 *.log

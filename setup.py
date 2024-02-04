@@ -3,6 +3,7 @@
 from argparse import ArgumentParser
 from subprocess import run
 from os import environ
+from os.path import exists
 import yaml
 import docker
 
@@ -13,6 +14,7 @@ DEPS = [
     'docker-compose'
 ]
 
+# Parse command line arguments
 def parse_args():
     parser = ArgumentParser(description='Setup script for the project')
     parser.add_argument('--certbot', action='store_true', help='Update/expand SSL certificate')
@@ -20,7 +22,25 @@ def parse_args():
 
     return parser.parse_args()
 
+def check_readiness():
+    """
+    Check that all prerequisites are met before running the script.
+
+    Raises
+    ------
+    Exception
+        If any of the prerequisites are not met. Message contains the reason.
+    """
+    if utils.is_root():
+        raise Exception('This script should not be run as root.')
+
+    if not exists('secrets.yml'):
+        raise Exception('secrets.yml not found. Please create it according to readme.md')
+
 def install_deps():
+    """
+    Install docker and docker-compose on the system. And give the current user access to docker.
+    """
     print('Installing docker and docker-compose')
     run(['sudo', 'apt-get', 'update'])
     run(['sudo', 'apt-get', 'install', '-y', *DEPS])
@@ -29,8 +49,7 @@ def install_deps():
     run(['sudo', 'usermod', '-aG', 'docker', environ['USER']])
 
 def main():
-    if utils.is_root():
-        raise Exception('This script should not be run as root.')
+    check_readiness()
 
     args = parse_args()
     update: bool = args.update
@@ -44,7 +63,8 @@ def main():
     # Prefer the ones passed to python
     environment = {
         **utils.read_yml_env('environment.yml'),
-        **environ
+        **utils.read_yml_env('secrets.yml'),
+        **environ,
     }
     print(environment)
 
@@ -62,19 +82,8 @@ if __name__ == '__main__':
 # }
 
 # #===============================================================================
-# ### Readiness checks
-# #===============================================================================
-
-# if [ ! -f .env.user ]; then
-#   echo "ERROR: .env.user not found" >&2
-#   echo "Please create a .env.user file. See readme.md for more information" >&2
-#   exit 1
-# fi
-
-# #===============================================================================
 # ### Container creation
 # #===============================================================================
-# source .env.user
 
 # echo "Replacing variables in .template files"
 # for file in $(find services -name "*.template"); do
