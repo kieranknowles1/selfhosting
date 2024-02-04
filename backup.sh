@@ -46,7 +46,7 @@ docker-compose --file services/borgmatic/docker-compose.yml up --detach
 
 log "Running Borgmatic"
 docker-compose --file services/borgmatic/docker-compose.yml \
-  exec -T borgmatic borgmatic --stats --verbosity 1 --progress | tee -a backup.log
+  exec -T borgmatic borgmatic --stats --verbosity 1 | tee -a backup.log
 
 #===============================================================================
 ### Resume containers
