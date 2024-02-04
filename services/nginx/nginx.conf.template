@@ -78,6 +78,16 @@ http {
 
     server {
         include /etc/nginx/includes/global.conf;
+        server_name gatus.${DOMAIN_NAME};
+
+        location / {
+            proxy_pass http://${LOCAL_IP}:${GATUS_PORT};
+            proxy_set_header Host §host;
+        }
+    }
+
+    server {
+        include /etc/nginx/includes/global.conf;
         server_name gitea.${DOMAIN_NAME};
 
         location / {

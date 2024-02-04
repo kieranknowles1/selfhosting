@@ -9,6 +9,9 @@
 - Server Status:
   - CPU:
       href: "https://glances.${DOMAIN_NAME}"
+      server: local-docker
+      container: glances
+      icon: glances
       widget:
         type: glances
         url: "http://${LOCAL_IP}:${GLANCES_PORT}"
@@ -25,6 +28,14 @@
         type: glances
         url: "http://${LOCAL_IP}:${GLANCES_PORT}"
         metric: network:eth0
+  - Gatus:
+      href: "https://gatus.${DOMAIN_NAME}"
+      server: local-docker
+      container: gatus
+      icon: gatus
+      widget:
+        type: gatus
+        url: "http://${LOCAL_IP}:${GATUS_PORT}"
   - Internal Disk:
       href: "https://glances.${DOMAIN_NAME}"
       widget:

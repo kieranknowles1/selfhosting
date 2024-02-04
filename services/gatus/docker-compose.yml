@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  gatus:
+    image: twinproduction/gatus
+    container_name: gatus
+    restart: unless-stopped
+    ports:
+      - ${GATUS_PORT}:8080
