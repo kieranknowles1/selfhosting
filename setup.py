@@ -3,11 +3,8 @@
 from argparse import ArgumentParser
 from subprocess import run
 from os import environ, geteuid
+import yaml
 import docker
-
-ENVIRONMENT={
-    'COMPOSE_PROJECT_NAME': 'self-hosted'
-}
 
 DEPS = [
     'docker',
@@ -23,6 +20,10 @@ def parse_args():
     parser.add_argument('--update', action='store_true', help='Update containers without reinstalling everything')
 
     return parser.parse_args()
+
+def read_yml_env(path: str) -> dict:
+    with open(path, 'r') as file:
+        return yaml.safe_load(file)
 
 def install_deps():
     print('Installing docker and docker-compose')
@@ -43,6 +44,14 @@ def main():
 
     if not update:
         install_deps()
+
+    # Combine variables passed to python with those in environment.yml
+    # Prefer the ones passed to python
+    environment = {
+        **read_yml_env('environment.yml'),
+        **environ
+    }
+    print(environment)
 
 
 if __name__ == '__main__':
@@ -71,7 +80,6 @@ if __name__ == '__main__':
 # #===============================================================================
 # ### Container creation
 # #===============================================================================
-# source .env
 # source .env.user
 
 # echo "Replacing variables in .template files"
