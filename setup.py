@@ -2,17 +2,16 @@
 
 from argparse import ArgumentParser
 from subprocess import run
-from os import environ, geteuid
+from os import environ
 import yaml
 import docker
+
+import utils
 
 DEPS = [
     'docker',
     'docker-compose'
 ]
-
-def is_root() -> bool:
-    return geteuid() == 0
 
 def parse_args():
     parser = ArgumentParser(description='Setup script for the project')
@@ -20,10 +19,6 @@ def parse_args():
     parser.add_argument('--update', action='store_true', help='Update containers without reinstalling everything')
 
     return parser.parse_args()
-
-def read_yml_env(path: str) -> dict:
-    with open(path, 'r') as file:
-        return yaml.safe_load(file)
 
 def install_deps():
     print('Installing docker and docker-compose')
@@ -34,7 +29,7 @@ def install_deps():
     run(['sudo', 'usermod', '-aG', 'docker', environ['USER']])
 
 def main():
-    if is_root():
+    if utils.is_root():
         raise Exception('This script should not be run as root.')
 
     args = parse_args()
@@ -48,11 +43,10 @@ def main():
     # Combine variables passed to python with those in environment.yml
     # Prefer the ones passed to python
     environment = {
-        **read_yml_env('environment.yml'),
+        **utils.read_yml_env('environment.yml'),
         **environ
     }
     print(environment)
-
 
 if __name__ == '__main__':
     main()
