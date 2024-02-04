@@ -7,3 +7,5 @@ services:
     restart: unless-stopped
     ports:
       - ${GATUS_PORT}:8080
+    volumes:
+      - ./config:/config

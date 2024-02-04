@@ -17,6 +17,7 @@ logs/
 
 # Templated files
 services/borgmatic/daemon/config.yaml
+services/gatus/config/config.yaml
 services/homepage/config/services.yaml
 
 # Script output
