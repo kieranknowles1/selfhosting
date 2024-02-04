@@ -17,6 +17,7 @@
 		"recommendations": [
 			"gruntfuggly.todo-tree",
 			"ms-azuretools.vscode-docker",
+			"ms-python.python",
 			"redhat.vscode-yaml",
 			"yzhang.markdown-all-in-one",
 		]
