@@ -72,6 +72,15 @@ sudo ./setup.sh
 
 ## Post setup
 
+## Cron jobs
+The following cron jobs are required to maintain the services:
+```bash
+# Backup every night
+0 0 * * * /path/to/backup.sh
+# Renew certificates every two months
+0 0 1 */2 * /path/to/renew.sh
+```
+
 ### API Keys
 After setting up and configuring containers, you can add API keys to enable widgets on the dashboard
 to `.env.user`. Re-run `setup.sh` with the `--update` flag to apply the changes.
@@ -84,9 +93,6 @@ export PAPERLESS_API_KEY=1234567890abcdef
 Backups are done using [Borg](https://borgbackup.readthedocs.io/en/stable/). The backup script is
 located in `./backup.sh`. It is recommended to run this script on a cron job to ensure regular backups.
 Note that containers will be paused during the backup to ensure data consistency.
-```
-0 0 * * * /path/to/backup.sh
-```
 
 The backup repository is located in `/mnt/extern/containers/backup` by default and is encrypted using
 your Borg and a key written to `.borg-key` during setup. You **must** back up all of:
@@ -97,7 +103,3 @@ your Borg and a key written to `.borg-key` during setup. You **must** back up al
 ### Certificate Renewal
 The certificates issued by Let's Encrypt are valid for 90 days. To renew them, simply run the included
 `renew.sh` script. You will receive an email notification when the certificates are due to expire.
-Alternatively, you can run the script on a cron job to renew them automatically.
-```
-0 0 1 */2 * /path/to/renew.sh
-```
