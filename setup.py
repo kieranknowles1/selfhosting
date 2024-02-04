@@ -2,7 +2,7 @@
 
 from argparse import ArgumentParser
 from subprocess import run
-from os import environ
+from os import environ, geteuid
 import docker
 
 ENVIRONMENT={
@@ -13,6 +13,9 @@ DEPS = [
     'docker',
     'docker-compose'
 ]
+
+def is_root() -> bool:
+    return geteuid() == 0
 
 def parse_args():
     parser = ArgumentParser(description='Setup script for the project')
@@ -30,6 +33,9 @@ def install_deps():
     run(['sudo', 'usermod', '-aG', 'docker', environ['USER']])
 
 def main():
+    if is_root():
+        raise Exception('This script should not be run as root.')
+
     args = parse_args()
     update: bool = args.update
     certbot: bool = args.certbot
@@ -44,9 +50,6 @@ if __name__ == '__main__':
 
 # TODO: Port bash to python
 
-# DEPS="docker docker-compose"
-
-# COMPOSE_PROJECT_NAME="self-hosted"
 # #===============================================================================
 # ### Functions
 # #===============================================================================
@@ -58,12 +61,6 @@ if __name__ == '__main__':
 # #===============================================================================
 # ### Readiness checks
 # #===============================================================================
-
-# # Disallow running as root
-# if [ "$EUID" -eq 0 ]; then
-#   echo "ERROR: This script should not be run as root" >&2
-#   exit 1
-# fi
 
 # if [ ! -f .env.user ]; then
 #   echo "ERROR: .env.user not found" >&2
