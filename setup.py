@@ -2,11 +2,9 @@
 
 from argparse import ArgumentParser
 from subprocess import run
-from os import environ, walk
+from os import environ, walk, listdir
 from os.path import exists
 from typing import Dict
-import yaml
-import docker
 
 import utils
 
@@ -43,8 +41,8 @@ def install_deps():
     Install docker and docker-compose on the system. And give the current user access to docker.
     """
     print('Installing docker and docker-compose')
-    run(['sudo', 'apt-get', 'update'])
-    run(['sudo', 'apt-get', 'install', '-y', *DEPS])
+    run(['sudo', 'apt-get', 'update'], check=True)
+    run(['sudo', 'apt-get', 'install', '-y', *DEPS], check=True)
 
     print('Giving current user access to docker')
     run(['sudo', 'usermod', '-aG', 'docker', environ['USER']])
@@ -67,6 +65,17 @@ def replace_template_vars(environment: Dict[str, str]):
                 with open(output_path, 'w') as f:
                     f.write(content.format(**environment))
 
+def compose_up(service: str):
+    """
+    Run docker-compose up for the service at /services/$service
+
+    Parameters
+    ----------
+    service : str
+        The name of the service to run docker-compose up for.
+    """
+    print(f'Creating or updating containers for {service}')
+    run(['docker-compose', '-f', f'services/{service}/docker-compose.yml', 'up', '--detach', '--remove-orphans'], check=True)
 
 def main():
     check_readiness()
@@ -89,6 +98,9 @@ def main():
 
     replace_template_vars(environment)
 
+    for service in listdir('services'):
+        compose_up(service)
+
 if __name__ == '__main__':
     main()
 
@@ -101,17 +113,6 @@ if __name__ == '__main__':
 #   echo "Reloading nginx configuration"
 #   docker-compose -f services/nginx/docker-compose.yml exec nginx nginx -s reload
 # }
-
-# #===============================================================================
-# ### Container creation
-# #===============================================================================
-
-# echo "Creating containers"
-
-# for dir in ${ALL_SERVICES[@]}; do
-#   echo "Creating or updating containers for $dir"
-#   docker-compose -f "services/$dir/docker-compose.yml" up --detach --remove-orphans
-# done
 
 # #===============================================================================
 # ### Configuration
