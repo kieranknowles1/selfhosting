@@ -14,15 +14,13 @@ layout:
     tab: Internet Accessible
     icon: mdi-server
     style: row
-    columns: 2
+    columns: 3
   Development:
     tab: Internet Accessible
     icon: mdi-code-braces
   Productivity:
     tab: Internet Accessible
     icon: mdi-briefcase
-    style: row
-    columns: 2
   Media:
     tab: Internet Accessible
     icon: mdi-camera
