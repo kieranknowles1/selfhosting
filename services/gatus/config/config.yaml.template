@@ -1,7 +1,7 @@
 endpoints:
   - name: Homepage
     group: Services
-    url: https://${DOMAIN_NAME}
+    url: https://{DOMAIN_NAME}
     interval: 5m
     conditions:
       - "[STATUS] == 200"

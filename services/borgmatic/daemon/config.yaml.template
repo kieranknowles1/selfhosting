@@ -1,7 +1,7 @@
 # Constants to use in the configuration file. All occurrences of the
 # constant name within curly braces will be replaced with the value.
 # For example, if you have a constant named "hostname" with the value
-# "myhostname", then the string "{hostname}" will be replaced with
+# "myhostname", then the string "{{hostname}}" will be replaced with
 # "myhostname" in the configuration file.
 # constants:
     # hostname: myhostname
@@ -24,7 +24,7 @@ source_directories:
 repositories:
     - path: /mnt/repo
       label: local
-    - path: ${BORGBASE_URL}
+    - path: {BORGBASE_URL}
       label: borgbase
 
 # Working directory for the "borg create" command. Tildes are
@@ -155,7 +155,7 @@ repositories:
 # encryption. Quote the value if it contains punctuation, so it parses
 # correctly. And backslash any quote or backslash literals as well.
 # Defaults to not set.
-# encryption_passphrase: "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+# encryption_passphrase: "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{{|}}~"
 
 # Number of seconds between each checkpoint during a long-running
 # backup. See https://borgbackup.readthedocs.io/en/stable/faq.html for
@@ -236,10 +236,10 @@ repositories:
 
 # Name of the archive. Borg placeholders can be used. See the output
 # of "borg help placeholders" for details. Defaults to
-# "{hostname}-{now:%Y-%m-%dT%H:%M:%S.%f}". When running actions like
+# "{{hostname}}-{{now:%Y-%m-%dT%H:%M:%S.%f}}". When running actions like
 # rlist, info, or check, borgmatic automatically tries to match only
 # archives created with this name format.
-# archive_name_format: '{hostname}-documents-{now}'
+# archive_name_format: '{{hostname}}-documents-{{now}}'
 
 # A Borg pattern for filtering down the archives used by borgmatic
 # actions that operate on multiple archives. For Borg 1.x, use a shell
@@ -247,7 +247,7 @@ repositories:
 # details. For Borg 2.x, see the output of "borg help match-archives".
 # If match_archives is not specified, borgmatic defaults to deriving
 # the match_archives value from archive_name_format.
-# match_archives: sh:{hostname}-*
+# match_archives: sh:{{hostname}}-*
 
 # Bypass Borg error about a repository that has been moved. Defaults
 # to not bypassing.

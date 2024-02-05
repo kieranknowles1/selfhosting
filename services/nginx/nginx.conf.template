@@ -1,158 +1,158 @@
 # Nginx configuration for the reverse proxy
 # NOTE: Environment variables are replaced by the setup script,
-# Use § to escape $ in the config file. This will be replaced by $ after envsubst
+# Use {{ and }} to escape braces
 
-events {
+events {{
 
-}
+}}
 
-http {
+http {{
     # Redirect all http requests to https, except for the acme-challenge, which will be hosted by certbot
-    server {
+    server {{
         listen 80;
-        server_name ${DOMAIN_NAME};
+        server_name {DOMAIN_NAME};
 
         # Certbot challenge, takes precedence as it is more specific
-        location /.well-known/acme-challenge/ {
+        location /.well-known/acme-challenge/ {{
             root /var/www/certbot;
-        }
+        }}
 
-        location / {
-            return 301 https://§host$request_uri;
-        }
-    }
+        location / {{
+            return 301 https://$host$request_uri;
+        }}
+    }}
 
     include     mime.types;
 
-    ssl_certificate /etc/letsencrypt/live/${DOMAIN_NAME}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN_NAME}/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/{DOMAIN_NAME}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{DOMAIN_NAME}/privkey.pem;
 
-    server {
+    server {{
         include /etc/nginx/includes/global.conf;
-        server_name ${DOMAIN_NAME};
+        server_name {DOMAIN_NAME};
 
-        location / {
-            proxy_pass http://${LOCAL_IP}:${HOMEPAGE_PORT}/;
-        }
-    }
+        location / {{
+            proxy_pass http://{LOCAL_IP}:{HOMEPAGE_PORT}/;
+        }}
+    }}
 
-    server {
+    server {{
         include /etc/nginx/includes/global.conf;
-        server_name chefapi.${DOMAIN_NAME};
+        server_name chefapi.{DOMAIN_NAME};
 
-        location / {
-            proxy_pass http://${LOCAL_IP}:${CHEF_BACKEND_PORT}/;
-            proxy_set_header Host §host;
-        }
-    }
+        location / {{
+            proxy_pass http://{LOCAL_IP}:{CHEF_BACKEND_PORT}/;
+            proxy_set_header Host $host;
+        }}
+    }}
 
-    server {
+    server {{
         include /etc/nginx/includes/global.conf;
-        server_name chef.${DOMAIN_NAME};
+        server_name chef.{DOMAIN_NAME};
 
-        location / {
-            proxy_pass http://${LOCAL_IP}:${CHEF_WEB_PORT}/;
-            proxy_set_header Host §host;
-        }
-    }
+        location / {{
+            proxy_pass http://{LOCAL_IP}:{CHEF_WEB_PORT}/;
+            proxy_set_header Host $host;
+        }}
+    }}
 
-    server {
+    server {{
         include /etc/nginx/includes/global.conf;
-        server_name firefly.${DOMAIN_NAME};
+        server_name firefly.{DOMAIN_NAME};
 
-        location / {
-            proxy_pass http://${LOCAL_IP}:${FIREFLY_APP_PORT}/;
-            proxy_set_header Host §host;
-        }
-    }
+        location / {{
+            proxy_pass http://{LOCAL_IP}:{FIREFLY_APP_PORT}/;
+            proxy_set_header Host $host;
+        }}
+    }}
 
-    server {
+    server {{
         include /etc/nginx/includes/global.conf;
-        server_name firefly-importer.${DOMAIN_NAME};
+        server_name firefly-importer.{DOMAIN_NAME};
 
-        location / {
-            proxy_pass http://${LOCAL_IP}:${FIREFLY_IMPORTER_PORT}/;
-            proxy_set_header Host §host;
-        }
-    }
+        location / {{
+            proxy_pass http://{LOCAL_IP}:{FIREFLY_IMPORTER_PORT}/;
+            proxy_set_header Host $host;
+        }}
+    }}
 
-    server {
+    server {{
         include /etc/nginx/includes/global.conf;
-        server_name gatus.${DOMAIN_NAME};
+        server_name gatus.{DOMAIN_NAME};
 
-        location / {
-            proxy_pass http://${LOCAL_IP}:${GATUS_PORT};
-            proxy_set_header Host §host;
-        }
-    }
+        location / {{
+            proxy_pass http://{LOCAL_IP}:{GATUS_PORT};
+            proxy_set_header Host $host;
+        }}
+    }}
 
-    server {
+    server {{
         include /etc/nginx/includes/global.conf;
-        server_name gitea.${DOMAIN_NAME};
+        server_name gitea.{DOMAIN_NAME};
 
-        location / {
-            proxy_pass http://${LOCAL_IP}:${GITEA_WEB_PORT}/;
-            proxy_set_header Host §host;
-        }
-    }
+        location / {{
+            proxy_pass http://{LOCAL_IP}:{GITEA_WEB_PORT}/;
+            proxy_set_header Host $host;
+        }}
+    }}
 
-    server {
+    server {{
         include /etc/nginx/includes/global.conf;
-        server_name glances.${DOMAIN_NAME};
+        server_name glances.{DOMAIN_NAME};
 
-        location / {
-            proxy_pass http://${LOCAL_IP}:${GLANCES_PORT}/;
-            proxy_set_header Host §host;
-        }
-    }
+        location / {{
+            proxy_pass http://{LOCAL_IP}:{GLANCES_PORT}/;
+            proxy_set_header Host $host;
+        }}
+    }}
 
-    server {
+    server {{
         include /etc/nginx/includes/global.conf;
-        server_name jellyfin.${DOMAIN_NAME};
+        server_name jellyfin.{DOMAIN_NAME};
 
-        location / {
-            proxy_pass http://${LOCAL_IP}:${JELLYFIN_PORT}/;
-            proxy_set_header Host §host;
-        }
-    }
+        location / {{
+            proxy_pass http://{LOCAL_IP}:{JELLYFIN_PORT}/;
+            proxy_set_header Host $host;
+        }}
+    }}
 
-    server {
+    server {{
         include /etc/nginx/includes/global.conf;
-        server_name joplin.${DOMAIN_NAME};
+        server_name joplin.{DOMAIN_NAME};
 
-        location / {
-            proxy_pass http://${LOCAL_IP}:${JOPLIN_PORT}/;
-            proxy_set_header Host §host;
-        }
-    }
+        location / {{
+            proxy_pass http://{LOCAL_IP}:{JOPLIN_PORT}/;
+            proxy_set_header Host $host;
+        }}
+    }}
 
-    server {
+    server {{
         include /etc/nginx/includes/global.conf;
-        server_name immich.${DOMAIN_NAME};
+        server_name immich.{DOMAIN_NAME};
 
-        location / {
-            proxy_pass http://${LOCAL_IP}:${IMMICH_PORT}/;
-            proxy_set_header Host §host;
-        }
-    }
+        location / {{
+            proxy_pass http://{LOCAL_IP}:{IMMICH_PORT}/;
+            proxy_set_header Host $host;
+        }}
+    }}
 
-    server {
+    server {{
         include /etc/nginx/includes/global.conf;
-        server_name paperless.${DOMAIN_NAME};
+        server_name paperless.{DOMAIN_NAME};
 
-        location / {
-            proxy_pass http://${LOCAL_IP}:${PAPERLESS_PORT}/;
-            proxy_set_header Host §host;
+        location / {{
+            proxy_pass http://{LOCAL_IP}:{PAPERLESS_PORT}/;
+            proxy_set_header Host $host;
 
             proxy_http_version 1.1;
-            proxy_set_header Upgrade §http_upgrade;
+            proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection "upgrade";
 
             proxy_redirect off;
-            proxy_set_header X-Real-IP §remote_addr;
-            proxy_set_header X-Forwarded-For §proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Host §server_name;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host $server_name;
             add_header Referrer-Policy "strict-origin-when-cross-origin";
-        }
-    }
-}
+        }}
+    }}
+}}
