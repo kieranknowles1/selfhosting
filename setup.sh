@@ -58,6 +58,12 @@ reload_nginx() {
   docker-compose -f services/nginx/docker-compose.yml exec nginx nginx -s reload
 }
 
+# Get the subdomain from the $SUBDOMAINS array
+# $1: The array entry
+get_subdomain() {
+  echo $1 | cut -d' ' -f1
+}
+
 #===============================================================================
 ### Readiness checks
 #===============================================================================
@@ -120,7 +126,7 @@ if [ "$expand_cert" = true ] || [ "$update" = false ]; then
     certonly --webroot --webroot-path=/var/www/certbot \
     --email ${OWNER_EMAIL} \
     -d ${DOMAIN_NAME} \
-    $(for subdomain in "${SUBDOMAINS[@]}"; do echo "-d ${subdomain}.${DOMAIN_NAME}"; done)
+    $(for subdomain in "${SUBDOMAINS[@]}"; do echo "-d $(get_subdomain $subdomain).${DOMAIN_NAME}"; done)
 fi
 
 if [ "$update" = false ]; then
