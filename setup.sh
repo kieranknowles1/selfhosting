@@ -64,6 +64,27 @@ get_subdomain() {
   echo $1 | cut -d' ' -f1
 }
 
+# Generate the nginx configuration for a subdomain
+# $1: Subdomain
+# $2: Port
+generate_nginx_config() {
+  local subdomain=$1
+  local port=$2
+
+  echo "
+    # ${subdomain}, ${port}
+    server {
+        include /etc/nginx/includes/global.conf;
+        server_name ${subdomain}.${DOMAIN_NAME};
+
+        location / {
+            proxy_pass http://${LOCAL_IP}:${port}/;
+            proxy_set_header Host §host;
+        }
+    }
+  "
+}
+
 #===============================================================================
 ### Readiness checks
 #===============================================================================
@@ -91,10 +112,17 @@ if [ "$update" = false ]; then
 fi
 
 #===============================================================================
-### Container creation
+### Configuration
 #===============================================================================
 source .env
 source .env.user
+
+export NGINX_CONFIG=""
+for entry in "${SUBDOMAINS[@]}"; do
+  subdomain=$(get_subdomain $entry)
+  port=$(echo $entry | cut -d' ' -f2)
+  NGINX_CONFIG+=$(generate_nginx_config $subdomain $port)
+done
 
 echo "Replacing variables in .template files"
 for file in $(find services -name "*.template"); do
@@ -102,6 +130,9 @@ for file in $(find services -name "*.template"); do
   envsubst < $file | sed 's/§/$/g' > ${file%.template}
 done
 
+#===============================================================================
+### Container creation
+#===============================================================================
 echo "Creating containers"
 
 for dir in $(ls services); do
