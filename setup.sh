@@ -98,7 +98,7 @@ done
 
 echo "Creating containers"
 
-for dir in ${ALL_SERVICES[@]}; do
+for dir in $(ls services); do
   echo "Creating or updating containers for $dir"
   docker-compose -f "services/$dir/docker-compose.yml" up --detach --remove-orphans
 done
