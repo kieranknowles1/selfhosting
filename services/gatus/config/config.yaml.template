@@ -5,4 +5,4 @@ endpoints:
     interval: 5m
     conditions:
       - "[STATUS] == 200"
-      - "[CERTIFICATE_EXPIRATION] > 10000h"
+      - "[CERTIFICATE_EXPIRATION] > 7d"
