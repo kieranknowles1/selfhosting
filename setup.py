@@ -2,8 +2,9 @@
 
 from argparse import ArgumentParser
 from subprocess import run
-from os import environ
+from os import environ, walk
 from os.path import exists
+from typing import Dict
 import yaml
 import docker
 
@@ -48,6 +49,25 @@ def install_deps():
     print('Giving current user access to docker')
     run(['sudo', 'usermod', '-aG', 'docker', environ['USER']])
 
+def replace_template_vars(environment: Dict[str, str]):
+    """
+    Replace variables in .template files with their values.
+
+    Templates are expected to use Bash syntax for variables, braces are mandatory.
+    """
+    print('Replacing variables in .template files')
+    for base, _, files in walk('services'):
+        for file in files:
+            path = f'{base}/{file}'
+            if path.endswith('.template'):
+                print(f'Replacing variables in {path}')
+                with open(path, 'r') as f:
+                    content = f.read()
+                output_path = path[:-len('.template')]
+                with open(output_path, 'w') as f:
+                    f.write(content.format(**environment))
+
+
 def main():
     check_readiness()
 
@@ -66,7 +86,8 @@ def main():
         **utils.read_yml_env('secrets.yml'),
         **environ,
     }
-    print(environment)
+
+    replace_template_vars(environment)
 
 if __name__ == '__main__':
     main()
@@ -84,12 +105,6 @@ if __name__ == '__main__':
 # #===============================================================================
 # ### Container creation
 # #===============================================================================
-
-# echo "Replacing variables in .template files"
-# for file in $(find services -name "*.template"); do
-#   echo "Replacing variables in $file"
-#   envsubst < $file | sed 's/§/$/g' > ${file%.template}
-# done
 
 # echo "Creating containers"
 
