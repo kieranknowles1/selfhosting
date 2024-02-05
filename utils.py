@@ -2,6 +2,7 @@ from os import geteuid
 from typing import Dict
 import yaml
 
+
 def is_root() -> bool:
     """
     Check if the current user is root.
@@ -12,6 +13,7 @@ def is_root() -> bool:
         True if the current user is root, False otherwise.
     """
     return geteuid() == 0
+
 
 def read_yml_env(path: str) -> Dict[str, str]:
     """
@@ -28,5 +30,5 @@ def read_yml_env(path: str) -> Dict[str, str]:
     Dict[str, str]
         The contents of the yaml file as a dictionary.
     """
-    with open(path, 'r') as file:
+    with open(path, "r") as file:
         return yaml.safe_load(file)

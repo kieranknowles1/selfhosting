@@ -8,18 +8,23 @@ from typing import Dict
 
 import utils
 
-DEPS = [
-    'docker',
-    'docker-compose'
-]
+DEPS = ["docker", "docker-compose"]
+
 
 # Parse command line arguments
 def parse_args():
-    parser = ArgumentParser(description='Setup script for the project')
-    parser.add_argument('--certbot', action='store_true', help='Update/expand SSL certificate')
-    parser.add_argument('--update', action='store_true', help='Update containers without reinstalling everything')
+    parser = ArgumentParser(description="Setup script for the project")
+    parser.add_argument(
+        "--certbot", action="store_true", help="Update/expand SSL certificate"
+    )
+    parser.add_argument(
+        "--update",
+        action="store_true",
+        help="Update containers without reinstalling everything",
+    )
 
     return parser.parse_args()
+
 
 def check_readiness():
     """
@@ -31,21 +36,25 @@ def check_readiness():
         If any of the prerequisites are not met. Message contains the reason.
     """
     if utils.is_root():
-        raise Exception('This script should not be run as root.')
+        raise Exception("This script should not be run as root.")
 
-    if not exists('secrets.yml'):
-        raise Exception('secrets.yml not found. Please create it according to readme.md')
+    if not exists("secrets.yml"):
+        raise Exception(
+            "secrets.yml not found. Please create it according to readme.md"
+        )
+
 
 def install_deps():
     """
     Install docker and docker-compose on the system. And give the current user access to docker.
     """
-    print('Installing docker and docker-compose')
-    run(['sudo', 'apt-get', 'update'], check=True)
-    run(['sudo', 'apt-get', 'install', '-y', *DEPS], check=True)
+    print("Installing docker and docker-compose")
+    run(["sudo", "apt-get", "update"], check=True)
+    run(["sudo", "apt-get", "install", "-y", *DEPS], check=True)
 
-    print('Giving current user access to docker')
-    run(['sudo', 'usermod', '-aG', 'docker', environ['USER']])
+    print("Giving current user access to docker")
+    run(["sudo", "usermod", "-aG", "docker", environ["USER"]])
+
 
 def replace_template_vars(environment: Dict[str, str]):
     """
@@ -53,17 +62,18 @@ def replace_template_vars(environment: Dict[str, str]):
 
     Templates are expected to use Bash syntax for variables, braces are mandatory.
     """
-    print('Replacing variables in .template files')
-    for base, _, files in walk('services'):
+    print("Replacing variables in .template files")
+    for base, _, files in walk("services"):
         for file in files:
-            path = f'{base}/{file}'
-            if path.endswith('.template'):
-                print(f'Replacing variables in {path}')
-                with open(path, 'r') as f:
+            path = f"{base}/{file}"
+            if path.endswith(".template"):
+                print(f"Replacing variables in {path}")
+                with open(path, "r") as f:
                     content = f.read()
-                output_path = path[:-len('.template')]
-                with open(output_path, 'w') as f:
+                output_path = path[: -len(".template")]
+                with open(output_path, "w") as f:
                     f.write(content.format(**environment))
+
 
 def compose_up(service: str):
     """
@@ -74,8 +84,19 @@ def compose_up(service: str):
     service : str
         The name of the service to run docker-compose up for.
     """
-    print(f'Creating or updating containers for {service}')
-    run(['docker-compose', '-f', f'services/{service}/docker-compose.yml', 'up', '--detach', '--remove-orphans'], check=True)
+    print(f"Creating or updating containers for {service}")
+    run(
+        [
+            "docker-compose",
+            "-f",
+            f"services/{service}/docker-compose.yml",
+            "up",
+            "--detach",
+            "--remove-orphans",
+        ],
+        check=True,
+    )
+
 
 def main():
     check_readiness()
@@ -91,17 +112,18 @@ def main():
     # Combine variables passed to python with those in environment.yml
     # Prefer the ones passed to python
     environment = {
-        **utils.read_yml_env('environment.yml'),
-        **utils.read_yml_env('secrets.yml'),
+        **utils.read_yml_env("environment.yml"),
+        **utils.read_yml_env("secrets.yml"),
         **environ,
     }
 
     replace_template_vars(environment)
 
-    for service in listdir('services'):
+    for service in listdir("services"):
         compose_up(service)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
 
 # TODO: Port bash to python
