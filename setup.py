@@ -8,6 +8,7 @@ from typing import Dict
 
 import utils
 
+COMPOSE_PROJECT_NAME = "self-hosted"
 DEPS = ["docker", "docker-compose"]
 
 
@@ -75,12 +76,14 @@ def replace_template_vars(environment: Dict[str, str]):
                     f.write(content.format(**environment))
 
 
-def compose_up(service: str):
+def compose_up(env: Dict[str, str], service: str):
     """
     Run docker-compose up for the service at /services/$service
 
     Parameters
     ----------
+    env : Dict[str, str]
+        The environment variables to use for the service.
     service : str
         The name of the service to run docker-compose up for.
     """
@@ -95,6 +98,7 @@ def compose_up(service: str):
             "--remove-orphans",
         ],
         check=True,
+        env=env,
     )
 
 
@@ -104,7 +108,6 @@ def main():
     args = parse_args()
     update: bool = args.update
     certbot: bool = args.certbot
-    print(args)
 
     if not update:
         install_deps()
@@ -115,12 +118,14 @@ def main():
         **utils.read_yml_env("environment.yml"),
         **utils.read_yml_env("secrets.yml"),
         **environ,
+        COMPOSE_PROJECT_NAME: COMPOSE_PROJECT_NAME,
     }
+    print(environment)
 
     replace_template_vars(environment)
 
     for service in listdir("services"):
-        compose_up(service)
+        compose_up(environment, service)
 
 
 if __name__ == "__main__":
