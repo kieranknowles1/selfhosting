@@ -11,4 +11,4 @@ services:
     volumes:
       - ${CACHE_ROOT}/jellyfin:/cache
       - ${DATA_ROOT}/jellyfin/config:/config
-      - ${DATA_ROOT}/jellyfin/media:/media:ro
+      - ${DATA_ROOT_NOBACKUP}/jellyfin/media:/media:ro

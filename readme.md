@@ -1,5 +1,21 @@
 # Self-hosted web services
 
+- [Self-hosted web services](#self-hosted-web-services)
+  - [Introduction](#introduction)
+  - [Setup](#setup)
+    - [Configuration](#configuration)
+      - [Paths](#paths)
+      - [Ports](#ports)
+      - [Time zone](#time-zone)
+      - [Secrets](#secrets)
+    - [Install](#install)
+  - [Post setup](#post-setup)
+    - [Cron jobs](#cron-jobs)
+    - [API Keys](#api-keys)
+    - [Backups](#backups)
+    - [Certificate Renewal](#certificate-renewal)
+
+## Introduction
 This repository is, first and foremost, a personal project. I am sharing it to help others who may be
 interested in self-hosting their own web services, but I will not be providing any support for it.
 Breaking changes may be introduced at any time without warning or migration instructions.
@@ -72,8 +88,8 @@ sudo ./setup.sh
 
 ## Post setup
 
-## Cron jobs
-The following cron jobs are required to maintain the services:
+### Cron jobs
+The following cron jobs are required to maintain the services. These are not installed automatically.
 ```bash
 # Backup every night
 0 0 * * * /path/to/backup.sh
@@ -99,6 +115,9 @@ your Borg and a key written to `.borg-key` during setup. You **must** back up al
 - The `.borg-key` file
 - The `.env.user` file
 - The backup repository (at `BACKUP_REPO` in `.env`)
+
+The following data is intentionally excluded from the backup:
+- Jellyfin media
 
 ### Certificate Renewal
 The certificates issued by Let's Encrypt are valid for 90 days. To renew them, simply run the included
