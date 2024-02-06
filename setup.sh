@@ -85,6 +85,24 @@ generate_nginx_config() {
   "
 }
 
+# Generate the gatus configuration for a service
+# $1: Subdomain
+# $2: Name
+generate_gatus_config() {
+  local subdomain=$1
+  local name=$2
+
+  # NOTE: Indentation is important here since this is a YAML file
+  echo "
+  - name: ${name}
+    group: Services
+    url: https://${subdomain}.${DOMAIN_NAME}
+    interval: 5m
+    conditions:
+      - \"[STATUS] == 200\"
+  "
+}
+
 #===============================================================================
 ### Readiness checks
 #===============================================================================
@@ -118,10 +136,15 @@ source .env
 source .env.user
 
 export NGINX_CONFIG=""
+export GATUS_CONFIG=""
 for entry in "${SUBDOMAINS[@]}"; do
-  subdomain=$(get_subdomain $entry)
-  port=$(echo $entry | cut -d' ' -f2)
-  NGINX_CONFIG+=$(generate_nginx_config $subdomain $port)
+  IFS=';' read -ra split <<< "$entry"
+  subdomain=$(get_subdomain ${split[0]})
+  port=${split[1]}
+  name=${split[2]}
+
+  NGINX_CONFIG+=$(generate_nginx_config "$subdomain" "$port")
+  GATUS_CONFIG+=$(generate_gatus_config "$subdomain" "$name")
 done
 
 echo "Replacing variables in .template files"
