@@ -18,7 +18,9 @@ services:
     restart: always
     volumes:
       - ${DATA_ROOT}/firefly/upload:/var/www/html/storage/upload
-    env_file: .core.env
+    env_file:
+      - .env
+      - .core.env
     environment:
       - DB_PASSWORD=${FIREFLY_DB_PASSWORD}
       - DEFAULT_LANGUAGE=en_GB
@@ -36,7 +38,9 @@ services:
     networks:
       - firefly_iii
     restart: always
-    env_file: .db.env
+    env_file:
+      - .env
+      - .db.env
     environment:
       - MYSQL_PASSWORD=${FIREFLY_DB_PASSWORD}
     volumes:
@@ -53,7 +57,9 @@ services:
       - '${FIREFLY_IMPORTER_PORT}:8080'
     depends_on:
       - app
-    env_file: .importer.env
+    env_file:
+      - .env
+      - .importer.env
     environment:
       - FIREFLY_III_URL=https://firefly.${DOMAIN_NAME}
       - VANITY_URL=https://firefly.${DOMAIN_NAME}
