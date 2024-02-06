@@ -58,6 +58,51 @@ reload_nginx() {
   docker-compose -f services/nginx/docker-compose.yml exec nginx nginx -s reload
 }
 
+# Get the subdomain from the $SUBDOMAINS array
+# $1: The array entry
+get_subdomain() {
+  echo $1 | cut -d' ' -f1
+}
+
+# Generate the nginx configuration for a subdomain
+# $1: Subdomain
+# $2: Port
+generate_nginx_config() {
+  local subdomain=$1
+  local port=$2
+
+  echo "
+    # ${subdomain}, ${port}
+    server {
+        include /etc/nginx/includes/global.conf;
+        server_name ${subdomain}.${DOMAIN_NAME};
+
+        location / {
+            proxy_pass http://${LOCAL_IP}:${port}/;
+            proxy_set_header Host §host;
+        }
+    }
+  "
+}
+
+# Generate the gatus configuration for a service
+# $1: Subdomain
+# $2: Name
+generate_gatus_config() {
+  local subdomain=$1
+  local name=$2
+
+  # NOTE: Indentation is important here since this is a YAML file
+  echo "
+  - name: ${name}
+    group: Services
+    url: https://${subdomain}.${DOMAIN_NAME}
+    interval: 5m
+    conditions:
+      - \"[STATUS] == 200\"
+  "
+}
+
 #===============================================================================
 ### Readiness checks
 #===============================================================================
@@ -85,10 +130,22 @@ if [ "$update" = false ]; then
 fi
 
 #===============================================================================
-### Container creation
+### Configuration
 #===============================================================================
 source .env
 source .env.user
+
+export NGINX_CONFIG=""
+export GATUS_CONFIG=""
+for entry in "${SUBDOMAINS[@]}"; do
+  IFS=';' read -ra split <<< "$entry"
+  subdomain=$(get_subdomain ${split[0]})
+  port=${split[1]}
+  name=${split[2]}
+
+  NGINX_CONFIG+=$(generate_nginx_config "$subdomain" "$port")
+  GATUS_CONFIG+=$(generate_gatus_config "$subdomain" "$name")
+done
 
 echo "Replacing variables in .template files"
 for file in $(find services -name "*.template"); do
@@ -96,9 +153,12 @@ for file in $(find services -name "*.template"); do
   envsubst < $file | sed 's/§/$/g' > ${file%.template}
 done
 
+#===============================================================================
+### Container creation
+#===============================================================================
 echo "Creating containers"
 
-for dir in ${ALL_SERVICES[@]}; do
+for dir in $(ls services); do
   echo "Creating or updating containers for $dir"
   docker-compose -f "services/$dir/docker-compose.yml" up --detach --remove-orphans
 done
@@ -120,7 +180,7 @@ if [ "$expand_cert" = true ] || [ "$update" = false ]; then
     certonly --webroot --webroot-path=/var/www/certbot \
     --email ${OWNER_EMAIL} \
     -d ${DOMAIN_NAME} \
-    $(for subdomain in "${SUBDOMAINS[@]}"; do echo "-d ${subdomain}.${DOMAIN_NAME}"; done)
+    $(for subdomain in "${SUBDOMAINS[@]}"; do echo "-d $(get_subdomain $subdomain).${DOMAIN_NAME}"; done)
 fi
 
 if [ "$update" = false ]; then
