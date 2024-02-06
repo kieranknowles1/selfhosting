@@ -56,6 +56,8 @@ The following environment variables must be defined in `.env.user`:
 # The domain name of the server. This must be pointing to the server's IP address.
 # IP addresses are NOT supported.
 export DOMAIN_NAME=example.com
+# NOTE: Server clusters are not supported. Would have to change quite a bit to support this.
+# I have no plans to support this unless I need it myself.
 export LOCAL_IP=192.168.0.123
 # Your personal email address. This is used for Let's Encrypt services that require an email address.
 export OWNER_EMAIL=mail@example.com
