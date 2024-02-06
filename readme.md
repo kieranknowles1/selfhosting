@@ -89,13 +89,9 @@ sudo ./setup.sh
 ## Post setup
 
 ### Cron jobs
-The following cron jobs are required to maintain the services. These are not installed automatically.
-```bash
-# Backup every night
-0 0 * * * /path/to/backup.sh
-# Renew certificates every two months
-0 0 1 */2 * /path/to/renew.sh
-```
+Cron jobs are used to perform regular maintenance tasks, such as backups and certificate renewal.
+
+The recommended cron jobs can be generated using `gencron.sh` and added using `crontab -e`.
 
 ### API Keys
 After setting up and configuring containers, you can add API keys to enable widgets on the dashboard
