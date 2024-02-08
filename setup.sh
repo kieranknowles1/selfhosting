@@ -105,6 +105,7 @@ generate_gatus_config() {
     interval: 5m
     conditions:
       - \"[STATUS] == 200\"
+      - \"[RESPONSE_TIME] < ${HEALTH_TIMEOUT}\"
   "
 }
 
