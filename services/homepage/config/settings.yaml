@@ -5,7 +5,11 @@
 language: en-GB
 
 theme: dark
-color: slate
+color: amber
+background:
+  image: https://images.pexels.com/photos/531880/pexels-photo-531880.jpeg
+
+cardBlur: md
 
 statusStyle: dot
 
