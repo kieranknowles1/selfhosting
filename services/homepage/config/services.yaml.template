@@ -36,6 +36,14 @@
       widget:
         type: gatus
         url: "http://${LOCAL_IP}:${GATUS_PORT}"
+  - What's Up Docker:
+      href: "https://wud.${DOMAIN_NAME}"
+      server: local-docker
+      container: wud
+      icon: whats-up-docker
+      widget:
+        type: whatsupdocker
+        url: "http://${LOCAL_IP}:${WUD_PORT}"
   - Internal Disk:
       href: "https://glances.${DOMAIN_NAME}"
       widget:

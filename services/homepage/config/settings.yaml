@@ -11,13 +11,13 @@ background:
 
 cardBlur: md
 
-statusStyle: dot
+statusStyle: basic
 
 layout:
   Server Status:
     tab: Internet Accessible
     icon: mdi-server
-    style: row
+    style: dot
     columns: 3
   Development:
     tab: Internet Accessible
