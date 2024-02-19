@@ -7,11 +7,7 @@
 #==============================================================================
 # Enable debugging for containers. May want to disable for production
 # Don't rely on security through obscurity however
-DEBUG: true
-
-# User ID to run containers as. Not used in most cases
-# Default and recommended is the current user
-USER_ID: ${UID}
+DEBUG: "true"
 
 # Maximum response time for a service to be considered healthy, in milliseconds
 HEALTH_TIMEOUT: 1000
@@ -19,14 +15,11 @@ HEALTH_TIMEOUT: 1000
 #==============================================================================
 # Paths
 #==============================================================================
-CACHE_ROOT: $(pwd)"/cache"
 # Change this for a different data location
 DATA_ROOT: /mnt/extern/containers/data
 DATA_ROOT_NOBACKUP: /mnt/extern/containers/data-nobackup
-LOGS_ROOT: $(pwd)"/logs"
 # Change this for a different backup location
 BACKUP_REPO: /mnt/extern/containers/backups
-SSHKEYS: $(eval echo ~$USER)/.ssh
 
 #==============================================================================
 # Locale

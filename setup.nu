@@ -6,7 +6,6 @@ use services.nu get_services
 # Setup script for self-hosted runner
 # Installs dependencies and creates containers
 def main [
-    --certbot   # Update/expand SSL certificate
     --update    # Update containers without reinstalling everything"
 ] {
     if (is-admin) {
@@ -22,6 +21,9 @@ def main [
     let domain_name = "example.com"
 
     let environment = {
+        CACHE_ROOT: $"(pwd)/cache",
+        LOGS_ROOT: $"(pwd)/logs",
+        SSHKEYS: $"/home/(whoami)/.ssh"
         ...(open environment.yml)
         ...(open userenv.yml)
     }
@@ -30,13 +32,21 @@ def main [
 
     let nginx_config = $services | each {|s| generate_nginx_config $s $local_address $domain_name } | str join
 
-    let templates = (ls **/*.template) | where (|$it| not ($it | is-empty)) | get name
-    # FIXME: Piping to null suppresses logging, using a discard variable as a workaround
-    let _ = $templates | each {|template|
+    ls **/*.template | where not ($it | is-empty) | get name | each {|template|
         log info $"Replacing variables in ($template)"
         let output_file = $template | str replace ".template" ""
         open $template --raw | replace_vars $environment | save $output_file --force --raw
     }
+
+    log info "Creating containers"
+    ls services/*/docker-compose.yml | get name | each { |compose_file|
+        log info $"Creating or updating containers for ($compose_file)"
+        with-env $environment {
+            docker-compose -f ($compose_file) up --detach --remove-orphans
+        }
+    }
+
+    null
 }
 
 # Install dependencies and give the current user the needed permissions
@@ -151,16 +161,6 @@ def replace_vars [
 
 #   NGINX_CONFIG+=$(generate_nginx_config "$subdomain" "$port")
 #   GATUS_CONFIG+=$(generate_gatus_config "$subdomain" "$name" "$health_endpoint")
-# done
-
-# #===============================================================================
-# ### Container creation
-# #===============================================================================
-# echo "Creating containers"
-
-# for dir in $(ls services); do
-#   echo "Creating or updating containers for $dir"
-#   docker-compose -f "services/$dir/docker-compose.yml" up --detach --remove-orphans
 # done
 
 # #===============================================================================

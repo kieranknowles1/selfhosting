@@ -5,7 +5,6 @@ services:
     image: jellyfin/jellyfin:latest
     container_name: jellyfin
     restart: unless-stopped
-    user: ${USER_ID}
     ports:
       - ${JELLYFIN_PORT}:8096
     volumes:
