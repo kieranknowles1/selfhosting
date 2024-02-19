@@ -18,11 +18,24 @@ def main [
         install_deps
     }
 
+    let local_address = $"(hostname).local"
+    let domain_name = "example.com"
+
     let environment = open environment.yml
     let services = get_services $environment
 
-    print $environment
-    print $services
+    let nginx_config = $services | each {|s| generate_nginx_config $s $local_address $domain_name } | str join
+
+    let templates = (ls **/*.template) | where (|$it| ($it|describe) != nothing) | get name
+    # FIXME: Piping to null suppresses logging, using a discard variable as a workaround
+    let _ = $templates | each {|template|
+        log info $"Replacing variables in ($template)"
+        let output_file = $template | str replace ".template" ""
+        let content = (open $template --raw)
+        let replaced = $content | replace_vars $environment
+
+        $replaced | save $output_file --force
+    }
 }
 
 # Install dependencies and give the current user the needed permissions
@@ -34,6 +47,40 @@ def install_deps [] {
 
     log info "Giving current user access to docker"
     sudo usermod -aG docker $env.USER
+}
+
+# Generate the nginx configuration for a service
+def generate_nginx_config [
+    service: record<domain: string, port: int>
+    local_address: string
+    domain_name: string
+]: nothing -> string {$"
+    # ($service.domain), ($service.port)
+    server {
+        include /etc/nginx/includes/global.conf;
+        server_name ($service.domain).($domain_name);
+
+        location / {
+            proxy_pass http://($local_address):($service.port)/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection \"Upgrade\";
+        }
+    }
+"}
+
+def replace_vars [
+    vars: record
+] string -> string {
+    each { |raw|
+        with-env $vars {
+            # TODO: Using envsubst here isn't ideal
+            $raw | envsubst
+        }
+    }
 }
 
 # TODO: Rewrite for nushell
@@ -53,32 +100,6 @@ def install_deps [] {
 # get_subdomain() {
 #   IFS=";" read -ra split <<< $1
 #   echo ${split[0]}
-# }
-
-# # Generate the nginx configuration for a subdomain
-# # $1: Subdomain
-# # $2: Port
-# generate_nginx_config() {
-#   local subdomain=$1
-#   local port=$2
-
-#   echo "
-#     # ${subdomain}, ${port}
-#     server {
-#         include /etc/nginx/includes/global.conf;
-#         server_name ${subdomain}.${DOMAIN_NAME};
-
-#         location / {
-#             proxy_pass http://${LOCAL_IP}:${port}/;
-#             proxy_set_header Host §host;
-#             proxy_set_header X-Real-IP §remote_addr;
-#             proxy_set_header X-Forwarded-For §proxy_add_x_forwarded_for;
-#             proxy_set_header X-Forwarded-Proto §scheme;
-#             proxy_set_header Upgrade §http_upgrade;
-#             proxy_set_header Connection \"Upgrade\";
-#         }
-#     }
-#   "
 # }
 
 # # Generate the gatus configuration for a service
@@ -106,12 +127,6 @@ def install_deps [] {
 # ### Readiness checks
 # #===============================================================================
 
-# # Disallow running as root
-# if [ "$EUID" -eq 0 ]; then
-#   echo "ERROR: This script should not be run as root" >&2
-#   exit 1
-# fi
-
 # if [ ! -f .env.user ]; then
 #   echo "ERROR: .env.user not found" >&2
 #   echo "Please create a .env.user file. See readme.md for more information" >&2
@@ -135,12 +150,6 @@ def install_deps [] {
 
 #   NGINX_CONFIG+=$(generate_nginx_config "$subdomain" "$port")
 #   GATUS_CONFIG+=$(generate_gatus_config "$subdomain" "$name" "$health_endpoint")
-# done
-
-# echo "Replacing variables in .template files"
-# for file in $(find services -name "*.template"); do
-#   echo "Replacing variables in $file"
-#   envsubst < $file | sed 's/§/$/g' > ${file%.template}
 # done
 
 # #===============================================================================
