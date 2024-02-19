@@ -1,5 +1,6 @@
 #!/usr/bin/env nu
 
+use logging.nu *
 use services.nu get_services
 
 # Setup script for self-hosted runner
@@ -8,7 +9,12 @@ def main [
     --certbot   # Update/expand SSL certificate
     --update    # Update containers without reinstalling everything"
 ] {
-    if $update == false {
+    if (is-admin) {
+        log error "This script should not be run as root"
+        exit 1
+    }
+
+    if ($update == false) {
         install_deps
     }
 
@@ -19,19 +25,14 @@ def main [
     print $services
 }
 
-# Log a debug message to the console
-def info [message: string] {
-    print $"[(ansi blue_bold)INFO(ansi reset)] ($message)"
-}
-
 # Install dependencies and give the current user the needed permissions
 def install_deps [] {
-    info "Installing dependencies"
-    info "This requires root privileges"
+    log info "Installing dependencies"
+    log info "This requires root privileges"
     sudo apt-get update
     sudo apt-get install -y docker docker-compose
 
-    info "Giving current user access to docker"
+    log info "Giving current user access to docker"
     sudo usermod -aG docker $env.USER
 }
 
