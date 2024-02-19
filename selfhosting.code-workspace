@@ -18,6 +18,7 @@
 			"gruntfuggly.todo-tree",
 			"ms-azuretools.vscode-docker",
 			"redhat.vscode-yaml",
+			"thenuprojectcontributors.vscode-nushell-lang",
 			"yzhang.markdown-all-in-one",
 		]
 	}
