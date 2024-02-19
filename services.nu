@@ -1,7 +1,7 @@
 # Get a list of services to deploy, along with their configuration
 export def get_services [
     config: record
-]: nothing -> table<name: string, domain: string, port: int, healthcheck: string, backuppause: bool> {
+]: nothing -> list<record<name: string, domain: string, port: int, healthcheck: string, backuppause: bool>> {
     return [{
         name: 'Chef',
         domain: 'chef',
