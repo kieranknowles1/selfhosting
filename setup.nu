@@ -1,5 +1,7 @@
 #!/usr/bin/env nu
 
+use services.nu get_services
+
 # Setup script for self-hosted runner
 # Installs dependencies and creates containers
 def main [
@@ -9,6 +11,12 @@ def main [
     if $update == false {
         install_deps
     }
+
+    let environment = open environment.yml
+    let services = get_services $environment
+
+    print $environment
+    print $services
 }
 
 # Log a debug message to the console

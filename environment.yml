@@ -1,0 +1,58 @@
+# Environment variables to export to the containers
+
+#==============================================================================
+# General
+#==============================================================================
+# Enable debugging for containers. May want to disable for production
+# Don't rely on security through obscurity however
+DEBUG: true
+
+# User ID to run containers as. Not used in most cases
+# Default and recommended is the current user
+USER_ID: ${UID}
+
+# Maximum response time for a service to be considered healthy, in milliseconds
+HEALTH_TIMEOUT: 1000
+
+#==============================================================================
+# Paths
+#==============================================================================
+CACHE_ROOT: $(pwd)"/cache"
+# Change this for a different data location
+DATA_ROOT: /mnt/extern/containers/data
+DATA_ROOT_NOBACKUP: /mnt/extern/containers/data-nobackup
+LOGS_ROOT: $(pwd)"/logs"
+# Change this for a different backup location
+BACKUP_REPO: /mnt/extern/containers/backups
+SSHKEYS: $(eval echo ~$USER)/.ssh
+
+#==============================================================================
+# Locale
+#==============================================================================
+# NOTE: Most services do not use this, use only for locales, not for languages
+LANGUAGE: en_GB
+
+# See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for a list of supported values
+TIME_ZONE: Europe/London
+
+#==============================================================================
+# Ports
+#==============================================================================
+# Keep this port order for organisation
+HOMEPAGE_PORT: 8006
+PAPERLESS_PORT: 8007
+JOPLIN_PORT: 8008
+WUD_PORT: 8009
+IMMICH_PORT: 8010
+GITEA_WEB_PORT: 8011
+GITEA_SSH_PORT: 8012
+FIREFLY_APP_PORT: 8013
+FIREFLY_IMPORTER_PORT: 8014
+YACHT_PORT: 8015
+GLANCES_PORT: 8016
+GATUS_PORT: 8017
+JELLYFIN_PORT: 8018
+
+# TODO: Add the compose for this to the main repo
+CHEF_BACKEND_PORT: 3000
+CHEF_WEB_PORT: 5173
