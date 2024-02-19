@@ -30,15 +30,12 @@ def main [
 
     let nginx_config = $services | each {|s| generate_nginx_config $s $local_address $domain_name } | str join
 
-    let templates = (ls **/*.template) | where (|$it| ($it|describe) != nothing) | get name
+    let templates = (ls **/*.template) | where (|$it| not ($it | is-empty)) | get name
     # FIXME: Piping to null suppresses logging, using a discard variable as a workaround
     let _ = $templates | each {|template|
         log info $"Replacing variables in ($template)"
         let output_file = $template | str replace ".template" ""
-        let content = (open $template --raw)
-        let replaced = $content | replace_vars $environment
-
-        $replaced | save $output_file --force
+        open $template --raw | replace_vars $environment | save $output_file --force --raw
     }
 }
 
