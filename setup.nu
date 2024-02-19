@@ -17,9 +17,6 @@ def main [
         install_deps
     }
 
-    let local_address = $"(hostname).local"
-    let domain_name = "example.com"
-
     let environment = {
         CACHE_ROOT: $"(pwd)/cache",
         LOGS_ROOT: $"(pwd)/logs",
@@ -30,12 +27,18 @@ def main [
 
     let services = get_services $environment
 
-    let nginx_config = $services | each {|s| generate_nginx_config $s $local_address $domain_name } | str join
+    let nginx_config = $services | each {|s| generate_nginx_config $s $environment.DOMAIN_NAME $environment.LOCAL_IP } | str join
+    let gatus_config = $services | each {|s| generate_gatus_config $s $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT } | str join
+    let template_env = {
+        ...$environment
+        NGINX_CONFIG: $nginx_config
+        GATUS_CONFIG: $gatus_config
+    }
 
     ls **/*.template | where not ($it | is-empty) | get name | each {|template|
         log info $"Replacing variables in ($template)"
         let output_file = $template | str replace ".template" ""
-        open $template --raw | replace_vars $environment | save $output_file --force --raw
+        open $template --raw | replace_vars $template_env | save $output_file --force --raw
     }
 
     log info "Creating containers"
@@ -46,7 +49,12 @@ def main [
         }
     }
 
-    null
+    reload_nginx
+}
+
+def reload_nginx [] {
+    log info "Reloading nginx configuration"
+    docker-compose -f services/nginx/docker-compose.yml exec nginx nginx -s reload
 }
 
 # Install dependencies and give the current user the needed permissions
@@ -63,8 +71,8 @@ def install_deps [] {
 # Generate the nginx configuration for a service
 def generate_nginx_config [
     service: record<domain: string, port: int>
-    local_address: string
     domain_name: string
+    local_ip: string
 ]: nothing -> string {$"
     # ($service.domain), ($service.port)
     server {
@@ -72,7 +80,7 @@ def generate_nginx_config [
         server_name ($service.domain).($domain_name);
 
         location / {
-            proxy_pass http://($local_address):($service.port)/;
+            proxy_pass http://($local_ip):($service.port)/;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -81,6 +89,21 @@ def generate_nginx_config [
             proxy_set_header Connection \"Upgrade\";
         }
     }
+"}
+
+# Generate the gatus configuration for a service
+def generate_gatus_config [
+    service: record<domain: string, name: string>
+    domain_name: string
+    timeout: int # The max response time until a service is considered unhealthy, in milliseconds
+]: nothing -> string {$"
+  - name: ($service.name)
+    group: Services
+    url: https://($service.domain).($domain_name)($service.health_endpoint? | default "/")
+    interval: 5m
+    conditions:
+      - \"[STATUS] == 200\"
+      - \"[RESPONSE_TIME] < ($timeout)\"
 "}
 
 def replace_vars [
@@ -95,74 +118,6 @@ def replace_vars [
 }
 
 # TODO: Rewrite for nushell
-
-# COMPOSE_PROJECT_NAME="self-hosted"
-
-# #===============================================================================
-# ### Functions
-# #===============================================================================
-# reload_nginx() {
-#   echo "Reloading nginx configuration"
-#   docker-compose -f services/nginx/docker-compose.yml exec nginx nginx -s reload
-# }
-
-# # Get the subdomain from the $SUBDOMAINS array
-# # $1: The array entry
-# get_subdomain() {
-#   IFS=";" read -ra split <<< $1
-#   echo ${split[0]}
-# }
-
-# # Generate the gatus configuration for a service
-# # $1: Subdomain
-# # $2: Name
-# # $3: Health endpoint (optional)
-# generate_gatus_config() {
-#   local subdomain=$1
-#   local name=$2
-#   local health_endpoint=${3:-"/"}
-
-#   # NOTE: Indentation is important here since this is a YAML file
-#   echo "
-#   - name: ${name}
-#     group: Services
-#     url: https://${subdomain}.${DOMAIN_NAME}${health_endpoint}
-#     interval: 5m
-#     conditions:
-#       - \"[STATUS] == 200\"
-#       - \"[RESPONSE_TIME] < ${HEALTH_TIMEOUT}\"
-#   "
-# }
-
-# #===============================================================================
-# ### Readiness checks
-# #===============================================================================
-
-# if [ ! -f .env.user ]; then
-#   echo "ERROR: .env.user not found" >&2
-#   echo "Please create a .env.user file. See readme.md for more information" >&2
-#   exit 1
-# fi
-
-# #===============================================================================
-# ### Configuration
-# #===============================================================================
-# source .env
-# source .env.user
-
-# export NGINX_CONFIG=""
-# export GATUS_CONFIG=""
-# for entry in "${SUBDOMAINS[@]}"; do
-#   IFS=';' read -ra split <<< "$entry"
-#   subdomain=${split[0]}
-#   port=${split[1]}
-#   name=${split[2]}
-#   health_endpoint=${split[3]}
-
-#   NGINX_CONFIG+=$(generate_nginx_config "$subdomain" "$port")
-#   GATUS_CONFIG+=$(generate_gatus_config "$subdomain" "$name" "$health_endpoint")
-# done
-
 # #===============================================================================
 # ### Configuration
 # #===============================================================================
