@@ -21,7 +21,11 @@ def main [
     let local_address = $"(hostname).local"
     let domain_name = "example.com"
 
-    let environment = open environment.yml
+    let environment = {
+        ...(open environment.yml)
+        ...(open userenv.yml)
+    }
+
     let services = get_services $environment
 
     let nginx_config = $services | each {|s| generate_nginx_config $s $local_address $domain_name } | str join
