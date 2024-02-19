@@ -1,8 +1,10 @@
+# TODO: Remove obsolete entries
 # Private user information
 .env.user
 .vscode/sftp.json
 .borg-key.borgbase
 .borg-key.local
+userenv.yml
 
 # Template output files
 nginx.conf

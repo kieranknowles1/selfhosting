@@ -77,7 +77,7 @@ def replace_vars [
 ] string -> string {
     each { |raw|
         with-env $vars {
-            # TODO: Using envsubst here isn't ideal
+            # TODO: Using envsubst here isn't ideal, can't detect missing variables
             $raw | envsubst
         }
     }

@@ -11,7 +11,12 @@
 		"files.associations": {
 			"nginx.conf.template": "apacheconf",
 			"*.yaml.template": "yaml",
-		}
+		},
+
+		"yaml.schemas": {
+			"http://json-schema.org/draft-07/schema": "*.schema.yml",
+			"userenv.schema.yml": "userenv.yml",
+		},
 	},
 	"extensions": {
 		"recommendations": [

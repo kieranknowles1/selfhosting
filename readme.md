@@ -1,6 +1,7 @@
 # Self-hosted web services
-
+# TODO: Remove references to `.env` and the file itself
 - [Self-hosted web services](#self-hosted-web-services)
+- [TODO: Remove references to `.env` and the file itself](#todo-remove-references-to-env-and-the-file-itself)
   - [Introduction](#introduction)
   - [Setup](#setup)
     - [Configuration](#configuration)
@@ -51,35 +52,11 @@ automatically inferred from the `.env` file.
 The time zone is configured in `.env` through the `TIME_ZONE` and is set to `Europe/London` by default.
 
 #### Secrets
-The following environment variables must be defined in `.env.user`:
-```bash
-# The domain name of the server. This must be pointing to the server's IP address.
-# IP addresses are NOT supported.
-export DOMAIN_NAME=example.com
-# NOTE: Server clusters are not supported. Would have to change quite a bit to support this.
-# I have no plans to support this unless I need it myself.
-export LOCAL_IP=192.168.0.123
-# Your personal email address. This is used for Let's Encrypt services that require an email address.
-export OWNER_EMAIL=mail@example.com
+A set of secrets must be defined in `userenv.yml` before running the setup script. This can be validated
+against the schema `userenv.schema.yml`. The VS code workspace is configured to do this automatically.
 
-# Paths and keys for Borg
-export BORG_PASSPHRASE=something_secure
-# You must also generate a SSH key pair with ssh-keygen and add the public key to the BorgBase repository.
-# See https://docs.borgbase.com/faq/#all-connections-to-a-borgbase-repo-fail-with-an-error-immediately
-# if you are having issues connecting to the repository.
-# NOTE: You will not be able to get a shell on a BorgBase repository. This is normal.
-export BORGBASE_URL=ssh://something@something.reop.borgbase.com/./repo
-
-# Passwords for the databases. Use a password generator for these.
-# Make sure to use a different password for each service.
-export FIREFLY_DB_PASSWORD=something_secure
-export IMMICH_DB_PASSWORD=something_secure
-export JOPLIN_DB_PASSWORD=something_secure
-
-# This must be exactly 32 characters long and url-safe (i.e., [a-zA-Z0-9_-] only)])
-export FIREFLY_STATIC_CRON_TOKEN=Exactly32UrlSafeCharactersPlease
-```
-
+API keys are also defined in `userenv.yml` and are used to enable widgets on the dashboard. These are
+optional and can be added after the setup is complete.
 
 ### Install
 Once the secrets are defined, simply run the setup script to install the dependencies

@@ -1,0 +1,76 @@
+---
+# TODO: See if any of these are unused and remove them
+title: Private User Environment Variables
+
+type: object
+properties:
+  BORG_PASSPHRASE:
+    type: string
+    description: |
+      The password to secure and encrypt the borg backups.
+      WARNING: If you lose this password, you will NOT be able to recover your backups.
+
+  BORGBASE_URL:
+    type: string
+    description: |
+      The URL to SSH into the borgbase repository.
+    pattern: "^ssh://"
+
+  DOMAIN_NAME:
+    type: string
+    description: |
+      The domain name of the server.
+      This is used to generate the SSL certificates and should port to the server's IP address.
+      Make sure to enable port forwarding on your router.
+
+  FIREFLY_DB_PASSWORD:
+    type: string
+    description: |
+      The password to access the Firefly III database.
+
+  FIREFLY_STATIC_CRON_TOKEN:
+    type: string
+    description: |
+      The token to access the Firefly III static cron.
+      This is used to update the Firefly III database.
+    pattern: "^[a-zA-Z0-9]{32}$"
+
+  HEALTHCHECKS_DB_PASSWORD:
+    type: string
+    description: |
+      The password to access the Healthchecks database.
+
+  IMMICH_DB_PASSWORD:
+    type: string
+    description: |
+      The password to access the Immich database.
+  JOPLIN_DB_PASSWORD:
+    type: string
+    description: |
+      The password to access the Joplin database.
+  LOCAL_IP:
+    type: string
+    description: |
+      The local IP address of the server.
+  OWNER_EMAIL:
+    type: string
+    description: |
+      Your personal email address.
+      Used by LetsEncrypt to send you notifications about your SSL certificates.
+
+  # Post setup keys, optional during setup but required for full functionality
+  IMMICH_API_KEY: { type: string }
+  JELLYFIN_API_KEY: { type: string }
+  PAPERLESS_API_KEY: { type: string }
+required:
+  - BORG_PASSPHRASE
+  - BORGBASE_URL
+  - DOMAIN_NAME
+  - FIREFLY_DB_PASSWORD
+  - FIREFLY_STATIC_CRON_TOKEN
+  - HEALTHCHECKS_DB_PASSWORD
+  - IMMICH_DB_PASSWORD
+  - JOPLIN_DB_PASSWORD
+  - LOCAL_IP
+  - OWNER_EMAIL
+additionalProperties: false
