@@ -31,7 +31,7 @@
       icon: gatus
       widget:
         type: gatus
-        url: "httpsgatus.${DOMAIN_NAME}"
+        url: "https://gatus.${DOMAIN_NAME}"
   - What's Up Docker:
       href: "https://wud.${DOMAIN_NAME}"
       server: local-docker
