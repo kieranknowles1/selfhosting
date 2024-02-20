@@ -10,19 +10,19 @@
       icon: glances
       widget:
         type: glances
-        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
+        url: "https://glances.${DOMAIN_NAME}"
         metric: cpu
   - Memory:
       href: "https://glances.${DOMAIN_NAME}"
       widget:
         type: glances
-        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
+        url: "https://glances.${DOMAIN_NAME}"
         metric: memory
   - Network:
       href: "https://glances.${DOMAIN_NAME}"
       widget:
         type: glances
-        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
+        url: "https://glances.${DOMAIN_NAME}"
         metric: network:eth0
   - Gatus:
       href: "https://gatus.${DOMAIN_NAME}"
@@ -31,7 +31,7 @@
       icon: gatus
       widget:
         type: gatus
-        url: "http://${LOCAL_IP}:${GATUS_PORT}"
+        url: "httpsgatus.${DOMAIN_NAME}"
   - What's Up Docker:
       href: "https://wud.${DOMAIN_NAME}"
       server: local-docker
@@ -39,12 +39,12 @@
       icon: whats-up-docker
       widget:
         type: whatsupdocker
-        url: "http://${LOCAL_IP}:${WUD_PORT}"
+        url: "https://wud.${DOMAIN_NAME}"
   - Internal Disk:
       href: "https://glances.${DOMAIN_NAME}"
       widget:
         type: glances
-        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
+        url: "https://glances.${DOMAIN_NAME}"
         metric: fs:/host
         disk: /host
         chart: false
@@ -52,7 +52,7 @@
       href: "https://glances.${DOMAIN_NAME}"
       widget:
         type: glances
-        url: "http://${LOCAL_IP}:${GLANCES_PORT}"
+        url: "https://glances.${DOMAIN_NAME}"
         metric: fs:/host/mnt/extern
         disk: /host/mnt/extern
         chart: false
@@ -74,7 +74,7 @@
       container: paperless
       widget:
         type: paperlessngx
-        url: "http://${LOCAL_IP}:${PAPERLESS_PORT}"
+        url: "https://paperless.${DOMAIN_NAME}"
         key: ${PAPERLESS_API_KEY}
   - Joplin:
       href: "https://joplin.${DOMAIN_NAME}"
@@ -104,7 +104,7 @@
       icon: immich
       widget:
         type: immich
-        url: "http://${LOCAL_IP}:${IMMICH_PORT}"
+        url: "https://immich.${DOMAIN_NAME}"
         key: "${IMMICH_API_KEY}"
   - Jellyfin:
       href: "https://jellyfin.${DOMAIN_NAME}"
@@ -114,7 +114,7 @@
       container: jellyfin
       widget:
         type: jellyfin
-        url: "http://${LOCAL_IP}:${JELLYFIN_PORT}"
+        url: "https://jellyfin.${DOMAIN_NAME}"
         enableBlocks: true
         key: ${JELLYFIN_API_KEY}
 
