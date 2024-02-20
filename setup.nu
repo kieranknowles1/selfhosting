@@ -6,7 +6,8 @@ use services.nu get_services
 # Setup script for self-hosted runner
 # Installs dependencies and creates containers
 def main [
-    --update    # Update containers without reinstalling everything"
+    --update    # Update containers without reinstalling everything
+    --expand_cert # Expand the SSL certificate to include new subdomains, even if updating
 ] {
     if (is-admin) {
         log error "This script should not be run as root"
@@ -41,15 +42,31 @@ def main [
         open $template --raw | replace_vars $template_env | save $output_file --force --raw
     }
 
-    log info "Creating containers"
-    ls services/*/docker-compose.yml | get name | each { |compose_file|
-        log info $"Creating or updating containers for ($compose_file)"
+    # log info "Creating containers"
+    # ls services/*/docker-compose.yml | get name | each { |compose_file|
+    #     log info $"Creating or updating containers for ($compose_file)"
+    #     with-env $environment {
+    #         docker-compose -f ($compose_file) up --detach --remove-orphans
+    #     }
+    # }
+
+    if ((not $update) or $expand_cert) {
+        log info "Issuing SSL certificate"
         with-env $environment {
-            docker-compose -f ($compose_file) up --detach --remove-orphans
+            issue_cert $environment.DOMAIN_NAME ($services | get domain) $environment.OWNER_EMAIL
         }
     }
 
     reload_nginx
+
+    log info "========================================================================="
+    log info "Setup complete"
+    log info "========================================================================="
+    log info "Please back up the following files:"
+    log info "  - .borg-key.local"
+    log info "  - .borg-key.borgbase"
+    log info "  - userenv.yml"
+    log info "See readme.md for remaining setup steps"
 }
 
 def reload_nginx [] {
@@ -66,6 +83,22 @@ def install_deps [] {
 
     log info "Giving current user access to docker"
     sudo usermod -aG docker $env.USER
+}
+
+# Issue a SSL certificate for the domain name
+def issue_cert [
+    domain: string
+    subdomains: list<string>
+    email: string
+] {
+    (run-external docker-compose "-f" services/nginx/docker-compose.yml run "--rm" certbot
+        certonly "--webroot" "--webroot-path=/var/www/certbot"
+        "--email" $email
+        "-d" $domain
+        ...($subdomains | each { |subdomain|
+            ["-d" $"($subdomain).($domain)"]
+        } | flatten)
+    )
 }
 
 # Generate the nginx configuration for a service
@@ -122,22 +155,6 @@ def replace_vars [
 # ### Configuration
 # #===============================================================================
 
-# # not updating or user has requested certbot update
-# if [ "$expand_cert" = true ] || [ "$update" = false ]; then
-#   echo "Issuing SSL certificate"
-
-#   # Reload nginx in case the config has changed
-#   # Need to reload again after issuing certificate to ensure the latest cert is used
-#   reload_nginx
-
-#   # Need to issue a certificate that covers all subdomains
-#   docker-compose -f services/nginx/docker-compose.yml run --rm certbot \
-#     certonly --webroot --webroot-path=/var/www/certbot \
-#     --email ${OWNER_EMAIL} \
-#     -d ${DOMAIN_NAME} \
-#     $(for subdomain in "${SUBDOMAINS[@]}"; do echo "-d $(get_subdomain $subdomain).${DOMAIN_NAME}"; done)
-# fi
-
 # if [ "$update" = false ]; then
 
 #   (
@@ -157,12 +174,3 @@ def replace_vars [
 # #===============================================================================
 
 # reload_nginx
-
-# echo "========================================================================="
-# echo "Setup complete"
-# echo "========================================================================="
-# echo "Please back up the following files:"
-# echo "  - .env.user"
-# echo "  - .borg-key.local"
-# echo "  - .borg-key.borgbase"
-# echo "See readme.md for remaining setup steps"
