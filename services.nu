@@ -1,7 +1,7 @@
 # Get a list of services to deploy, along with their configuration
 export def get_services [
     config: record
-]: nothing -> list<record<name: string, domain: string, port: int, healthcheck: string, backuppause: bool>> {
+]: nothing -> list<record<name: string, domain: string, port: int, health_endpoint: string, backuppause: bool>> {
     return [{
         name: 'Chef',
         domain: 'chef',
@@ -10,7 +10,7 @@ export def get_services [
         name: 'Chef API',
         domain: 'chefapi',
         port: $config.CHEF_BACKEND_PORT,
-        healthcheck: '/api/v1/recipe/1',
+        health_endpoint: '/api/v1/recipe/1',
     }, {
         name: 'Firefly III Importer',
         domain: 'firefly-importer',
