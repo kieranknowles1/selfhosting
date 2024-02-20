@@ -2,10 +2,6 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/latest/configs/services
 
-#------------------------------------------------------------
-### Internet Accessible ###
-#------------------------------------------------------------
-
 - Server Status:
   - CPU:
       href: "https://glances.${DOMAIN_NAME}"
@@ -129,18 +125,3 @@
       server: local-docker
       container: chef_app
       icon: mdi-chef-hat
-
-
-#------------------------------------------------------------
-### Local Network Only ###
-# This is intentionally not exposed to the internet for security reasons.
-#------------------------------------------------------------
-
-- Administration:
-  - Yacht:
-      # NOTE: SSL does not work without a domain name, so this is intentionally using HTTP.
-      href: "http://${LOCAL_IP}:${YACHT_PORT}"
-      description: Web interface for managing docker containers
-      icon: yacht
-      server: local-docker
-      container: yacht

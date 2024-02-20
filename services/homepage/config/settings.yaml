@@ -11,30 +11,21 @@ background:
 
 cardBlur: md
 
-statusStyle: basic
+statusStyle: dot
 
 layout:
   Server Status:
-    tab: Internet Accessible
     icon: mdi-server
     style: row
     columns: 3
   Development:
-    tab: Internet Accessible
     icon: mdi-code-braces
   Productivity:
-    tab: Internet Accessible
     icon: mdi-briefcase
   Media:
-    tab: Internet Accessible
     icon: mdi-camera
   Food:
-    tab: Internet Accessible
     icon: mdi-food-drumstick
-
-  Administration:
-    tab: Local Network Only
-    icon: mdi-cogs
 
 quickLaunch:
   searchDescriptions: true
