@@ -21,10 +21,3 @@ services:
       - ${DATA_ROOT}/nginx/certbot/conf:/etc/letsencrypt
     restart: unless-stopped
     command: [nginx, '-g', 'daemon off;']
-  # This is in the same docker-compose as it needs to share the volumes with nginx
-  certbot:
-    image: certbot/certbot:latest
-    container_name: certbot
-    volumes:
-      - ${DATA_ROOT}/nginx/certbot/www:/var/www/certbot
-      - ${DATA_ROOT}/nginx/certbot/conf:/etc/letsencrypt

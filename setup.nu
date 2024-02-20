@@ -42,18 +42,18 @@ def main [
         open $template --raw | replace_vars $template_env | save $output_file --force --raw
     }
 
-    # log info "Creating containers"
-    # ls services/*/docker-compose.yml | get name | each { |compose_file|
-    #     log info $"Creating or updating containers for ($compose_file)"
-    #     with-env $environment {
-    #         docker-compose -f ($compose_file) up --detach --remove-orphans
-    #     }
-    # }
+    log info "Creating containers"
+    ls services/*/docker-compose.yml | get name | each { |compose_file|
+        log info $"Creating or updating containers for ($compose_file)"
+        with-env $environment {
+            docker-compose -f ($compose_file) up --detach --remove-orphans
+        }
+    }
 
     if ((not $update) or $expand_cert) {
         log info "Issuing SSL certificate"
         with-env $environment {
-            issue_cert $environment.DOMAIN_NAME ($services | get domain) $environment.OWNER_EMAIL
+            issue_cert $environment.DOMAIN_NAME ($services | get domain) $environment.OWNER_EMAIL $environment.DATA_ROOT
         }
     }
 
@@ -90,10 +90,18 @@ def issue_cert [
     domain: string
     subdomains: list<string>
     email: string
+    data_root: string
 ] {
-    (run-external docker-compose "-f" services/nginx/docker-compose.yml run "--rm" certbot
-        certonly "--webroot" "--webroot-path=/var/www/certbot"
-        "--email" $email
+    # Make sure we're on the latest nginx config
+    reload_nginx
+
+    log info $"Issuing SSL certificates to cover subdomains ($subdomains | str join ', ')"
+
+    (run-external sudo docker run "-it" "--rm" "--name" certbot
+        "-v" $"($data_root)/nginx/certbot/www:/var/www/certbot"
+        "-v" $"($data_root)/nginx/certbot/conf:/etc/letsencrypt"
+        "certbot/certbot" certonly
+        "--webroot" "--webroot-path=/var/www/certbot"
         "-d" $domain
         ...($subdomains | each { |subdomain|
             ["-d" $"($subdomain).($domain)"]
