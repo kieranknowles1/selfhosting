@@ -72,4 +72,3 @@ required:
   - LOCAL_IP
   - OWNER_EMAIL
   - RESTIC_PASSWORD
-additionalProperties: false

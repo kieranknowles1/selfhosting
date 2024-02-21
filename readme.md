@@ -5,10 +5,6 @@
   - [Introduction](#introduction)
   - [Setup](#setup)
     - [Configuration](#configuration)
-      - [Paths](#paths)
-      - [Ports](#ports)
-      - [Time zone](#time-zone)
-      - [Secrets](#secrets)
     - [Install](#install)
   - [Post setup](#post-setup)
     - [Cron jobs](#cron-jobs)
@@ -29,34 +25,20 @@ Only ARM architectures, such as the Raspberry Pi, are supported. My deployment i
 ## Setup
 
 ### Configuration
-Configuration is done through environment variables in `.env` and `.env.user`. `.env`, which is, by default,
-configured for my personal setup and should be modified to suit your needs. Namely, you should change the
-`DATA_ROOT` and `BACKUP_REPO` variables to point to appropriate locations for your setup.
+Default config is provided in `environment.yml` and `userenv.yml`. The former is used to configure non-sensitive
+data in the repository, such as paths and ports, and the latter is used to configure sensitive data, such as
+passwords and API keys.
 
-#### Paths
-Paths are configured in `.env` through the `DATA_ROOT` variable. This is set to `/mnt/extern/containers/data` and is
-used to store runtime data that should persist at the host level and be backed up. This includes databases
-and user data.
+`userenv.yml` should be filled in according to the schema in `userenv.schema.yml` before running the setup script.
+Should a variable appear in both, the value in `userenv.yml` will take precedence.
 
-#### Ports
-Ports are configured in `.env`. Each service has an assigned port in the 8xxx range which can be changed
-if needed. Should you need to change these, you will need to re-run `setup.sh` with the `--update` flag
+API keys in the schema are optional, but some widgets on the dashboard will not work without them.
 
-By default, container data is stored in `./data`. This can be changed by modifying the `DATA_ROOT` variable.
+Most of the values in `environment.yml` will work out of the box, but you will likely need to change the
+paths to suit your setup.
 
-Each container has a port defined in `.env` in the 8xxx range. Should you need to change these, you will need to
-re-run `setup.sh` with the `--update` flag to apply the changes. No service data will be lost and ports will be
-automatically inferred from the `.env` file.
-
-#### Time zone
-The time zone is configured in `.env` through the `TIME_ZONE` and is set to `Europe/London` by default.
-
-#### Secrets
-A set of secrets must be defined in `userenv.yml` before running the setup script. This can be validated
-against the schema `userenv.schema.yml`. The VS code workspace is configured to do this automatically.
-
-API keys are also defined in `userenv.yml` and are used to enable widgets on the dashboard. These are
-optional and can be added after the setup is complete.
+Most variables are safe to change after the setup is complete, except for passwords. Changing a path will
+require you to move the data manually. To apply changes, run `setup.nu` with the `--update` flag.
 
 ### Install
 Once the secrets are defined, simply run the setup script to install the dependencies
@@ -73,23 +55,17 @@ Cron jobs are used to perform regular maintenance tasks, such as backups and cer
 The recommended cron jobs can be generated using `gencron.sh` and added using `crontab -e`.
 
 ### API Keys
-After setting up and configuring containers, you can add API keys to enable widgets on the dashboard
-to `.env.user`. Re-run `setup.sh` with the `--update` flag to apply the changes.
-```bash
-export IMMICH_API_KEY=1234567890abcdef
-export PAPERLESS_API_KEY=1234567890abcdef
-```
+After configuring the containers, you will need to add API keys to `userenv.yml` and run `setup.nu --update`.
+See the schema for the required keys.
 
 ### Backups
-Backups are done using [Borg](https://borgbackup.readthedocs.io/en/stable/). The backup script is
-located in `./backup.sh`. It is recommended to run this script on a cron job to ensure regular backups.
-Note that containers will be paused during the backup to ensure data consistency.
+Backups are done using [Restic](https://restic.net/). The backup script is located in `./backup.nu` and should
+be run, as root, by a cron job on a regular basis. I recommend running it nightly.
 
-The backup repository is located in `/mnt/extern/containers/backup` by default and is encrypted using
-your Borg and a key written to `.borg-key` during setup. You **must** back up all of:
-- The `.borg-key` file
-- The `.env.user` file
-- The backup repository (at `BACKUP_REPO` in `.env`)
+Note that containers will be paused during the backup to ensure data consistency. Therefore, you will not be able
+to access the services during the backup.
+
+You MUST keep the password for the repository safe, you will not be able to restore without it.
 
 The following data is intentionally excluded from the backup:
 - Jellyfin media
