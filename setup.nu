@@ -32,7 +32,7 @@ def main [
     ls **/*.template | where not ($it | is-empty) | get name | each {|template|
         log info $"Replacing variables in ($template)"
         let output_file = $template | str replace ".template" ""
-        open $template --raw | replace_vars $template_env | save $output_file --force --raw
+        replace_vars (open $template --raw) $template_env | save $output_file --force --raw
     }
 
     log info "Creating containers"
@@ -139,13 +139,12 @@ def generate_gatus_config [
 "} | str join}
 
 def replace_vars [
+    raw: string
     vars: record
-] string -> string {
-    each { |raw|
-        with-env $vars {
-            # TODO: Using envsubst here isn't ideal, can't detect missing variables
-            $raw | envsubst
-        }
+] nothing -> string {
+    with-env $vars {
+        # TODO: Using envsubst here isn't ideal, can't detect missing variables
+        $raw | envsubst
     }
 }
 
