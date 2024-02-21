@@ -61,8 +61,6 @@ def main [
     log info "Setup complete"
     log info "========================================================================="
     log info "Please back up the following files:"
-    log info "  - .borg-key.local"
-    log info "  - .borg-key.borgbase"
     log info "  - userenv.yml"
     log info "See readme.md for remaining setup steps"
 }
@@ -175,11 +173,6 @@ def init_restic [
 #     cd services/paperlessngx
 #     docker-compose run --rm webserver createsuperuser
 #   )
-
-#   echo "Configuring borgmatic"
-#   docker exec borgmatic borgmatic init --encryption repokey
-#   docker exec borgmatic borg key export /mnt/repo > .borg-key.local
-#   docker exec borgmatic borg key export ${BORGBASE_URL} > .borg-key.borgbase
 # fi
 
 # #===============================================================================

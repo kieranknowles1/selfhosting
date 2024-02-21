@@ -4,12 +4,6 @@ title: Private User Environment Variables
 
 type: object
 properties:
-  BORGBASE_URL:
-    type: string
-    description: |
-      The URL to SSH into the borgbase repository.
-    pattern: "^ssh://"
-
   DOMAIN_NAME:
     type: string
     description: |
@@ -62,7 +56,6 @@ properties:
   JELLYFIN_API_KEY: { type: string }
   PAPERLESS_API_KEY: { type: string }
 required:
-  - BORGBASE_URL
   - DOMAIN_NAME
   - FIREFLY_DB_PASSWORD
   - FIREFLY_STATIC_CRON_TOKEN
