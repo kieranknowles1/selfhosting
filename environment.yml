@@ -19,7 +19,7 @@ HEALTH_TIMEOUT: 1000
 DATA_ROOT: /mnt/extern/containers/data
 DATA_ROOT_NOBACKUP: /mnt/extern/containers/data-nobackup
 # Change this for a different backup location
-BACKUP_REPO: /mnt/extern/containers/backups
+RESTIC_REPO: /mnt/extern/containers/restic
 
 #==============================================================================
 # Locale

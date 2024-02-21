@@ -4,12 +4,6 @@ title: Private User Environment Variables
 
 type: object
 properties:
-  BORG_PASSPHRASE:
-    type: string
-    description: |
-      The password to secure and encrypt the borg backups.
-      WARNING: If you lose this password, you will NOT be able to recover your backups.
-
   BORGBASE_URL:
     type: string
     description: |
@@ -58,12 +52,16 @@ properties:
       Your personal email address.
       Used by LetsEncrypt to send you notifications about your SSL certificates.
 
+  RESTIC_PASSWORD:
+    type: string
+    description: |
+      The password to access the restic repository. Make sure to keep this safe or you will lose access to your backups.
+
   # Post setup keys, optional during setup but required for full functionality
   IMMICH_API_KEY: { type: string }
   JELLYFIN_API_KEY: { type: string }
   PAPERLESS_API_KEY: { type: string }
 required:
-  - BORG_PASSPHRASE
   - BORGBASE_URL
   - DOMAIN_NAME
   - FIREFLY_DB_PASSWORD
@@ -73,4 +71,5 @@ required:
   - JOPLIN_DB_PASSWORD
   - LOCAL_IP
   - OWNER_EMAIL
+  - RESTIC_PASSWORD
 additionalProperties: false

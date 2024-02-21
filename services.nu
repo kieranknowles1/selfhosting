@@ -53,3 +53,14 @@ export def get_services [
         port: $config.WUD_PORT,
     }]
 }
+
+# Get a list of services that should be paused during backup
+export def get_backup_pause [] {
+    return [
+        "firefly",
+        "gitea",
+        "immich",
+        "joplin",
+        "paperlessngx",
+    ]
+}

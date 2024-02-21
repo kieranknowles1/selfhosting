@@ -15,7 +15,7 @@ def main [
         exit 1
     }
 
-    if ($update == false) {
+    if (not $update) {
         install_deps
     }
 
@@ -50,6 +50,11 @@ def main [
         }
     }
 
+    if (not $update) {
+        log info "Initializing restic"
+        init_restic $environment.RESTIC_REPO $environment.RESTIC_PASSWORD
+    }
+
     reload_nginx
 
     log info "========================================================================="
@@ -72,7 +77,7 @@ def install_deps [] {
     log info "Installing dependencies"
     log info "This requires root privileges"
     sudo apt-get update
-    sudo apt-get install -y docker docker-compose
+    sudo apt-get install -y docker docker-compose restic
 
     log info "Giving current user access to docker"
     sudo usermod -aG docker $env.USER
@@ -145,6 +150,16 @@ def replace_vars [
     with-env $vars {
         # TODO: Using envsubst here isn't ideal, can't detect missing variables
         $raw | envsubst
+    }
+}
+
+def init_restic [
+    repo: string
+    password: string
+] {
+    log info $"Creating restic repository at ($repo)"
+    with-env { RESTIC_REPOSITORY: $repo, RESTIC_PASSWORD: $password } {
+        sudo -E restic init
     }
 }
 
