@@ -15,8 +15,9 @@ export def get_services [
         name: 'Firefly III Importer',
         domain: 'firefly-importer',
         port: $config.FIREFLY_IMPORTER_PORT,
-        directory: 'firefly',
-        backup_pause: true,
+        # Same compose as the main Firefly III app, no need to pause it separately
+        # directory: 'firefly',
+        # backup_pause: true,
     }, {
         name: 'Firefly III',
         domain: 'firefly',
@@ -31,6 +32,8 @@ export def get_services [
         name: 'Gitea',
         domain: 'gitea',
         port: $config.GITEA_WEB_PORT,
+        directory: 'gitea',
+        backup_pause: true,
     }, {
         name: 'Glances',
         domain: 'glances',

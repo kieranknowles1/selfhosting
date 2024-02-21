@@ -2,6 +2,7 @@
 # Backup script for self-hosted runner
 # Pauses containers, runs Restic, and resumes containers
 # WARN: If a backup fails, containers will not be resumed. A server reboot is recommended in this case
+# Should be run as root
 
 use get_env.nu
 use logging.nu "log info"
@@ -17,13 +18,13 @@ def create_backup [
 ] {
     log info $"Starting backup of ($source) to ($repo)"
     with-env { RESTIC_REPOSITORY: $repo, RESTIC_PASSWORD: $password } {
-        sudo -E restic backup $source
+        restic backup $source
     }
 }
 
 log info "========================="
 log info " --- Starting backup --- "
-log info $"Backup started at (date)"
+log info $"Backup started at (date now)"
 log info "========================="
 
 log info "Containers going PAUSED for backup"
@@ -50,4 +51,4 @@ for service in $services {
     }
 }
 
-log info $"Backup complete at (date)"
+log info $"Backup complete at (date now)"
