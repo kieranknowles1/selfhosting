@@ -1,5 +1,6 @@
 #!/usr/bin/env nu
 
+use get_env.nu
 use logging.nu *
 use services.nu get_services
 
@@ -18,13 +19,7 @@ def main [
         install_deps
     }
 
-    let environment = {
-        CACHE_ROOT: $"(pwd)/cache",
-        LOGS_ROOT: $"(pwd)/logs",
-        SSHKEYS: $"/home/(whoami)/.ssh"
-        ...(open environment.yml)
-        ...(open userenv.yml)
-    }
+    let environment = get_env
 
     let services = get_services $environment
 
