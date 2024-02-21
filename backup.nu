@@ -38,7 +38,7 @@ for service in $services {
 }
 
 log info "Containers paused. Starting backup"
-create_backup $environment.RESTIC_REPO $environment.RESTIC_PASSWORD $environment.DATA_ROOT
+create_backup $environment.RESTIC_REPO $environment.RESTIC_PASSWORD $environment.DATA_ROOT | tee -a backup.log
 
 
 log info "Containers going UNPAUSED after backup"
