@@ -23,12 +23,10 @@ def main [
 
     let services = get_services $environment
 
-    let nginx_config = $services | each {|s| generate_nginx_config $s $environment.DOMAIN_NAME $environment.LOCAL_IP } | str join
-    let gatus_config = $services | each {|s| generate_gatus_config $s $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT } | str join
     let template_env = {
         ...$environment
-        NGINX_CONFIG: $nginx_config
-        GATUS_CONFIG: $gatus_config
+        NGINX_CONFIG: ($services | generate_nginx_config $environment.DOMAIN_NAME $environment.LOCAL_IP)
+        GATUS_CONFIG: ($services | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
     }
 
     ls **/*.template | where not ($it | is-empty) | get name | each {|template|
@@ -104,19 +102,18 @@ def issue_cert [
     )
 }
 
-# Generate the nginx configuration for a service
+# Generate the nginx configuration for the services
 def generate_nginx_config [
-    service: record<domain: string, port: int>
     domain_name: string
     local_ip: string
-]: nothing -> string {$"
-    # ($service.domain), ($service.port)
+]: list<record<domain: string, port: int>> -> string {each {|it| $"
+    # ($it.domain), ($it.port)
     server {
         include /etc/nginx/includes/global.conf;
-        server_name ($service.domain).($domain_name);
+        server_name ($it.domain).($domain_name);
 
         location / {
-            proxy_pass http://($local_ip):($service.port)/;
+            proxy_pass http://($local_ip):($it.port)/;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -125,22 +122,21 @@ def generate_nginx_config [
             proxy_set_header Connection \"Upgrade\";
         }
     }
-"}
+"} | str join}
 
-# Generate the gatus configuration for a service
+# Generate the gatus configuration for the services
 def generate_gatus_config [
-    service: record<domain: string, name: string>
     domain_name: string
     timeout: int # The max response time until a service is considered unhealthy, in milliseconds
-]: nothing -> string {$"
-  - name: ($service.name)
+]: list<record<domain: string, name: string>> -> string {each {|it| $"
+  - name: ($it.name)
     group: Services
-    url: https://($service.domain).($domain_name)($service.health_endpoint? | default "/")
+    url: https://($it.domain).($domain_name)($it.health_endpoint? | default "/")
     interval: 5m
     conditions:
       - \"[STATUS] == 200\"
       - \"[RESPONSE_TIME] < ($timeout)\"
-"}
+"} | str join}
 
 def replace_vars [
     vars: record
