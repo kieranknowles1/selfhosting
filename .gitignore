@@ -1,26 +1,13 @@
-# TODO: Remove obsolete entries
-# Private user information
-.env.user
-.vscode/sftp.json
-.borg-key.borgbase
-.borg-key.local
+# Private user data
 userenv.yml
 
-# Template output files
-nginx.conf
-
 # Container data
-backups/
-backups_old/
 cache/
-data/
-data_old/
 logs/
 
-# Templated files
-services/borgmatic/daemon/config.yaml
+*.log
+
+# Template output
 services/gatus/config/config.yaml
 services/homepage/config/services.yaml
-
-# Script output
-*.log
+services/nginx/nginx.conf
