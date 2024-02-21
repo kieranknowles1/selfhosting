@@ -50,6 +50,12 @@ properties:
     type: string
     description: |
       The password to access the restic repository. Make sure to keep this safe or you will lose access to your backups.
+  RESTIC_REMOTE_REPO:
+    type: string
+    description: |
+      The remote repository to store the restic backups.
+      Only the REST backend is tested and supported. Others should work but are not guaranteed.
+    pattern: "^(rest):"
 
   # Post setup keys, optional during setup but required for full functionality
   IMMICH_API_KEY: { type: string }

@@ -5,8 +5,13 @@
 # Should be run as root
 
 use get_env.nu
-use logging.nu "log info"
+use logging.nu *
 use services.nu get_services
+
+if not (is-admin) {
+    log error "This script must be run as root"
+    exit 1
+}
 
 let environment = get_env
 let services = get_services $environment
@@ -38,7 +43,8 @@ for service in $services {
 }
 
 log info "Containers paused. Starting backup"
-create_backup $environment.RESTIC_REPO $environment.RESTIC_PASSWORD $environment.DATA_ROOT | tee -a backup.log
+create_backup $environment.RESTIC_REPO $environment.RESTIC_PASSWORD $environment.DATA_ROOT
+create_backup $environment.RESTIC_REMOTE_REPO $environment.RESTIC_PASSWORD $environment.DATA_ROOT
 
 
 log info "Containers going UNPAUSED after backup"

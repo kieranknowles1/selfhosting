@@ -53,6 +53,7 @@ def main [
     if (not $update) {
         log info "Initializing restic"
         init_restic $environment.RESTIC_REPO $environment.RESTIC_PASSWORD
+        init_restic $environment.RESTIC_REMOTE_REPO $environment.RESTIC_PASSWORD
     }
 
     reload_nginx
