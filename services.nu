@@ -64,6 +64,8 @@ export def get_services [
         name: `What's Up Docker`,
         domain: 'wud',
         port: $config.WUD_PORT,
+        directory: 'wud',
+        backup_pause: true,
     }]
 }
 
