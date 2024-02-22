@@ -23,11 +23,6 @@ properties:
       This is used to update the Firefly III database.
     pattern: "^[a-zA-Z0-9]{32}$"
 
-  HEALTHCHECKS_DB_PASSWORD:
-    type: string
-    description: |
-      The password to access the Healthchecks database.
-
   IMMICH_DB_PASSWORD:
     type: string
     description: |
@@ -65,9 +60,9 @@ required:
   - DOMAIN_NAME
   - FIREFLY_DB_PASSWORD
   - FIREFLY_STATIC_CRON_TOKEN
-  - HEALTHCHECKS_DB_PASSWORD
   - IMMICH_DB_PASSWORD
   - JOPLIN_DB_PASSWORD
   - LOCAL_IP
   - OWNER_EMAIL
   - RESTIC_PASSWORD
+additionalProperties: false
