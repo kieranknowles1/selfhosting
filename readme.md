@@ -1,7 +1,5 @@
 # Self-hosted web services
-# TODO: Remove references to `.env` and the file itself
 - [Self-hosted web services](#self-hosted-web-services)
-- [TODO: Remove references to `.env` and the file itself](#todo-remove-references-to-env-and-the-file-itself)
   - [Introduction](#introduction)
   - [Setup](#setup)
     - [Configuration](#configuration)
