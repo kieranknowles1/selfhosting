@@ -31,10 +31,6 @@ properties:
     type: string
     description: |
       The password to access the Joplin database.
-  LOCAL_IP:
-    type: string
-    description: |
-      The local IP address of the server.
   OWNER_EMAIL:
     type: string
     description: |
@@ -62,7 +58,6 @@ required:
   - FIREFLY_STATIC_CRON_TOKEN
   - IMMICH_DB_PASSWORD
   - JOPLIN_DB_PASSWORD
-  - LOCAL_IP
   - OWNER_EMAIL
   - RESTIC_PASSWORD
 additionalProperties: false
