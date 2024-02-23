@@ -27,9 +27,10 @@ def create_backup [
     }
 }
 
+let start = (date now)
 log info "========================="
 log info " --- Starting backup --- "
-log info $"Backup started at (date now)"
+log info $"Backup started at ($start)"
 log info "========================="
 
 log info "Containers going PAUSED for backup"
@@ -57,4 +58,4 @@ for service in $services {
     }
 }
 
-log info $"Backup complete at (date now)"
+log info $"Backup complete. Took ((date now) - $start)"
