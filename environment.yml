@@ -34,8 +34,6 @@ TIME_ZONE: Europe/London
 # Ports
 #==============================================================================
 # Keep this port order for organisation
-HOMEPAGE_PORT: 8006
-PAPERLESS_PORT: 8007
 JOPLIN_PORT: 8008
 WUD_PORT: 8009
 IMMICH_PORT: 8010
@@ -47,6 +45,9 @@ YACHT_PORT: 8015
 GLANCES_PORT: 8016
 GATUS_PORT: 8017
 JELLYFIN_PORT: 8018
+SPEEDTEST_PORT: 8019
+HOMEPAGE_PORT: 8020
+PAPERLESS_PORT: 8021
 
 # TODO: Add the compose for this to the main repo
 CHEF_BACKEND_PORT: 3000

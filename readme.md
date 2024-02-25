@@ -1,12 +1,14 @@
-# Self-hosted web services
-- [Self-hosted web services](#self-hosted-web-services)
+# Self-hosted Web Services
+- [Self-hosted Web Services](#self-hosted-web-services)
   - [Introduction](#introduction)
   - [Setup](#setup)
     - [Configuration](#configuration)
     - [Install](#install)
   - [Post setup](#post-setup)
-    - [Cron jobs](#cron-jobs)
-    - [API Keys](#api-keys)
+    - [Cron Jobs](#cron-jobs)
+    - [Service Configuration](#service-configuration)
+      - [Speedtest](#speedtest)
+      - [API Keys](#api-keys)
     - [Backups](#backups)
     - [Certificate Renewal](#certificate-renewal)
 
@@ -47,14 +49,28 @@ sudo ./setup.sh
 
 ## Post setup
 
-### Cron jobs
+### Cron Jobs
 Cron jobs are used to perform regular maintenance tasks, such as backups and certificate renewal.
 
 The recommended cron jobs can be generated using `gencron.sh` and added using `crontab -e`.
 
-### API Keys
-After configuring the containers, you will need to add API keys to `userenv.yml` and run `setup.nu --update`.
-See the schema for the required keys.
+### Service Configuration
+On initial setup, you will notice a number of errors on the dashboard. This is because the services are not
+fully configured yet.
+
+#### Speedtest
+The speed test service does not automatically run tests by default. To enable it, log on using the default
+credentials `admin@example.com` and `password` and configure the service. The following changes are recommended:
+- General:
+  - Speedtest schedule: `*/15 * * * *` (every 15 minutes)
+  - Prune results older than: `30` days
+- Users -> admin:
+  - Change the password
+  - Change the email address
+
+#### API Keys
+Several services require API keys to function. These should be added to `userenv.yml` as per the schema and
+`setup.nu` should be run with the `--update` flag to apply the changes.
 
 ### Backups
 Backups are done using [Restic](https://restic.net/). The backup script is located in `./backup.nu` and should

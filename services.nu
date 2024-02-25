@@ -61,6 +61,11 @@ export def get_services [
         directory: 'paperlessngx',
         backup_pause: true,
     }, {
+        name: 'Speedtest',
+        domain: 'speedtest',
+        port: $config.SPEEDTEST_PORT,
+        directory: 'speedtest',
+    }, {
         name: `What's Up Docker`,
         domain: 'wud',
         port: $config.WUD_PORT,
