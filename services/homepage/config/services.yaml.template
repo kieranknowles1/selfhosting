@@ -131,11 +131,10 @@
         enableBlocks: true
         key: ${JELLYFIN_API_KEY}
 
-# TODO: Find a nicer icon to be consistent with other services
 - Food:
   - CHEF:
       href: "https://chef.${DOMAIN_NAME}"
       description: Recipe suggestion based on what you have
       server: local-docker
       container: chef_app
-      icon: mdi-chef-hat
+      icon: mdi-chef-hat-#FFFFFF
