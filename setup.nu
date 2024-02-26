@@ -15,7 +15,7 @@ def main [
         exit 1
     }
 
-    if ($update == false) {
+    if (not $update) {
         install_deps
     }
 
@@ -50,14 +50,18 @@ def main [
         }
     }
 
+    if (not $update) {
+        log info "Initializing restic"
+        init_restic $environment.RESTIC_REPO $environment.RESTIC_PASSWORD
+        init_restic $environment.RESTIC_REMOTE_REPO $environment.RESTIC_PASSWORD
+    }
+
     reload_nginx
 
     log info "========================================================================="
     log info "Setup complete"
     log info "========================================================================="
     log info "Please back up the following files:"
-    log info "  - .borg-key.local"
-    log info "  - .borg-key.borgbase"
     log info "  - userenv.yml"
     log info "See readme.md for remaining setup steps"
 }
@@ -72,7 +76,7 @@ def install_deps [] {
     log info "Installing dependencies"
     log info "This requires root privileges"
     sudo apt-get update
-    sudo apt-get install -y docker docker-compose
+    sudo apt-get install -y docker docker-compose restic
 
     log info "Giving current user access to docker"
     sudo usermod -aG docker $env.USER
@@ -148,6 +152,16 @@ def replace_vars [
     }
 }
 
+def init_restic [
+    repo: string
+    password: string
+] {
+    log info $"Creating restic repository at ($repo)"
+    with-env { RESTIC_REPOSITORY: $repo, RESTIC_PASSWORD: $password } {
+        sudo -E restic init
+    }
+}
+
 # TODO: Rewrite for nushell
 # #===============================================================================
 # ### Configuration
@@ -160,11 +174,6 @@ def replace_vars [
 #     cd services/paperlessngx
 #     docker-compose run --rm webserver createsuperuser
 #   )
-
-#   echo "Configuring borgmatic"
-#   docker exec borgmatic borgmatic init --encryption repokey
-#   docker exec borgmatic borg key export /mnt/repo > .borg-key.local
-#   docker exec borgmatic borg key export ${BORGBASE_URL} > .borg-key.borgbase
 # fi
 
 # #===============================================================================

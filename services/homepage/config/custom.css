@@ -15,3 +15,12 @@ The padding is to add some space between the widgets and the edge of their conta
     padding-left: 10px;
     padding-right: 10px;
 }
+
+/*
+Reload button.
+
+Disable this, it's only useful for development and can be replaced with a browser refresh.
+*/
+#revalidate {
+    display: none;
+}

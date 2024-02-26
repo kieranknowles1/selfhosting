@@ -26,6 +26,7 @@
         metric: network:eth0
   - Gatus:
       href: "https://gatus.${DOMAIN_NAME}"
+      description: Service health checker
       server: local-docker
       container: gatus
       icon: gatus
@@ -34,12 +35,24 @@
         url: "https://gatus.${DOMAIN_NAME}"
   - What's Up Docker:
       href: "https://wud.${DOMAIN_NAME}"
+      description: Container update checker
       server: local-docker
       container: wud
       icon: whats-up-docker
       widget:
         type: whatsupdocker
         url: "https://wud.${DOMAIN_NAME}"
+  - Speed Test:
+      href: "https://speedtest.${DOMAIN_NAME}"
+      # NOTE: This is only true for the recommended setup.
+      # TODO: If setup is automated, use template variables
+      description: Internet speed test, runs every 15 minutes
+      server: local-docker
+      container: speedtest
+      icon: speedtest-tracker
+      widget:
+        type: speedtest
+        url: "https://speedtest.${DOMAIN_NAME}"
   - Internal Disk:
       href: "https://glances.${DOMAIN_NAME}"
       widget:
@@ -118,10 +131,10 @@
         enableBlocks: true
         key: ${JELLYFIN_API_KEY}
 
-# TODO: Find a nicer icon to be consistent with other services
 - Food:
   - CHEF:
       href: "https://chef.${DOMAIN_NAME}"
+      description: Recipe suggestion based on what you have
       server: local-docker
       container: chef_app
-      icon: mdi-chef-hat
+      icon: mdi-chef-hat-#FFFFFF

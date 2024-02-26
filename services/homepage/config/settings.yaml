@@ -7,6 +7,7 @@ language: en-GB
 theme: dark
 color: amber
 background:
+  # NOTE: If changed, please also update the credits in custom.js
   image: https://images.pexels.com/photos/531880/pexels-photo-531880.jpeg
 
 cardBlur: md
