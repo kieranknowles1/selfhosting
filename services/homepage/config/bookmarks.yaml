@@ -7,3 +7,7 @@
         - icon: github-light
           href: https://github.com/kieranknowles1/selfhosting
           description: This project's Github repository
+    - Cyberchef:
+        - icon: cyberchef
+          href: https://gchq.github.io/CyberChef/
+          description: Toolkit for encoding, decoding, and analyzing data
