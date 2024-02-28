@@ -32,7 +32,7 @@ def main [
     ls **/*.template | where not ($it | is-empty) | get name | each {|template|
         log info $"Replacing variables in ($template)"
         let output_file = $template | str replace ".template" ""
-        replace_vars (open $template --raw) $template_env | save $output_file --force --raw
+        open $template --raw | replace_vars $template_env | save $output_file --force --raw
     }
 
     log info "Creating containers"
@@ -68,7 +68,8 @@ def main [
 
 def reload_nginx [] {
     log info "Reloading nginx configuration"
-    docker-compose -f services/nginx/docker-compose.yml exec nginx nginx -s reload
+    # Just calling reload doesn't always work, so we'll restart the container
+    docker-compose -f services/nginx/docker-compose.yml restart
 }
 
 # Install dependencies and give the current user the needed permissions
@@ -142,13 +143,14 @@ def generate_gatus_config [
       - \"[RESPONSE_TIME] < ($timeout)\"
 "} | str join}
 
+# Replace variables in a string
+# The special `DOLLAR` variable is used to escape dollar signs
 def replace_vars [
-    raw: string
     vars: record
-] nothing -> string {
-    with-env $vars {
+] string -> string {
+    with-env { ...$vars, DOLLAR: "$" } {
         # TODO: Using envsubst here isn't ideal, can't detect missing variables
-        $raw | envsubst
+        envsubst
     }
 }
 

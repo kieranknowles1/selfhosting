@@ -1,6 +1,6 @@
 # Nginx configuration for the reverse proxy
 # NOTE: Environment variables are replaced by the setup script,
-# Use § to escape $ in the config file. This will be replaced by $ after envsubst
+# Use ${DOLLAR} to escape $ in the config file. This will be replaced by $ after envsubst
 
 events {
 
@@ -18,7 +18,7 @@ http {
         }
 
         location / {
-            return 301 https://§host$request_uri;
+            return 301 https://${DOLLAR}host${DOLLAR}request_uri;
         }
     }
 
