@@ -19,6 +19,9 @@ interested in self-hosting their own web services, but I will not be providing a
 Breaking changes may be introduced at any time without warning or migration instructions.
 
 Use this at your own risk. I highly recommend using this as a reference and not as a copy-paste solution.
+If you do decide to use it, I suggest you fork the repository and carefully review any changes before
+pulling them in. (Key words in the commit messages to look out for are `BREAKING` and `migration`. I
+will link to any relevant documentation but will not provide scripts to automate any migrations.)
 
 Only ARM architectures, such as the Raspberry Pi, are supported. My deployment is on a Raspberry Pi 5 with
 8GB of RAM and a 64-bit OS.
