@@ -12,6 +12,11 @@ export def get_services [
         port: $config.CHEF_BACKEND_PORT,
         health_endpoint: '/api/v1/recipe/1',
     }, {
+        name: 'CyberChef',
+        domain: 'cyberchef',
+        port: $config.CYBERCHEF_PORT,
+        directory: 'cyberchef',
+    }, {
         name: 'Firefly III Importer',
         domain: 'firefly-importer',
         port: $config.FIREFLY_IMPORTER_PORT,
