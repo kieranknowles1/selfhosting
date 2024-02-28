@@ -1,6 +1,7 @@
 # Self-hosted Web Services
 - [Self-hosted Web Services](#self-hosted-web-services)
   - [Introduction](#introduction)
+    - [Guiding Principles](#guiding-principles)
   - [Setup](#setup)
     - [Configuration](#configuration)
     - [Install](#install)
@@ -21,6 +22,24 @@ Use this at your own risk. I highly recommend using this as a reference and not 
 
 Only ARM architectures, such as the Raspberry Pi, are supported. My deployment is on a Raspberry Pi 5 with
 8GB of RAM and a 64-bit OS.
+
+### Guiding Principles
+The guiding principles of this project are:
+
+1. **Open Source**: All software used is **fully** open source. This means no proprietary software. To the
+   best of my knowledge, you can access the source code for every piece of software used in this project.
+   I believe that open source software is better for everyone (a greater good if you will) and I want to
+   support it as much as possible.
+2. **Self-hosted**: As much as possible, these services will work without relying on third-party services.
+   If a third-party service is required, it should be replaceable with a self-hosted alternative.
+   A good example of this is the use of [Restic](https://restic.net/) for backups, which can back up to
+   any cloud storage provider of your choice, or even another server you own. (please make sure to follow the [3-2-1 backup rule](https://www.backblaze.com/blog/the-3-2-1-backup-strategy/))
+3. **Privacy**: I believe that privacy is a fundamental human right. As such, data will remain in your control
+   at all times to the best of my ability. This means no tracking, no telemetry, and no backing up without
+   local encryption that only you have the key to.
+
+How well I have achieved these principles is up to you to decide. If you have any suggestions for improvement,
+please let me know.
 
 ## Setup
 
