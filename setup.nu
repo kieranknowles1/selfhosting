@@ -21,6 +21,11 @@ def main [
 
     let environment = get_env
 
+    let datafs = get_fs $environment.DATA_ROOT
+    if ($datafs != "btrfs") {
+        log warn $"Using non-btrfs filesystems for DATA_ROOT is deprecated, found ($datafs)"
+    }
+
     let services = get_services $environment
 
     let template_env = {
@@ -162,6 +167,16 @@ def init_restic [
     with-env { RESTIC_REPOSITORY: $repo, RESTIC_PASSWORD: $password } {
         sudo -E restic init
     }
+}
+
+# Get the format of the filesystem on which a path is located
+def get_fs [
+    path: string
+] nothing -> string {
+    # NOTE: This doesn't work if the filesystem contains spaces
+    # You have to be insane to use spaces in a file name
+    # Only a lunatic would put them in the name of the filesystem itself
+    df -T $path | lines | get 1 | split row --regex " +" | get 1
 }
 
 # TODO: Rewrite for nushell
