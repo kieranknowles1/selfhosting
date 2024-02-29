@@ -62,6 +62,11 @@ paths to suit your setup.
 Most variables are safe to change after the setup is complete, except for passwords. Changing a path will
 require you to move the data manually. To apply changes, run `setup.nu` with the `--update` flag.
 
+<!-- TODO: Backups are taking a while so I'd like to implement the change soon. -->
+You will more than likely need to change the paths in `environment.yml` to suit your setup.
+I recommend using a separate drive formatted as btrfs for forward compatibility once [#5](https://github.com/kieranknowles1/selfhosting/issues/5) is implemented.
+Or not, I haven't done any research into whether it suits my needs yet. I'll update this once it's clear what path I want to take.
+
 ### Install
 Once your secrets are defined, you can install the Nushell terminal and run the setup script
 to start everything up.
