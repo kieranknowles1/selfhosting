@@ -4,8 +4,8 @@ export def main []: nothing -> record {{
         LOGS_ROOT: $"(pwd)/logs",
         SSHKEYS: $"/home/(whoami)/.ssh",
         LOCAL_IP: (get_local_ip),
-        ...(open environment.yml)
-        ...(open userenv.yml)
+        ...(open $"($env.FILE_PWD)/environment.yml")
+        ...(open $"($env.FILE_PWD)/userenv.yml")
 }}
 
 # Get the local IP address of the machine

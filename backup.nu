@@ -38,7 +38,7 @@ for service in $services {
     if ($service.backup_pause? == true) {
         log info $"Pausing ($service.name)"
         with-env $environment {
-            docker-compose --file $"services/($service.directory)/docker-compose.yml" pause
+            docker-compose --file $"($env.FILE_PWD)/services/($service.directory)/docker-compose.yml" pause
         }
     }
 }
