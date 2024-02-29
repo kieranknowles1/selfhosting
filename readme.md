@@ -63,10 +63,13 @@ Most variables are safe to change after the setup is complete, except for passwo
 require you to move the data manually. To apply changes, run `setup.nu` with the `--update` flag.
 
 ### Install
-Once the secrets are defined, simply run the setup script to install the dependencies
-and start everything up:
+Once your secrets are defined, you can install the Nushell terminal and run the setup script
+to start everything up.
 ```bash
-sudo ./setup.sh
+sudo apt-get update
+sudo apt-get install -y npm # We install nushell via npm
+sudo npm install -g nushell
+./setup.nu
 ```
 
 ## Post setup
