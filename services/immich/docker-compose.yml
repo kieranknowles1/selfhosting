@@ -11,7 +11,7 @@ version: "3.8"
 services:
   immich-server:
     container_name: immich_server
-    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION}
     command: [ "start.sh", "immich" ]
     volumes:
       - ${DATA_ROOT}/immich/library:/usr/src/app/upload
@@ -28,7 +28,7 @@ services:
 
   immich-microservices:
     container_name: immich_microservices
-    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION}
     # extends:
     #   file: hwaccel.yml
     #   service: hwaccel
@@ -46,7 +46,7 @@ services:
 
   immich-machine-learning:
     container_name: immich_machine_learning
-    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}
+    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION}
     volumes:
       - ${DATA_ROOT}/immich/mlcache:/cache
     env_file: .env

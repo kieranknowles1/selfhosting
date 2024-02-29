@@ -31,6 +31,15 @@ LANGUAGE: en_GB
 TIME_ZONE: Europe/London
 
 #==============================================================================
+# Service Versions
+#==============================================================================
+# The tags of the images to use. I recommend against using `latest` to
+# avoid any unexpected changes. What's up Docker will show you the available
+# updates for your containers.
+HOMEPAGE_VERSION: v0.8.8
+IMMICH_VERSION: v1.97.0
+
+#==============================================================================
 # Ports
 #==============================================================================
 # Keep this port order for organisation
