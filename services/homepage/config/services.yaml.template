@@ -145,9 +145,7 @@
 
 - Games:
     - Minecraft:
-        description: |
-            Connect at ${DOMAIN_NAME}.
-            If this shows as offline, it may just be paused from inactivity.
+        description: Connect at ${DOMAIN_NAME}.
         icon: minecraft
         server: local-docker
         container: minecraft
