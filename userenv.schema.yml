@@ -31,6 +31,22 @@ properties:
     type: string
     description: |
       The password to access the Joplin database.
+
+  MINECRAFT_EULA:
+    type: string
+    description: |
+      Set to true to indicate that you have read and agree to the Minecraft EULA.
+      https://www.minecraft.net/en-us/eula
+    pattern: "^(true|false)$"
+  MINECRAFT_OPS:
+    type: string
+    description: |
+      The ops for the Minecraft server. Set to the usernames of everyone who should be able to use server commands, split by newlines.
+  MINECRAFT_WHITELIST:
+    type: string
+    description: |
+      The whitelist for the Minecraft server. Set to the usernames of everyone who should be able to join the server, split by newlines.
+
   OWNER_EMAIL:
     type: string
     description: |
@@ -58,6 +74,9 @@ required:
   - FIREFLY_STATIC_CRON_TOKEN
   - IMMICH_DB_PASSWORD
   - JOPLIN_DB_PASSWORD
+  - MINECRAFT_EULA
+  - MINECRAFT_OPS
+  - MINECRAFT_WHITELIST
   - OWNER_EMAIL
   - RESTIC_PASSWORD
 additionalProperties: false

@@ -47,7 +47,7 @@ JOPLIN_PORT: 8008
 WUD_PORT: 8009
 IMMICH_PORT: 8010
 GITEA_WEB_PORT: 8011
-GITEA_SSH_PORT: 8012
+
 FIREFLY_APP_PORT: 8013
 FIREFLY_IMPORTER_PORT: 8014
 YACHT_PORT: 8015
@@ -62,3 +62,8 @@ CYBERCHEF_PORT: 8022
 # TODO: Add the compose for this to the main repo
 CHEF_BACKEND_PORT: 3000
 CHEF_WEB_PORT: 5173
+
+# Protocols other than HTTP can't be forwarded through the reverse proxy
+# so their ports need to be exposed directly
+GITEA_SSH_PORT: 2022
+MINECRAFT_PORT: 25565
