@@ -1,7 +1,7 @@
 # Get a list of services to deploy, along with their configuration
 export def get_services [
     config: record
-]: nothing -> list<record<name: string, domain: string, port: int, health_endpoint: string, backup_pause: bool>> {
+]: nothing -> list<record<name: string, port: int, health_endpoint: string, backup_pause: bool>> {
     return [{
         name: 'Chef',
         domain: 'chef',
@@ -58,6 +58,11 @@ export def get_services [
         domain: 'joplin',
         port: $config.JOPLIN_PORT,
         directory: 'joplin',
+        backup_pause: true,
+    }, {
+        name: 'Minecraft',
+        port: $config.MINECRAFT_PORT,
+        directory: 'minecraft',
         backup_pause: true,
     }, {
         name: 'Paperless',

@@ -26,12 +26,12 @@ def main [
         log warn $"Using non-btrfs filesystems for DATA_ROOT is deprecated, found ($datafs)"
     }
 
-    let services = get_services $environment
+    let domains = get_services $environment | filter { |service| $service.domain? | default false }
 
     let template_env = {
         ...$environment
-        NGINX_CONFIG: ($services | generate_nginx_config $environment.DOMAIN_NAME $environment.LOCAL_IP)
-        GATUS_CONFIG: ($services | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
+        NGINX_CONFIG: ($domains | generate_nginx_config $environment.DOMAIN_NAME $environment.LOCAL_IP)
+        GATUS_CONFIG: ($domains | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
     }
 
     ls **/*.template | where not ($it | is-empty) | get name | each {|template|
@@ -51,7 +51,7 @@ def main [
     if ((not $update) or $expand_cert) {
         log info "Issuing SSL certificate"
         with-env $environment {
-            issue_cert $environment.DOMAIN_NAME ($services | get domain) $environment.OWNER_EMAIL $environment.DATA_ROOT
+            issue_cert $environment.DOMAIN_NAME ($domains | get domain) $environment.OWNER_EMAIL $environment.DATA_ROOT
         }
     }
 
