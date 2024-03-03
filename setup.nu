@@ -59,6 +59,9 @@ def main [
         log info "Initializing restic"
         init_restic $environment.RESTIC_REPO $environment.RESTIC_PASSWORD
         init_restic $environment.RESTIC_REMOTE_REPO $environment.RESTIC_PASSWORD
+
+        log info "Creating superuser for paperless container"
+        create_paperless_superuser $environment
     }
 
     reload_nginx
@@ -179,22 +182,10 @@ def get_fs [
     df -T $path | lines | get 1 | split row --regex " +" | get 1
 }
 
-# TODO: Rewrite for nushell
-# #===============================================================================
-# ### Configuration
-# #===============================================================================
-
-# if [ "$update" = false ]; then
-
-#   (
-#     echo "Creating superuser for paperless container"
-#     cd services/paperlessngx
-#     docker-compose run --rm webserver createsuperuser
-#   )
-# fi
-
-# #===============================================================================
-# ### Maintenance
-# #===============================================================================
-
-# reload_nginx
+def create_paperless_superuser [
+    $environment
+] {
+    with-env $environment {
+        docker-compose  -f services/paperlessngx/docker-compose.yml run --rm webserver createsuperuser
+    }
+}
