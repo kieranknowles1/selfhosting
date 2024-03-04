@@ -66,6 +66,7 @@ def main [
         create_paperless_superuser $environment
     }
 
+    configure_cron
     reload_nginx
 
     log info "========================================================================="
@@ -190,4 +191,24 @@ def create_paperless_superuser [
     with-env $environment {
         docker-compose  -f services/paperlessngx/docker-compose.yml run --rm webserver createsuperuser
     }
+}
+
+# Configure cron jobs for maintenance
+def configure_cron [] {
+    log info "Configuring cron jobs"
+
+    let nuexe = (which nu | get path.0)
+
+    let jobs = ([
+        "# Back up nightly at 1 AM"
+        $"0 1 * * * root ($nuexe) (pwd)/backup.nu > (pwd)/backup.log 2>&1"
+        "# Renew SSL certificate monthly"
+        $"0 0 1 * * root ($nuexe) (pwd)/renew.nu > (pwd)/renew.log 2>&1"
+    ] | str join "\n") + "\n"
+
+    echo $jobs | save /tmp/cronjobs --force
+    sudo chown root:root /tmp/cronjobs
+    sudo mv /tmp/cronjobs /etc/cron.d/selfhosted-runner
+
+    sudo systemctl restart cron
 }

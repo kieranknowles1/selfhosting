@@ -6,7 +6,6 @@
     - [Configuration](#configuration)
     - [Install](#install)
   - [Post setup](#post-setup)
-    - [Cron Jobs](#cron-jobs)
     - [Service Configuration](#service-configuration)
       - [Speedtest](#speedtest)
       - [API Keys](#api-keys)
@@ -79,11 +78,6 @@ sudo npm install -g nushell
 
 ## Post setup
 
-### Cron Jobs
-Cron jobs are used to perform regular maintenance tasks, such as backups and certificate renewal.
-
-The recommended cron jobs can be generated using `gencron.sh` and added using `crontab -e`.
-
 ### Service Configuration
 On initial setup, you will notice a number of errors on the dashboard. This is because the services are not
 fully configured yet.
@@ -103,8 +97,8 @@ Several services require API keys to function. These should be added to `userenv
 `setup.nu` should be run with the `--update` flag to apply the changes.
 
 ### Backups
-Backups are done using [Restic](https://restic.net/). The backup script is located in `./backup.nu` and should
-be run, as root, by a cron job on a regular basis. I recommend running it nightly.
+Backups are done using [Restic](https://restic.net/). The `./backup.nu` script will back up the data to the
+repositories you have configured. The setup script will configure a cron job to run this script nightly as root.
 
 Note that containers will be paused during the backup to ensure data consistency. Therefore, you will not be able
 to access the services during the backup.
