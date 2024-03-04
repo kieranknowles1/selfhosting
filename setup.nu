@@ -26,7 +26,9 @@ def main [
         log warn $"Using non-btrfs filesystems for DATA_ROOT is deprecated, found ($datafs)"
     }
 
-    let domains = get_services $environment | filter { |service| $service.domain? | default false }
+    let domains = get_services $environment | filter { |service| ($service.domain? | default false) != false }
+
+    log info $"Using subdomains ($domains | get domain | str join ', ')"
 
     let template_env = {
         ...$environment
