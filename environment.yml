@@ -58,6 +58,7 @@ SPEEDTEST_PORT: 8019
 HOMEPAGE_PORT: 8020
 PAPERLESS_PORT: 8021
 CYBERCHEF_PORT: 8022
+ADGUARD_WEB_PORT: 8023
 
 # TODO: Add the compose for this to the main repo
 CHEF_BACKEND_PORT: 3000
@@ -65,6 +66,7 @@ CHEF_WEB_PORT: 5173
 
 # Protocols other than HTTP can't be forwarded through the reverse proxy
 # so their ports need to be exposed directly
+ADGUARD_DNS_PORT: 53
 GITEA_SSH_PORT: 2022
 MINECRAFT_PORT: 25565
 WIREGUARD_PORT: 51820

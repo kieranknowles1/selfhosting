@@ -69,6 +69,17 @@
           metric: fs:/host/mnt/extern
           disk: /host/mnt/extern
           chart: false
+    - AdGuard Home:
+        href: "https://adguard.${DOMAIN_NAME}"
+        description: DNS and ad blocker
+        icon: adguard-home
+        server: local-docker
+        container: adguard
+        widget:
+          type: adguard
+          url: "https://adguard.${DOMAIN_NAME}"
+          username: ${ADGUARD_USERNAME}
+          password: ${ADGUARD_PASSWORD}
 
 - Development:
     - Gitea:

@@ -74,6 +74,9 @@ properties:
   IMMICH_API_KEY: { type: string }
   JELLYFIN_API_KEY: { type: string }
   PAPERLESS_API_KEY: { type: string }
+
+  ADGUARD_USERNAME: { type: string }
+  ADGUARD_PASSWORD: { type: string }
 required:
   - DOMAIN_NAME
   - FIREFLY_DB_PASSWORD
