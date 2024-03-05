@@ -5,8 +5,8 @@ http:
   address: 0.0.0.0:80
   session_ttl: 720h
 users:
-  - name: kieran
-    password: $2a$10$vYp8l1byeDmqa48PixQWHekKWdTHkUEwOW5zlOddl5vWee7PvZNFW
+  - name: ${ADGUARD_USERNAME}
+    password: ${ADGUARD_PASSWORD_HASH}
 auth_attempts: 5
 block_auth_min: 15
 http_proxy: ""

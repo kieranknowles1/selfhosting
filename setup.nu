@@ -34,6 +34,7 @@ def main [
         ...$environment
         NGINX_CONFIG: ($domains | generate_nginx_config $environment.DOMAIN_NAME $environment.LOCAL_IP)
         GATUS_CONFIG: ($domains | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
+        ADGUARD_PASSWORD_HASH: (php_hash_password $environment.ADGUARD_PASSWORD)
     }
 
     ls **/*.template | where not ($it | is-empty) | get name | each {|template|
@@ -75,6 +76,14 @@ def main [
     log info "Please back up the following files:"
     log info "  - userenv.yml"
     log info "See readme.md for remaining setup steps"
+}
+
+# Hash a password using PHP's password_hash function
+# Assumes that the target container accepts PHPs PASSWORD_DEFAULT algorithm
+def php_hash_password [
+    password: string
+] {
+    docker run --rm php:8.2-cli php -r $"echo password_hash\('($password)', PASSWORD_DEFAULT\);"
 }
 
 def reload_nginx [] {
