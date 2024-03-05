@@ -13,6 +13,7 @@ services:
       - TZ=${TIME_ZONE}*/*/*/*/*/
       - SERVERURL=${DOMAIN_NAME}
       - PEERS=${WIREGUARD_PEERS}
+      - PEERDNS=${LOCAL_IP}
     volumes:
       - ${DATA_ROOT}/wireguard:/config
     ports:

@@ -3,6 +3,11 @@ export def get_services [
     config: record
 ]: nothing -> list<record<name: string, port: int, health_endpoint: string, backup_pause: bool>> {
     return [{
+        name: 'AdGuard Home',
+        domain: 'adguard',
+        port: $config.ADGUARD_WEB_PORT,
+        directory: 'adguard',
+    }, {
         name: 'Chef',
         domain: 'chef',
         port: $config.CHEF_WEB_PORT,
