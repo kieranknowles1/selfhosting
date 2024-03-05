@@ -67,3 +67,4 @@ CHEF_WEB_PORT: 5173
 # so their ports need to be exposed directly
 GITEA_SSH_PORT: 2022
 MINECRAFT_PORT: 25565
+WIREGUARD_PORT: 51820

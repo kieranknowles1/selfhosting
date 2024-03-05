@@ -11,6 +11,7 @@
       - [API Keys](#api-keys)
     - [Backups](#backups)
     - [Certificate Renewal](#certificate-renewal)
+    - [VPN](#vpn)
 
 ## Introduction
 This repository is, first and foremost, a personal project. I am sharing it to help others who may be
@@ -111,3 +112,12 @@ The following data is intentionally excluded from the backup:
 ### Certificate Renewal
 The certificates issued by Let's Encrypt are valid for 90 days. To renew them, simply run the included
 `renew.sh` script. You will receive an email notification when the certificates are due to expire.
+
+### VPN
+The [WireGuard](https://www.wireguard.com/) VPN is configured to run on port 51820, which you will need
+to forward on your router.
+
+A peer will be configured for each device in `userenv.yml`, QR codes for which are found in
+`${DATA_ROOT}/wireguard/peer_${CLIENT_NAME}/peer_${CLIENT_NAME}.png`.
+
+If you're feeling fancy, you can use `docker logs wireguard` to print these to the terminal and scan them.

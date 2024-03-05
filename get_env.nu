@@ -4,6 +4,8 @@ export def main []: nothing -> record {{
         LOGS_ROOT: $"(pwd)/logs",
         SSHKEYS: $"/home/(whoami)/.ssh",
         LOCAL_IP: (get_local_ip),
+        USER_ID: (id -u),
+        GROUP_ID: (id -g),
         ...(open $"($env.FILE_PWD)/environment.yml")
         ...(open $"($env.FILE_PWD)/userenv.yml")
 }}

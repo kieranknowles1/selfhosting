@@ -64,6 +64,12 @@ properties:
       Only the REST backend is tested and supported. Others should work but are not guaranteed.
     pattern: "^(rest):"
 
+  WIREGUARD_PEERS:
+    type: string
+    description: |
+      A list of peers for the WireGuard VPN, split by commas.
+    example: "phone,laptop,desktop"
+
   # Post setup keys, optional during setup but required for full functionality
   IMMICH_API_KEY: { type: string }
   JELLYFIN_API_KEY: { type: string }
@@ -79,4 +85,5 @@ required:
   - MINECRAFT_WHITELIST
   - OWNER_EMAIL
   - RESTIC_PASSWORD
+  - WIREGUARD_PEERS
 additionalProperties: false
