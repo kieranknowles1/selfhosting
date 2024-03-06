@@ -22,8 +22,6 @@ def main [
     }
 
     let environment = get_env
-    configure_speedtest $environment.DATA_ROOT $environment.OWNER_EMAIL $environment.ADGUARD_PASSWORD
-    exit
 
     let datafs = get_fs $environment.DATA_ROOT
     if ($datafs != "btrfs") {
