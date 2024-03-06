@@ -44,7 +44,7 @@
           url: "https://wud.${DOMAIN_NAME}"
     - Speed Test:
         href: "https://speedtest.${DOMAIN_NAME}"
-        description: Internet speed test, runs ${SPEEDTEST_SCHEDULE_HUMAN}
+        description: Internet speed test, runs ${SPEEDTEST_SCHEDULE_HUMAN}. Results retained for ${SPEEDTEST_RETENTION} days.
         server: local-docker
         container: speedtest
         icon: speedtest-tracker

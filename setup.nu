@@ -71,7 +71,7 @@ def main [
     }
 
     configure_cron
-    configure_speedtest $environment.DATA_ROOT $environment.OWNER_EMAIL $environment.ADGUARD_PASSWORD $environment.SPEEDTEST_SCHEDULE
+    configure_speedtest $environment.DATA_ROOT $environment.OWNER_EMAIL $environment.ADGUARD_PASSWORD $environment.SPEEDTEST_SCHEDULE $environment.SPEEDTEST_RETENTION
     reload_nginx
 
     log info "========================================================================="
@@ -94,7 +94,7 @@ def php_hash_password [
 def describe_cron [
     expression: string
 ] {
-    cronstrue $expression
+    cronstrue $expression | str trim --char "\n"
 }
 
 def reload_nginx [] {
@@ -238,10 +238,11 @@ def configure_cron [] {
 # Configure the speedtest container with recommended defaults
 # WARN: Credentials MUST come from a trusted source. There are no checks for SQL injection
 def configure_speedtest [
-    $dataRoot,
-    $adminEmail,
-    $adminPassword,
-    $schedule
+    $dataRoot: string,
+    $adminEmail: string,
+    $adminPassword: string,
+    $schedule: string,
+    $retention: int
 ] {
     log info "Configuring speedtest"
 
@@ -252,8 +253,7 @@ def configure_speedtest [
         # Run speedtest every 15 minutes
         $"UPDATE settings SET payload = \"($schedule)\" WHERE name = \"speedtest_schedule\""
         # Prune old data
-        # TODO: This should be configurable
-        "UPDATE settings SET payload = 30 WHERE name = \"prune_results_older_than\""
+        $"UPDATE settings SET payload = ($retention) WHERE name = \"prune_results_older_than\""
         # Secure the admin account
         # TODO: Shouldn't use Wireguard credential vars
         $"UPDATE users SET email = \"($adminEmail)\", password = \"($passwordHash)\" WHERE name = \"Admin\""
