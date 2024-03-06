@@ -7,7 +7,6 @@
     - [Install](#install)
   - [Post setup](#post-setup)
     - [Service Configuration](#service-configuration)
-      - [Speedtest](#speedtest)
       - [API Keys](#api-keys)
     - [Backups](#backups)
     - [Certificate Renewal](#certificate-renewal)
@@ -40,6 +39,11 @@ The guiding principles of this project are:
 3. **Privacy**: I believe that privacy is a fundamental human right. As such, data will remain in your control
    at all times to the best of my ability. This means no tracking, no telemetry, and no backing up without
    local encryption that only you have the key to.
+4. **Automated**: I believe that manual processes are error-prone and time-consuming. As such, I have automated
+   as much as possible. This includes the setup of the services, the renewal of certificates, and the backup
+   process. I hope that by doing this I can make it easier to maintain the services in the long run as
+   you can create a replicable environment with minimal effort. That being said, some services are more
+   difficult to automate than others and require manual intervention as discussed in [Post setup](#post-setup).
 
 How well I have achieved these principles is up to you to decide. If you have any suggestions for improvement,
 please let me know.
@@ -82,16 +86,6 @@ sudo npm install -g nushell
 ### Service Configuration
 On initial setup, you will notice a number of errors on the dashboard. This is because the services are not
 fully configured yet.
-
-#### Speedtest
-The speed test service does not automatically run tests by default. To enable it, log on using the default
-credentials `admin@example.com` and `password` and configure the service. The following changes are recommended:
-- General:
-  - Speedtest schedule: `*/15 * * * *` (every 15 minutes)
-  - Prune results older than: `30` days
-- Users -> admin:
-  - Change the password
-  - Change the email address
 
 #### API Keys
 Several services require API keys to function. These should be added to `userenv.yml` as per the schema and

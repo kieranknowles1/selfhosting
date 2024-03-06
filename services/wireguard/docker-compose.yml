@@ -13,6 +13,8 @@ services:
       - TZ=${TIME_ZONE}*/*/*/*/*/
       - SERVERURL=${DOMAIN_NAME}
       - PEERS=${WIREGUARD_PEERS}
+      # FIXME: This doens't work on iPhone (need to test Windows). May be related to DNS over HTTPS.
+      # Breaks DNS resolution on the client. Need to look up how routing works in Wireguard.
       - PEERDNS=${LOCAL_IP}
     volumes:
       - ${DATA_ROOT}/wireguard:/config

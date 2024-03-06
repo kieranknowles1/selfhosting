@@ -1,5 +1,7 @@
 #!/usr/bin/env nu
 
+# TODO: This is getting a bit long, consider splitting it up
+
 use get_env.nu
 use logging.nu *
 use services.nu get_services
@@ -20,6 +22,8 @@ def main [
     }
 
     let environment = get_env
+    configure_speedtest $environment.DATA_ROOT $environment.OWNER_EMAIL $environment.ADGUARD_PASSWORD
+    exit
 
     let datafs = get_fs $environment.DATA_ROOT
     if ($datafs != "btrfs") {
@@ -68,6 +72,7 @@ def main [
     }
 
     configure_cron
+    configure_speedtest $environment.DATA_ROOT $environment.OWNER_EMAIL $environment.ADGUARD_PASSWORD
     reload_nginx
 
     log info "========================================================================="
@@ -97,7 +102,7 @@ def install_deps [] {
     log info "Installing dependencies"
     log info "This requires root privileges"
     sudo apt-get update
-    sudo apt-get install -y docker docker-compose restic
+    sudo apt-get install -y docker docker-compose restic sqlite3
 
     log info "Giving current user access to docker"
     sudo usermod -aG docker $env.USER
@@ -220,4 +225,30 @@ def configure_cron [] {
     sudo mv /tmp/cronjobs /etc/cron.d/selfhosted-runner
 
     sudo systemctl restart cron
+}
+
+# Configure the speedtest container with recommended defaults
+def configure_speedtest [
+    $dataRoot,
+    $adminEmail,
+    $adminPassword,
+] {
+    log info "Configuring speedtest"
+
+    let dbPath = $"($dataRoot)/speedtest/database.sqlite"
+    let passwordHash = (php_hash_password $adminPassword)
+
+    let commands = [
+        # Run speedtest every 15 minutes
+        # TODO: This should be configurable
+        "UPDATE settings SET payload = \"*/15 * * * *\" WHERE name = \"speedtest_schedule\""
+        # Prune old data
+        # TODO: This should be configurable
+        "UPDATE settings SET payload = 30 WHERE name = \"prune_results_older_than\""
+        # Secure the admin account
+        # TODO: Shouldn't use Wireguard credential vars
+        $"UPDATE users SET email = \"($adminEmail)\", password = \"($passwordHash)\" WHERE name = \"Admin\""
+    ] | str join ";\n"
+
+    sudo sqlite3 $dbPath $commands
 }
