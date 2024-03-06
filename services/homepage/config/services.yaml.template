@@ -44,9 +44,7 @@
           url: "https://wud.${DOMAIN_NAME}"
     - Speed Test:
         href: "https://speedtest.${DOMAIN_NAME}"
-        # NOTE: This is only true for the recommended setup.
-        # TODO: If setup is automated, use template variables
-        description: Internet speed test, runs every 15 minutes
+        description: Internet speed test, runs ${SPEEDTEST_SCHEDULE_HUMAN}
         server: local-docker
         container: speedtest
         icon: speedtest-tracker

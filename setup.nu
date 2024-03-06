@@ -37,6 +37,7 @@ def main [
         NGINX_CONFIG: ($domains | generate_nginx_config $environment.DOMAIN_NAME $environment.LOCAL_IP)
         GATUS_CONFIG: ($domains | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
         ADGUARD_PASSWORD_HASH: (php_hash_password $environment.ADGUARD_PASSWORD)
+        SPEEDTEST_SCHEDULE_HUMAN: (describe_cron $environment.SPEEDTEST_SCHEDULE)
     }
 
     ls **/*.template | where not ($it | is-empty) | get name | each {|template|
@@ -70,7 +71,7 @@ def main [
     }
 
     configure_cron
-    configure_speedtest $environment.DATA_ROOT $environment.OWNER_EMAIL $environment.ADGUARD_PASSWORD
+    configure_speedtest $environment.DATA_ROOT $environment.OWNER_EMAIL $environment.ADGUARD_PASSWORD $environment.SPEEDTEST_SCHEDULE
     reload_nginx
 
     log info "========================================================================="
@@ -89,6 +90,13 @@ def php_hash_password [
     docker run --rm php:8.2-cli php -r $"echo password_hash\('($password)', PASSWORD_DEFAULT\);"
 }
 
+# Describe the cron expression in a human-readable format
+def describe_cron [
+    expression: string
+] {
+    cronstrue $expression
+}
+
 def reload_nginx [] {
     log info "Reloading nginx configuration"
     # Just calling reload doesn't always work, so we'll restart the container
@@ -101,6 +109,8 @@ def install_deps [] {
     log info "This requires root privileges"
     sudo apt-get update
     sudo apt-get install -y docker docker-compose restic sqlite3
+
+    sudo npm install --global cronstrue
 
     log info "Giving current user access to docker"
     sudo usermod -aG docker $env.USER
@@ -226,10 +236,12 @@ def configure_cron [] {
 }
 
 # Configure the speedtest container with recommended defaults
+# WARN: Credentials MUST come from a trusted source. There are no checks for SQL injection
 def configure_speedtest [
     $dataRoot,
     $adminEmail,
     $adminPassword,
+    $schedule
 ] {
     log info "Configuring speedtest"
 
@@ -238,8 +250,7 @@ def configure_speedtest [
 
     let commands = [
         # Run speedtest every 15 minutes
-        # TODO: This should be configurable
-        "UPDATE settings SET payload = \"*/15 * * * *\" WHERE name = \"speedtest_schedule\""
+        $"UPDATE settings SET payload = \"($schedule)\" WHERE name = \"speedtest_schedule\""
         # Prune old data
         # TODO: This should be configurable
         "UPDATE settings SET payload = 30 WHERE name = \"prune_results_older_than\""

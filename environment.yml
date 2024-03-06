@@ -40,6 +40,15 @@ HOMEPAGE_VERSION: v0.8.8
 IMMICH_VERSION: v1.97.0
 
 #==============================================================================
+# Service Config
+#==============================================================================
+# Service configs that are shared between multiple services
+# Configs used by only one service are in the service's environent file and compose
+
+# Cron expression to run speed test on.
+SPEEDTEST_SCHEDULE: "*/15 * * * *"
+
+#==============================================================================
 # Ports
 #==============================================================================
 # Keep this port order for organisation
