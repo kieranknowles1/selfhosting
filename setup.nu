@@ -259,5 +259,7 @@ def configure_speedtest [
         $"UPDATE users SET email = \"($adminEmail)\", password = \"($passwordHash)\" WHERE name = \"Admin\""
     ] | str join ";\n"
 
+    # TODO: The schedule never gets applied. Probably need to manually add the cron job. Have a look at source code
+    # to see how it's done
     sudo sqlite3 $dbPath $commands
 }

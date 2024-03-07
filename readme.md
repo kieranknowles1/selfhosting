@@ -11,6 +11,8 @@
     - [Backups](#backups)
     - [Certificate Renewal](#certificate-renewal)
     - [VPN](#vpn)
+  - [Development](#development)
+    - [Template Files](#template-files)
 
 ## Introduction
 This repository is, first and foremost, a personal project. I am sharing it to help others who may be
@@ -115,3 +117,13 @@ A peer will be configured for each device in `userenv.yml`, QR codes for which a
 `${DATA_ROOT}/wireguard/peer_${CLIENT_NAME}/peer_${CLIENT_NAME}.png`.
 
 If you're feeling fancy, you can use `docker logs wireguard` to print these to the terminal and scan them.
+
+## Development
+
+### Template Files
+Files with the `.template` extension are preprocessed during setup to replace variables with their values
+through the Bash syntax `${VARIABLE}`. Theses files are then moved to their final location without the `.template`
+extension.
+
+The output of this process is not tracked by git, each file must be manually added to `.gitignore` to prevent
+it from being committed.
