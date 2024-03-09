@@ -37,7 +37,7 @@ TIME_ZONE: Europe/London
 # avoid any unexpected changes. What's up Docker will show you the available
 # updates for your containers.
 HOMEPAGE_VERSION: v0.8.8
-IMMICH_VERSION: v1.97.0
+IMMICH_VERSION: v1.98.1
 
 #==============================================================================
 # Service Config

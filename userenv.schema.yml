@@ -1,5 +1,4 @@
 ---
-# TODO: See if any of these are unused and remove them
 title: Private User Environment Variables
 
 type: object
