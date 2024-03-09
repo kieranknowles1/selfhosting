@@ -4,6 +4,7 @@
     - [Guiding Principles](#guiding-principles)
   - [Setup](#setup)
     - [Configuration](#configuration)
+    - [Serving Static Files](#serving-static-files)
     - [Install](#install)
   - [Post setup](#post-setup)
     - [Service Configuration](#service-configuration)
@@ -72,6 +73,11 @@ require you to move the data manually. To apply changes, run `setup.nu` with the
 You will more than likely need to change the paths in `environment.yml` to suit your setup.
 I recommend using a separate drive formatted as btrfs for forward compatibility once [#5](https://github.com/kieranknowles1/selfhosting/issues/5) is implemented.
 Or not, I haven't done any research into whether it suits my needs yet. I'll update this once it's clear what path I want to take.
+
+### Serving Static Files
+Files in `${DATA_ROOT}/nginx/static` will be served at `https://${DOMAIN}/static/`. This is primarialy used
+to host a resource pack for Minecraft, but can be used for anything you like. Please be mindful that there is
+no authentication on this directory, so don't put anything sensitive in there.
 
 ### Install
 Once your secrets are defined, you can install the Nushell terminal and run the setup script

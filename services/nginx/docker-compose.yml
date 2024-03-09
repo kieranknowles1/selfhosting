@@ -19,5 +19,6 @@ services:
       - ./includes:/etc/nginx/includes
       - ${DATA_ROOT}/nginx/certbot/www:/var/www/certbot
       - ${DATA_ROOT}/nginx/certbot/conf:/etc/letsencrypt
+      - ${DATA_ROOT}/nginx/static:/var/www/static
     restart: unless-stopped
     command: [nginx, '-g', 'daemon off;']

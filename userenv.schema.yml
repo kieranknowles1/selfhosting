@@ -41,6 +41,12 @@ properties:
     type: string
     description: |
       The ops for the Minecraft server. Set to the usernames of everyone who should be able to use server commands, split by newlines.
+  MINECRAFT_RESOURCE_PACK:
+    type: string
+    description: |
+      The path to the Minecraft resource pack, see readme.md#serving-static-files for details on hosting this
+      locally.
+    example: "https://my-domain.com/static/resource-pack.zip"
   MINECRAFT_WHITELIST:
     type: string
     description: |

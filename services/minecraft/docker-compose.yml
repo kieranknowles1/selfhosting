@@ -19,3 +19,4 @@ services:
       - MOTD=A Minecraft Server Powered by Docker
       - OPS=${MINECRAFT_OPS}
       - WHITELIST=${MINECRAFT_WHITELIST}
+      - RESOURCE_PACK=${MINECRAFT_RESOURCE_PACK}
