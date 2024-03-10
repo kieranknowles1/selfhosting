@@ -51,9 +51,7 @@ export def main [
 
     if ((not $update) or $expand_cert) {
         log info "Issuing SSL certificate"
-        with-env $environment {
-            issue_cert $environment.DOMAIN_NAME ($domains | get domain) $environment.OWNER_EMAIL $environment.DATA_ROOT
-        }
+        issue_cert $environment.DOMAIN_NAME ($domains | get domain) $environment.OWNER_EMAIL $environment.DATA_ROOT
     }
 
     if (not $update) {
