@@ -7,11 +7,12 @@ services:
       - "${MINECRAFT_PORT}:25565"
     volumes:
       - "${DATA_ROOT}/minecraft:/data"
+      - type: bind
+        source: "./mods.txt"
+        target: "/extra/mods.txt"
     environment:
       - TYPE=FABRIC
-      - |
-        MODS=
-          ${MINECRAFT_MODS}
+      - MODS_FILE=/extra/mods.txt
       # Pause the server 1 hour after the last player leaves
       - ENABLE_AUTOPAUSE=true
       - EXISTING_OPS_FILE=SYNCHRONIZE

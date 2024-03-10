@@ -11,4 +11,5 @@ logs/
 services/adguard/conf/AdGuardHome.yaml
 services/gatus/config/config.yaml
 services/homepage/config/services.yaml
+services/minecraft/mods.txt
 services/nginx/nginx.conf

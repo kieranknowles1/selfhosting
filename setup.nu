@@ -32,7 +32,7 @@ def main [
 
     log info $"Using subdomains ($domains | get domain | str join ', ')"
 
-    let full_env = {
+    let template_env = {
         ...$environment
         NGINX_CONFIG: ($domains | generate_nginx_config $environment.DOMAIN_NAME $environment.LOCAL_IP)
         GATUS_CONFIG: ($domains | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
@@ -44,13 +44,13 @@ def main [
     ls **/*.template | where not ($it | is-empty) | get name | each {|template|
         log info $"Replacing variables in ($template)"
         let output_file = $template | str replace ".template" ""
-        open $template --raw | replace_vars $full_env | save $output_file --force --raw
+        open $template --raw | replace_vars $template_env | save $output_file --force --raw
     }
 
     log info "Creating containers"
     ls services/*/docker-compose.yml | get name | each { |compose_file|
         log info $"Creating or updating containers for ($compose_file)"
-        with-env $full_env {
+        with-env $template_env {
             docker-compose -f ($compose_file) up --detach --remove-orphans
         }
     }
