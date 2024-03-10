@@ -35,25 +35,12 @@ def main [
 
     log info $"Using subdomains ($domains | get domain | str join ', ')"
 
-    let template_env = {
-        ...$environment
-        NGINX_CONFIG: ($domains | generate_nginx_config $environment.DOMAIN_NAME $environment.LOCAL_IP)
-        GATUS_CONFIG: ($domains | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
-        ADGUARD_PASSWORD_HASH: (php hash_password $environment.ADGUARD_PASSWORD)
-        SPEEDTEST_SCHEDULE_HUMAN: (cron describe $environment.SPEEDTEST_SCHEDULE)
-        MINECRAFT_MODS: (generate_minecraft_mods $environment.MINECRAFT_VERSION)
-    }
-
-    ls **/*.template | where not ($it | is-empty) | get name | each {|template|
-        log info $"Replacing variables in ($template)"
-        let output_file = $template | str replace ".template" ""
-        open $template --raw | replace_vars $template_env | save $output_file --force --raw
-    }
+    replace_templates $environment $domains
 
     log info "Creating containers"
     ls services/*/docker-compose.yml | get name | each { |compose_file|
         log info $"Creating or updating containers for ($compose_file)"
-        with-env $template_env {
+        with-env $environment {
             docker-compose -f ($compose_file) up --detach --remove-orphans
         }
     }
@@ -84,6 +71,28 @@ def main [
     log info "Please back up the following files:"
     log info "  - userenv.yml"
     log info "See readme.md for remaining setup steps"
+}
+
+def replace_templates [
+    environment: record
+    domains: list
+] {
+    log info "Replacing variables in templates"
+
+    let template_env = {
+        ...$environment
+        NGINX_CONFIG: ($domains | generate_nginx_config $environment.DOMAIN_NAME $environment.LOCAL_IP)
+        GATUS_CONFIG: ($domains | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
+        ADGUARD_PASSWORD_HASH: (php hash_password $environment.ADGUARD_PASSWORD)
+        SPEEDTEST_SCHEDULE_HUMAN: (cron describe $environment.SPEEDTEST_SCHEDULE)
+        MINECRAFT_MODS: (generate_minecraft_mods $environment.MINECRAFT_VERSION)
+    }
+
+    ls **/*.template | where not ($it | is-empty) | get name | each {|template|
+        log info $"Replacing variables in ($template)"
+        let output_file = $template | str replace ".template" ""
+        open $template --raw | replace_vars $template_env | save $output_file --force --raw
+    }
 }
 
 def reload_nginx [] {
