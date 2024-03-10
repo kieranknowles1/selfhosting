@@ -7,16 +7,20 @@ services:
       - "${MINECRAFT_PORT}:25565"
     volumes:
       - "${DATA_ROOT}/minecraft:/data"
-    # TODO: Install Lithium and Phosphor for better performance
     environment:
+      - TYPE=FABRIC
+      - |
+        MODS=
+          ${MINECRAFT_MODS}
       # Pause the server 1 hour after the last player leaves
       - ENABLE_AUTOPAUSE=true
-      - EULA=${MINECRAFT_EULA}
       - EXISTING_OPS_FILE=SYNCHRONIZE
       - EXISTING_WHITELIST_FILE=SYNCHRONIZE
       # Required to avoid a "tick took too long" crash after a pause
       - MAX_TICK_TIME=-1
       - MOTD=A Minecraft Server Powered by Docker
+      # User settings, configured in `userenv.yml`
+      - EULA=${MINECRAFT_EULA}
       - OPS=${MINECRAFT_OPS}
       - WHITELIST=${MINECRAFT_WHITELIST}
       - RESOURCE_PACK=${MINECRAFT_RESOURCE_PACK}

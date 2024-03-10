@@ -32,24 +32,25 @@ def main [
 
     log info $"Using subdomains ($domains | get domain | str join ', ')"
 
-    let template_env = {
+    let full_env = {
         ...$environment
         NGINX_CONFIG: ($domains | generate_nginx_config $environment.DOMAIN_NAME $environment.LOCAL_IP)
         GATUS_CONFIG: ($domains | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
         ADGUARD_PASSWORD_HASH: (php_hash_password $environment.ADGUARD_PASSWORD)
         SPEEDTEST_SCHEDULE_HUMAN: (describe_cron $environment.SPEEDTEST_SCHEDULE)
+        MINECRAFT_MODS: (generate_minecraft_mods $environment.MINECRAFT_VERSION)
     }
 
     ls **/*.template | where not ($it | is-empty) | get name | each {|template|
         log info $"Replacing variables in ($template)"
         let output_file = $template | str replace ".template" ""
-        open $template --raw | replace_vars $template_env | save $output_file --force --raw
+        open $template --raw | replace_vars $full_env | save $output_file --force --raw
     }
 
     log info "Creating containers"
     ls services/*/docker-compose.yml | get name | each { |compose_file|
         log info $"Creating or updating containers for ($compose_file)"
-        with-env $environment {
+        with-env $full_env {
             docker-compose -f ($compose_file) up --detach --remove-orphans
         }
     }
@@ -175,6 +176,26 @@ def generate_gatus_config [
       - \"[STATUS] == 200\"
       - \"[RESPONSE_TIME] < ($timeout)\"
 "} | str join}
+
+# Get the download URL for a mod from Modrinth of a specific Minecraft version
+def modrinth_project_download [
+    idOrSlug: string
+    minecraftVersion: string
+]: nothing -> string {
+    let url = $"https://api.modrinth.com/v2/project/($idOrSlug)/version?game_versions=[\"($minecraftVersion)\"]"
+
+    let response = http get $url
+    let files = $response.files | flatten
+
+    return ($files | get url | str join "\n")
+}
+
+# Generate a list of download links for Minecraft mods
+def generate_minecraft_mods [
+    version: string
+]: nothing -> string {
+    modrinth_project_download lithium $version
+}
 
 # Replace variables in a string
 # The special `DOLLAR` variable is used to escape dollar signs
