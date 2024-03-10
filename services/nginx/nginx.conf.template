@@ -31,17 +31,12 @@ http {
         include /etc/nginx/includes/global.conf;
         server_name ${DOMAIN_NAME};
 
-        location /static/ {
-            alias /var/www/static/;
-        }
-    }
-
-    server {
-        include /etc/nginx/includes/global.conf;
-        server_name ${DOMAIN_NAME};
-
         location / {
             proxy_pass http://${LOCAL_IP}:${HOMEPAGE_PORT}/;
+        }
+
+        location /static/ {
+            alias /var/www/static/;
         }
     }
 
