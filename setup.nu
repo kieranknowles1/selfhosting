@@ -9,11 +9,18 @@ use services.nu get_services
 use utils/cron.nu "cron describe"
 use utils/php.nu "php hash_password"
 
+def list_services [] nothing -> list<string> {
+    ls services/*/docker-compose.yml | get name | parse "services/{name}/docker-compose.yml" | get name
+}
+
+def compose_path [] list<string> -> list<string> {each {|it| $"services/($it)/docker-compose.yml"}}
+
 # Setup script for self-hosted runner
 # Installs dependencies and creates containers
-def main [
+export def main [
     --update    # Update containers without reinstalling everything
     --expand_cert # Expand the SSL certificate to include new subdomains, even if updating
+    --service: string@list_services # Only update a specific service
 ] {
     if (is-admin) {
         log error "This script should not be run as root"
@@ -38,11 +45,8 @@ def main [
     replace_templates $environment $domains
 
     log info "Creating containers"
-    ls services/*/docker-compose.yml | get name | each { |compose_file|
-        log info $"Creating or updating containers for ($compose_file)"
-        with-env $environment {
-            docker-compose -f ($compose_file) up --detach --remove-orphans
-        }
+    ($service | default (list_services)) | compose_path | each { |compose_file|
+        create_container $compose_file $environment
     }
 
     if ((not $update) or $expand_cert) {
@@ -73,6 +77,16 @@ def main [
     log info "See readme.md for remaining setup steps"
 }
 
+def create_container [
+    compose_file: string
+    environment: record
+] {
+    log info $"Creating or updating containers for ($compose_file)"
+    with-env $environment {
+        docker-compose -f ($compose_file) up --detach --remove-orphans
+    }
+}
+
 def replace_templates [
     environment: record
     domains: list
@@ -98,7 +112,7 @@ def replace_templates [
 def reload_nginx [] {
     log info "Reloading nginx configuration"
     # Just calling reload doesn't always work, so we'll restart the container
-    docker-compose -f services/nginx/docker-compose.yml restart
+    docker-compose -f ("nginx" | compose_path) restart
 }
 
 # Install dependencies and give the current user the needed permissions
@@ -229,7 +243,7 @@ def create_paperless_superuser [
     $environment
 ] {
     with-env $environment {
-        docker-compose  -f services/paperlessngx/docker-compose.yml run --rm webserver createsuperuser
+        docker-compose  -f ("paperlessngx" | compose_path) run --rm webserver createsuperuser
     }
 }
 
