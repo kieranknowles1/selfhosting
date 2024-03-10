@@ -2,7 +2,7 @@
 
 # TODO: This is getting a bit long, consider splitting it up
 
-use get_env.nu
+use config.nu get_env
 use logging.nu *
 use services.nu get_services
 

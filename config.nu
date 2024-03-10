@@ -1,5 +1,5 @@
 # Get environment variables that can be passed to Docker and other tools
-export def main []: nothing -> record {{
+export def get_env []: nothing -> record {{
         CACHE_ROOT: $"(pwd)/cache",
         LOGS_ROOT: $"(pwd)/logs",
         SSHKEYS: $"/home/(whoami)/.ssh",

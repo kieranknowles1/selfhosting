@@ -4,7 +4,7 @@
 # WARN: If a backup fails, containers will not be resumed. A server reboot is recommended in this case
 # Should be run as root
 
-use get_env.nu
+use config.nu get_env
 use logging.nu *
 use services.nu get_services
 
