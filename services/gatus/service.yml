@@ -1,0 +1,4 @@
+domains:
+  - domain: gatus
+    name: Gatus
+    portVar: GATUS_PORT

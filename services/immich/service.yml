@@ -1,0 +1,4 @@
+domains:
+  - domain: immich
+    name: Immich
+    portVar: IMMICH_PORT

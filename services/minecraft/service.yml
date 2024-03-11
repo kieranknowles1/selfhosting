@@ -1,0 +1,5 @@
+domains:
+  - domain: bluemap
+    name: Bluemap
+    portVar: MINECRAFT_BLUEMAP_PORT
+usesData: false

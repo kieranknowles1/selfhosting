@@ -19,7 +19,7 @@ definitions:
       domain:
         type: string
         description: The subdomain that will be exposed by the service.
-        pattern: "^[a-z]+$"
+        pattern: ^[a-z-]+$
       name:
         type: string
         description: User-friendly name to be used in UI.

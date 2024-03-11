@@ -4,7 +4,6 @@
 
 use config.nu get_env
 use logging.nu *
-use services.nu get_services
 
 use utils/cron.nu "cron describe"
 use utils/php.nu "php hash_password"

@@ -1,0 +1,4 @@
+domains:
+  - domain: speedtest
+    name: Speedtest
+    portVar: SPEEDTEST_PORT

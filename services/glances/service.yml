@@ -1,0 +1,4 @@
+domains:
+  - domain: glances
+    name: Glances
+    portVar: GLANCES_PORT

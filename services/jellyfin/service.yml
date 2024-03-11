@@ -1,0 +1,4 @@
+domains:
+  - domain: jellyfin
+    name: Jellyfin
+    portVar: JELLYFIN_PORT
