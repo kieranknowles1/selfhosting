@@ -1,4 +1,5 @@
 # Get a list of services to deploy, along with their configuration
+# TODO: Move all of this to service.yml
 export def get_services [
     config: record
 ]: nothing -> list<record<name: string, port: int, health_endpoint: string, backup_pause: bool>> {

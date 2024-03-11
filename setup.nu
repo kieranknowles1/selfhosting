@@ -8,7 +8,7 @@ use services.nu get_services
 
 use utils/cron.nu "cron describe"
 use utils/php.nu "php hash_password"
-use utils/service.nu "service list"
+use utils/service.nu ["service list", "service subdomains"]
 
 def compose_path [] list<string> -> list<string> {each {|it| $"services/($it)/docker-compose.yml"}}
 
@@ -36,7 +36,7 @@ export def main [
         log warn $"Using non-btrfs filesystems for DATA_ROOT is deprecated, found ($datafs)"
     }
 
-    let domains = get_services $environment | filter { |service| ($service.domain? | default false) != false }
+    let domains = service subdomains $environment
 
     log info $"Using subdomains ($domains | get domain | str join ', ')"
 
