@@ -2,3 +2,4 @@ domains:
   - domain: joplin
     name: Joplin
     portVar: JOPLIN_PORT
+usesData: true
