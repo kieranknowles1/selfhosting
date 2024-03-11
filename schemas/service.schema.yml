@@ -1,0 +1,31 @@
+---
+title: Service metadata
+
+type: object
+properties:
+  domains:
+    type: array
+    items: { $ref: "#/definitions/Domain" }
+    description: List of subdomains that will be exposed by the service, and the variables used for their ports.
+  usesData:
+    type: boolean
+    description: Whether the service uses a data volume and needs to be paused or snapshotted during backups.
+additionalProperties: false
+
+definitions:
+  Domain:
+    type: object
+    properties:
+      domain:
+        type: string
+        description: The subdomain that will be exposed by the service.
+        pattern: "^[a-z]+$"
+      name:
+        type: string
+        description: User-friendly name to be used in UI.
+      portVar:
+        type: string
+        description: The name of the environment variable that will be used to set the port for this domain.
+        pattern: "^[A-Z_]+_PORT$"
+    required: [domain, name, portVar]
+    additionalProperties: false
