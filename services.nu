@@ -8,6 +8,11 @@ export def get_services [
         port: $config.ADGUARD_WEB_PORT,
         directory: 'adguard',
     }, {
+        name: 'Bluemap',
+        domain: 'bluemap',
+        port: $config.MINECRAFT_BLUEMAP_PORT,
+        directory: 'minecraft',
+    }, {
         name: 'Chef',
         domain: 'chef',
         port: $config.CHEF_WEB_PORT,

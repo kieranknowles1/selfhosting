@@ -21,6 +21,7 @@ export def main [
     --update    # Update containers without reinstalling everything
     --expand_cert # Expand the SSL certificate to include new subdomains, even if updating
     --service: string@list_services # Only update a specific service
+    --restart # Restart the containers instead of updating
 ] {
     if (is-admin) {
         log error "This script should not be run as root"
@@ -46,7 +47,7 @@ export def main [
 
     log info "Creating containers"
     ($service | default (list_services)) | compose_path | each { |compose_file|
-        create_container $compose_file $environment
+        create_container $compose_file $environment $restart
     }
 
     if ((not $update) or $expand_cert) {
@@ -78,10 +79,12 @@ export def main [
 def create_container [
     compose_file: string
     environment: record
+    restart: bool
 ] {
     log info $"Creating or updating containers for ($compose_file)"
+    let command = if ($restart) {["restart"]} else {["up" "--detach" "--remove-orphans"]}
     with-env $environment {
-        docker-compose -f ($compose_file) up --detach --remove-orphans
+        run-external docker-compose "-f" $compose_file ...$command
     }
 }
 
@@ -191,10 +194,11 @@ def modrinth_project_download [
     idOrSlug: string
     minecraftVersion: string
 ]: nothing -> string {
-    let url = $"https://api.modrinth.com/v2/project/($idOrSlug)/version?game_versions=[\"($minecraftVersion)\"]"
+    let url = $"https://api.modrinth.com/v2/project/($idOrSlug)/version?game_versions=[\"($minecraftVersion)\"]&loaders=[\"fabric\"]"
 
     let response = http get $url
-    let files = $response.files | flatten
+    # NOTE: This assumes the API returns the latest version first
+    let files = $response.0.files
 
     return ($files | get url | str join "\n")
 }
@@ -202,9 +206,11 @@ def modrinth_project_download [
 # Generate a list of download links for Minecraft mods
 def generate_minecraft_mods [
     version: string
-]: nothing -> string {
-    modrinth_project_download lithium $version
-}
+]: nothing -> string {[
+    (modrinth_project_download fabric-api $version)
+    (modrinth_project_download lithium $version)
+    (modrinth_project_download bluemap $version)
+] | str join "\n"}
 
 # Replace variables in a string
 # The special `DOLLAR` variable is used to escape dollar signs

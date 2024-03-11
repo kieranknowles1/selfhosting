@@ -5,8 +5,10 @@ services:
     container_name: minecraft
     ports:
       - "${MINECRAFT_PORT}:25565"
+      - "${MINECRAFT_BLUEMAP_PORT}:8100"
     volumes:
       - "${DATA_ROOT}/minecraft:/data"
+      - ./config:/config
       - type: bind
         source: "./mods.txt"
         target: "/extra/mods.txt"

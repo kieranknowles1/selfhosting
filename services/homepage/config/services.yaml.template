@@ -154,6 +154,7 @@
 
 - Games:
     - Minecraft:
+        href: "https://bluemap.${DOMAIN_NAME}"
         description: Connect at ${DOMAIN_NAME}.
         icon: minecraft
         server: local-docker
