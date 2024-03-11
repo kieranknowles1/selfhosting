@@ -7,6 +7,7 @@
 use config.nu get_env
 use logging.nu *
 use services.nu get_services
+use utils/service.nu "service usingdata"
 
 if not (is-admin) {
     log error "This script must be run as root"
@@ -14,7 +15,7 @@ if not (is-admin) {
 }
 
 let environment = get_env
-let services = get_services $environment
+let toPause = service usingdata
 
 def create_backup [
     repo: string,
@@ -34,12 +35,10 @@ log info $"Backup started at ($start)"
 log info "========================="
 
 log info "Containers going PAUSED for backup"
-for service in $services {
-    if ($service.backup_pause? == true) {
-        log info $"Pausing ($service.name)"
-        with-env $environment {
-            docker-compose --file $"($env.FILE_PWD)/services/($service.directory)/docker-compose.yml" pause
-        }
+for service in $toPause {
+    log info $"Pausing ($service)"
+    with-env $environment {
+        docker-compose --file $"($env.FILE_PWD)/services/($service)/docker-compose.yml" pause
     }
 }
 
@@ -49,12 +48,10 @@ create_backup $environment.RESTIC_REMOTE_REPO $environment.RESTIC_PASSWORD $envi
 
 
 log info "Containers going UNPAUSED after backup"
-for service in $services {
-    if ($service.backup_pause? == true) {
-        log info $"Unpausing ($service.name)"
-        with-env $environment {
-            docker-compose --file $"($env.FILE_PWD)/services/($service.directory)/docker-compose.yml" unpause
-        }
+for service in $toPause {
+    log info $"Unpausing ($service)"
+    with-env $environment {
+        docker-compose --file $"($env.FILE_PWD)/services/($service)/docker-compose.yml" unpause
     }
 }
 

@@ -22,3 +22,8 @@ export def "service subdomains" [
         port: ($environment | get $it.portVar)
     }}
 }
+
+# List subdomains that use the data folder
+export def "service usingdata" [] nothing -> list<string> {
+    service list | where {|it| open $"($env.FILE_PWD)/services/($it)/service.yml" | get usesData? }
+}
