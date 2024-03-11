@@ -8,10 +8,7 @@ use services.nu get_services
 
 use utils/cron.nu "cron describe"
 use utils/php.nu "php hash_password"
-
-def list_services [] nothing -> list<string> {
-    ls services/*/docker-compose.yml | get name | parse "services/{name}/docker-compose.yml" | get name
-}
+use utils/service.nu "service list"
 
 def compose_path [] list<string> -> list<string> {each {|it| $"services/($it)/docker-compose.yml"}}
 
@@ -20,7 +17,7 @@ def compose_path [] list<string> -> list<string> {each {|it| $"services/($it)/do
 export def main [
     --update    # Update containers without reinstalling everything
     --expand_cert # Expand the SSL certificate to include new subdomains, even if updating
-    --service: string@list_services # Only update a specific service
+    --service: string@"service list" # Only update a specific service
     --restart # Restart the containers instead of updating
 ] {
     if (is-admin) {
@@ -46,7 +43,7 @@ export def main [
     replace_templates $environment $domains
 
     log info "Creating containers"
-    ($service | default (list_services)) | compose_path | each { |compose_file|
+    ($service | default (service list)) | compose_path | each { |compose_file|
         create_container $compose_file $environment $restart
     }
 
