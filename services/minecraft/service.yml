@@ -4,4 +4,4 @@ domains:
     portVar: MINECRAFT_BLUEMAP_PORT
     # Minecraft pauses itself when no one is online, and Bluemap is hosted through the same process
     includeInStatus: false
-usesData: false
+usesData: true
