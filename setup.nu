@@ -14,10 +14,10 @@ def compose_path [] list<string> -> list<string> {each {|it| $"services/($it)/do
 # Setup script for self-hosted runner
 # Installs dependencies and creates containers
 export def main [
-    --update    # Update containers without reinstalling everything
-    --expand_cert # Expand the SSL certificate to include new subdomains, even if updating
-    --service: string@"service list" # Only update a specific service
-    --restart # Restart the containers instead of updating
+    --update (-u)    # Update containers without reinstalling everything
+    --expand_cert (-e) # Expand the SSL certificate to include new subdomains, even if updating
+    --service (-s): string@"service list" # Only update a specific service
+    --restart (-r) # Restart the containers instead of updating
 ] {
     if (is-admin) {
         log error "This script should not be run as root"
