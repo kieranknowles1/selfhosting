@@ -1,4 +1,4 @@
-use "../logging.nu" "log error"
+use "log.nu" "log error"
 
 # List all services in the ./services directory
 export def "service list" [] nothing -> list<string> {

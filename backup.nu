@@ -5,7 +5,7 @@
 # Should be run as root
 
 use config.nu get_env
-use logging.nu *
+use utils/log.nu *
 use utils/service.nu "service usingdata"
 
 if not (is-admin) {
