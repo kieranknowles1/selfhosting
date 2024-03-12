@@ -3,9 +3,9 @@
 # TODO: This is getting a bit long, consider splitting it up
 
 use config.nu get_env
-use logging.nu *
 
 use utils/cron.nu "cron describe"
+use utils/log.nu *
 use utils/php.nu "php hash_password"
 use utils/service.nu ["service list", "service subdomains"]
 

@@ -2,11 +2,21 @@
 # NOTE: Environment variables are replaced by the setup script,
 # Use ${DOLLAR} to escape $ in the config file. This will be replaced by $ after envsubst
 
+# PID for rootless container
+pid /tmp/nginx.pid;
+
 events {
 
 }
 
 http {
+    # Temporary paths, needed for rootless container
+    client_body_temp_path /tmp/client_temp;
+    proxy_temp_path       /tmp/proxy_temp_path;
+    fastcgi_temp_path     /tmp/fastcgi_temp;
+    uwsgi_temp_path       /tmp/uwsgi_temp;
+    scgi_temp_path        /tmp/scgi_temp;
+
     # All domains, HTTP
     # Redirect all http requests to https, except for the acme-challenge, which will be hosted by certbot
     server {
