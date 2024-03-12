@@ -7,6 +7,7 @@ events {
 }
 
 http {
+    # All domains, HTTP
     # Redirect all http requests to https, except for the acme-challenge, which will be hosted by certbot
     server {
         listen 80;
@@ -27,9 +28,10 @@ http {
     ssl_certificate /etc/letsencrypt/live/${DOMAIN_NAME}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${DOMAIN_NAME}/privkey.pem;
 
+    # Root domain, HTTPS
     server {
         include /etc/nginx/includes/global.conf;
-        server_name ${DOMAIN_NAME};
+        server_name ${DOMAIN_NAME} home.arpa;
 
         location / {
             proxy_pass http://${LOCAL_IP}:${HOMEPAGE_PORT}/;

@@ -104,6 +104,7 @@ filters:
 whitelist_filters: []
 user_rules:
   - ${LOCAL_IP} home.arpa
+${ADGUARD_CONFIG}
 dhcp:
   enabled: false
   interface_name: ""

@@ -92,6 +92,7 @@ def replace_templates [
 
     let template_env = {
         ...$environment
+        ADGUARD_CONFIG: ($domains | generate_adguard_config $environment.LOCAL_IP)
         NGINX_CONFIG: ($domains | generate_nginx_config $environment.DOMAIN_NAME $environment.LOCAL_IP)
         GATUS_CONFIG: ($domains | where includeInStatus | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
         ADGUARD_PASSWORD_HASH: (php hash_password $environment.ADGUARD_PASSWORD)
@@ -157,7 +158,7 @@ def generate_nginx_config [
     # ($it.domain), ($it.port)
     server {
         include /etc/nginx/includes/global.conf;
-        server_name ($it.domain).($domain_name);
+        server_name ($it.domain).($domain_name) ($it.domain).home.arpa;
 
         location / {
             proxy_pass http://($local_ip):($it.port)/;
@@ -183,6 +184,13 @@ def generate_gatus_config [
     conditions:
       - \"[STATUS] == 200\"
       - \"[RESPONSE_TIME] < ($timeout)\"
+"} | str join}
+
+# Generate config to route subdomains of home.arpa to the local IP
+def generate_adguard_config [
+    local_ip: string
+]: list<record<domain: string>> -> string {each {|it| $"
+  - ($local_ip) ($it.domain).home.arpa
 "} | str join}
 
 # Get the download URL for a mod from Modrinth of a specific Minecraft version
