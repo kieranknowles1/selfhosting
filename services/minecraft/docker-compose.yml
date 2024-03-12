@@ -3,6 +3,8 @@ services:
   minecraft:
     image: itzg/minecraft-server
     container_name: minecraft
+    # Restart on crash, retry 5 times
+    restart: on-failure:5
     ports:
       - "${MINECRAFT_PORT}:25565"
       - "${MINECRAFT_BLUEMAP_PORT}:8100"

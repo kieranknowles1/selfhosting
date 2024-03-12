@@ -8,7 +8,7 @@ export def "service list" [] nothing -> list<string> {
 # List subdomains, their service names, and their ports
 export def "service subdomains" [
     $environment: record
-] nothing -> list<record<domain: string, name: string, port: int>> {
+] nothing -> list<record<domain: string, name: string, port: int, includeInStatus: bool>> {
     service list | each {|it|
         try {
             open $"($env.FILE_PWD)/services/($it)/service.yml"
@@ -20,6 +20,7 @@ export def "service subdomains" [
         domain: $it.domain
         name: $it.name
         port: ($environment | get $it.portVar)
+        includeInStatus: ($it.includeInStatus? | default true)
     }}
 }
 

@@ -93,7 +93,7 @@ def replace_templates [
     let template_env = {
         ...$environment
         NGINX_CONFIG: ($domains | generate_nginx_config $environment.DOMAIN_NAME $environment.LOCAL_IP)
-        GATUS_CONFIG: ($domains | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
+        GATUS_CONFIG: ($domains | where includeInStatus | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
         ADGUARD_PASSWORD_HASH: (php hash_password $environment.ADGUARD_PASSWORD)
         SPEEDTEST_SCHEDULE_HUMAN: (cron describe $environment.SPEEDTEST_SCHEDULE)
         MINECRAFT_MODS: (generate_minecraft_mods $environment.MINECRAFT_VERSION)
