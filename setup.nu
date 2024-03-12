@@ -2,6 +2,7 @@
 
 # TODO: This is getting a bit long, consider splitting it up
 
+use audit.nu
 use config.nu get_env
 
 use utils/cron.nu "cron describe"
@@ -64,12 +65,16 @@ export def main [
     configure_speedtest $environment.DATA_ROOT $environment.OWNER_EMAIL $environment.ADGUARD_PASSWORD $environment.SPEEDTEST_SCHEDULE $environment.SPEEDTEST_RETENTION
     reload_nginx
 
+    log info "Running basic audit"
+    audit
+
     log info "========================================================================="
     log info "Setup complete"
     log info "========================================================================="
     log info "Please back up the following files:"
     log info "  - userenv.yml"
     log info "See readme.md for remaining setup steps"
+    log info "========================================================================="
 }
 
 def create_container [
