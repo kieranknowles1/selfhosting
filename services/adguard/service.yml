@@ -1,0 +1,5 @@
+domains:
+  - domain: adguard
+    name: AdGuard Home
+    portVar: ADGUARD_WEB_PORT
+usesData: true

@@ -1,0 +1,5 @@
+domains:
+  - domain: wud
+    name: What's Up Docker
+    portVar: WUD_PORT
+usesData: true

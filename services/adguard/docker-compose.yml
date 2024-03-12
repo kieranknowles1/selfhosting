@@ -2,6 +2,7 @@ version: '3.8'
 services:
   adguard:
     image: adguard/adguardhome:latest
+    user: ${USER_ID}:${GROUP_ID}
     container_name: adguard
     restart: unless-stopped
     ports:

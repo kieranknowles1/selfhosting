@@ -15,6 +15,7 @@
 
 		"yaml.schemas": {
 			"http://json-schema.org/draft-07/schema": "*.schema.yml",
+			"schemas/service.schema.yml": "service.yml",
 			"schemas/userenv.schema.yml": "userenv.yml",
 		},
 	},

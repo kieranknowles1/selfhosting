@@ -2,26 +2,23 @@
 
 # TODO: This is getting a bit long, consider splitting it up
 
+use audit.nu
 use config.nu get_env
-use logging.nu *
-use services.nu get_services
 
 use utils/cron.nu "cron describe"
+use utils/log.nu *
 use utils/php.nu "php hash_password"
-
-def list_services [] nothing -> list<string> {
-    ls services/*/docker-compose.yml | get name | parse "services/{name}/docker-compose.yml" | get name
-}
+use utils/service.nu ["service list", "service subdomains"]
 
 def compose_path [] list<string> -> list<string> {each {|it| $"services/($it)/docker-compose.yml"}}
 
 # Setup script for self-hosted runner
 # Installs dependencies and creates containers
 export def main [
-    --update    # Update containers without reinstalling everything
-    --expand_cert # Expand the SSL certificate to include new subdomains, even if updating
-    --service: string@list_services # Only update a specific service
-    --restart # Restart the containers instead of updating
+    --update (-u)    # Update containers without reinstalling everything
+    --expand_cert (-e) # Expand the SSL certificate to include new subdomains, even if updating
+    --service (-s): string@"service list" # Only update a specific service
+    --restart (-r) # Restart the containers instead of updating
 ] {
     if (is-admin) {
         log error "This script should not be run as root"
@@ -39,14 +36,14 @@ export def main [
         log warn $"Using non-btrfs filesystems for DATA_ROOT is deprecated, found ($datafs)"
     }
 
-    let domains = get_services $environment | filter { |service| ($service.domain? | default false) != false }
+    let domains = service subdomains $environment
 
     log info $"Using subdomains ($domains | get domain | str join ', ')"
 
     replace_templates $environment $domains
 
     log info "Creating containers"
-    ($service | default (list_services)) | compose_path | each { |compose_file|
+    ($service | default (service list)) | compose_path | each { |compose_file|
         create_container $compose_file $environment $restart
     }
 
@@ -68,12 +65,16 @@ export def main [
     configure_speedtest $environment.DATA_ROOT $environment.OWNER_EMAIL $environment.ADGUARD_PASSWORD $environment.SPEEDTEST_SCHEDULE $environment.SPEEDTEST_RETENTION
     reload_nginx
 
+    log info "Running basic audit"
+    audit
+
     log info "========================================================================="
     log info "Setup complete"
     log info "========================================================================="
     log info "Please back up the following files:"
     log info "  - userenv.yml"
     log info "See readme.md for remaining setup steps"
+    log info "========================================================================="
 }
 
 def create_container [
@@ -96,8 +97,9 @@ def replace_templates [
 
     let template_env = {
         ...$environment
+        ADGUARD_CONFIG: ($domains | generate_adguard_config $environment.LOCAL_IP)
         NGINX_CONFIG: ($domains | generate_nginx_config $environment.DOMAIN_NAME $environment.LOCAL_IP)
-        GATUS_CONFIG: ($domains | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
+        GATUS_CONFIG: ($domains | where includeInStatus | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
         ADGUARD_PASSWORD_HASH: (php hash_password $environment.ADGUARD_PASSWORD)
         SPEEDTEST_SCHEDULE_HUMAN: (cron describe $environment.SPEEDTEST_SCHEDULE)
         MINECRAFT_MODS: (generate_minecraft_mods $environment.MINECRAFT_VERSION)
@@ -161,7 +163,7 @@ def generate_nginx_config [
     # ($it.domain), ($it.port)
     server {
         include /etc/nginx/includes/global.conf;
-        server_name ($it.domain).($domain_name);
+        server_name ($it.domain).($domain_name) ($it.domain).home.arpa;
 
         location / {
             proxy_pass http://($local_ip):($it.port)/;
@@ -187,6 +189,13 @@ def generate_gatus_config [
     conditions:
       - \"[STATUS] == 200\"
       - \"[RESPONSE_TIME] < ($timeout)\"
+"} | str join}
+
+# Generate config to route subdomains of home.arpa to the local IP
+def generate_adguard_config [
+    local_ip: string
+]: list<record<domain: string>> -> string {each {|it| $"
+  - ($local_ip) ($it.domain).home.arpa
 "} | str join}
 
 # Get the download URL for a mod from Modrinth of a specific Minecraft version
