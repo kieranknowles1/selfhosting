@@ -1,4 +1,0 @@
-domains:
-  - domain: cyberchef
-    name: CyberChef
-    portVar: CYBERCHEF_PORT
