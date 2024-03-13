@@ -186,6 +186,8 @@ def generate_gatus_config [
     group: Services
     url: https://($it.domain).($domain_name)($it.health_endpoint? | default "/")
     interval: 5m
+    client:
+        insecure: true
     conditions:
       - \"[STATUS] == 200\"
       - \"[RESPONSE_TIME] < ($timeout)\"
