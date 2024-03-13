@@ -4,6 +4,7 @@ services:
   speedtest:
     image: lscr.io/linuxserver/speedtest-tracker:latest
     container_name: speedtest
+    user: ${USER_ID}:${GROUP_ID}
     restart: unless-stopped
     ports:
       - "${SPEEDTEST_PORT}:80"
