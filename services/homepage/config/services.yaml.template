@@ -86,12 +86,6 @@
         icon: gitea
         server: local-docker
         container: gitea
-    - Cyberchef:
-        href: https://cyberchef.${DOMAIN_NAME}
-        icon: cyberchef
-        server: local-docker
-        container: cyberchef
-        description: Toolkit for encoding, decoding, and analyzing data
 
 - Productivity:
     - Paperless:

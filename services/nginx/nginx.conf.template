@@ -1,6 +1,5 @@
 # Nginx configuration for the reverse proxy
 # NOTE: Environment variables are replaced by the setup script,
-# Use ${DOLLAR} to escape $ in the config file. This will be replaced by $ after envsubst
 
 # PID for rootless container
 pid /tmp/nginx.pid;
@@ -29,7 +28,7 @@ http {
         }
 
         location / {
-            return 301 https://${DOLLAR}host${DOLLAR}request_uri;
+            return 301 https://$host$request_uri;
         }
     }
 
@@ -49,6 +48,25 @@ http {
 
         location /static/ {
             alias /var/www/static/;
+        }
+    }
+
+    # TODO: Once this is added to the main repo, remove this
+    server {
+        include /etc/nginx/includes/global.conf;
+        server_name chef.${DOMAIN_NAME} chef.arpa;
+
+        location / {
+            proxy_pass http://${LOCAL_IP}:${CHEF_WEB_PORT}/;
+        }
+    }
+
+    server {
+        include /etc/nginx/includes/global.conf;
+        server_name chefapi.${DOMAIN_NAME} chefapi.arpa;
+
+        location / {
+            proxy_pass http://${LOCAL_IP}:${CHEF_BACKEND_PORT}/;
         }
     }
 

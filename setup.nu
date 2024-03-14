@@ -123,9 +123,12 @@ def install_deps [] {
     log info "Installing dependencies"
     log info "This requires root privileges"
     sudo apt-get update
-    sudo apt-get install -y docker docker-compose restic sqlite3
+    sudo apt-get install -y docker docker-compose restic sqlite3 nodejs golang-go
 
+    # Used in cron.nu to provide a human-readable description of cron schedules
     sudo npm install --global cronstrue
+    # Used as a replacement for envsubst with strict error checking
+    go install github.com/icy/genvsub@latest
 
     log info "Giving current user access to docker"
     sudo usermod -aG docker $env.USER
@@ -186,6 +189,8 @@ def generate_gatus_config [
     group: Services
     url: https://($it.domain).($domain_name)($it.health_endpoint? | default "/")
     interval: 5m
+    client:
+        insecure: true
     conditions:
       - \"[STATUS] == 200\"
       - \"[RESPONSE_TIME] < ($timeout)\"
@@ -222,15 +227,24 @@ def generate_minecraft_mods [
 ] | str join "\n"}
 
 # Replace variables in a string
-# The special `DOLLAR` variable is used to escape dollar signs
 def replace_vars [
     vars: record
-] string -> string {
-    with-env { ...$vars, DOLLAR: "$" } {
-        # TODO: Using envsubst here isn't ideal, can't detect missing variables
-        envsubst
+] string -> string {each {|it|
+    $env.PATH = [...$env.PATH, $"(go env GOPATH)/bin"]
+
+    with-env $vars {
+        # The "-u" option raises an error if a variable is not defined. Plain envsubst replaces it with an empty string
+        let subst = do {
+            $it | genvsub -u
+        } | complete
+
+        if ($subst.exit_code != 0) {
+            log fatal $"Failed to replace variables. Details: ($subst.stderr)"
+        }
+
+        return $subst.stdout
     }
-}
+}}
 
 def init_restic [
     repo: string

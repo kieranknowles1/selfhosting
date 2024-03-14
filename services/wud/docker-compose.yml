@@ -4,6 +4,8 @@ services:
   whatsuppdocker:
     image: fmartinou/whats-up-docker
     container_name: wud
+    user: ${USER_ID}:${GROUP_ID}
+    restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${DATA_ROOT}/whatsupdocker:/store
