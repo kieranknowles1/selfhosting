@@ -1,6 +1,5 @@
 # Nginx configuration for the reverse proxy
 # NOTE: Environment variables are replaced by the setup script,
-# Use ${DOLLAR} to escape $ in the config file. This will be replaced by $ after envsubst
 
 # PID for rootless container
 pid /tmp/nginx.pid;
@@ -29,7 +28,7 @@ http {
         }
 
         location / {
-            return 301 https://${DOLLAR}host${DOLLAR}request_uri;
+            return 301 https://$host$request_uri;
         }
     }
 

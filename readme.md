@@ -129,7 +129,7 @@ If you're feeling fancy, you can use `docker logs wireguard` to print these to t
 ### Template Files
 Files with the `.template` extension are preprocessed during setup to replace variables with their values
 through the Bash syntax `${VARIABLE}`. Theses files are then moved to their final location without the `.template`
-extension. Dollar signs must be escaped with the special "${DOLLAR}" variable.
+extension.
 
 The output of this process is not tracked by git, each file must be manually added to `.gitignore` to prevent
 it from being committed.
