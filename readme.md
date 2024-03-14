@@ -147,6 +147,9 @@ and are marked with a ⭐ along with a brief explanation of why I believe they s
 - [Immich](https://immich.app/) ⭐ - Photo Library<br>
   I was simply blown away by the quality of Immich's smart search. It's an amazing way to find exactly the
   photo you're thinking of and far surpasses the competition, even the big proprietary players.
+  This is a shining example of how open source incentivises innovation rather than lock-in. Seaching
+  for "kittens cuddling" will return exactly that ([cat tax](media/kittens.jpg), the tabby is called Millie
+  and the tuxedo is called Cookie, they were 6 weeks old at the time of the photo in 2015 and I love them both to bits.), all of the other services I tried would return nothing at all.
 - [Jellyfin](https://jellyfin.org/) - Media server
 - [Joplin](https://joplinapp.org/) - Note taking
 - [Itzg Minecraft](https://github.com/itzg/docker-minecraft-server) - Minecraft server
