@@ -233,9 +233,16 @@ def replace_vars [
     $env.PATH = [...$env.PATH, $"(go env GOPATH)/bin"]
 
     with-env $vars {
-        # TODO: Check for errors and log them
         # The "-u" option raises an error if a variable is not defined. Plain envsubst replaces it with an empty string
-        return ($it | genvsub -u)
+        let subst = do {
+            $it | genvsub -u
+        } | complete
+
+        if ($subst.exit_code != 0) {
+            log fatal $"Failed to replace variables. Details: ($subst.stderr)"
+        }
+
+        return $subst.stdout
     }
 }}
 
