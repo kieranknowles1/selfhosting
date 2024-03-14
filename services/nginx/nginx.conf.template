@@ -52,5 +52,24 @@ http {
         }
     }
 
+    # TODO: Once this is added to the main repo, remove this
+    server {
+        include /etc/nginx/includes/global.conf;
+        server_name chef.${DOMAIN_NAME} chef.arpa;
+
+        location / {
+            proxy_pass http://${LOCAL_IP}:${CHEF_WEB_PORT}/;
+        }
+    }
+
+    server {
+        include /etc/nginx/includes/global.conf;
+        server_name chefapi.${DOMAIN_NAME} chefapi.arpa;
+
+        location / {
+            proxy_pass http://${LOCAL_IP}:${CHEF_BACKEND_PORT}/;
+        }
+    }
+
     ${NGINX_CONFIG}
 }

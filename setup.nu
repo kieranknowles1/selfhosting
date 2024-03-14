@@ -230,6 +230,7 @@ def replace_vars [
 ] string -> string {
     with-env { ...$vars, DOLLAR: "$" } {
         # TODO: Using envsubst here isn't ideal, can't detect missing variables
+        # Look into https://github.com/icy/genvsub
         envsubst
     }
 }
