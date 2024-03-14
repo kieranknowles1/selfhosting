@@ -14,6 +14,7 @@
     - [VPN](#vpn)
   - [Development](#development)
     - [Template Files](#template-files)
+    - [Included Services](#included-services)
 
 ## Introduction
 This repository is, first and foremost, a personal project. I am sharing it to help others who may be
@@ -133,3 +134,24 @@ extension.
 
 The output of this process is not tracked by git, each file must be manually added to `.gitignore` to prevent
 it from being committed.
+
+### Included Services
+The following services are included in this repository. In addition I feel some deserve special attention
+and are marked with a ⭐ along with a brief explanation of why I believe they stand out from the crowd.
+
+- [Adguard](https://adguard.com/) - DNS and ad blocking
+- [Firefly III](https://firefly-iii.org/) - Personal finance
+- [Gatus](https://gatus.io) - Service monitoring
+- [Gitea](https://gitea.io/) - Git hosting
+- [Homepage](https://gethomepage.dev/) - Personal dashboard
+- [Immich](https://immich.app/) ⭐ - Photo Library<br>
+  I was simply blown away by the quality of Immich's smart search. It's an amazing way to find exactly the
+  photo you're thinking of and far surpasses the competition, even the big proprietary players.
+- [Jellyfin](https://jellyfin.org/) - Media server
+- [Joplin](https://joplinapp.org/) - Note taking
+- [Itzg Minecraft](https://github.com/itzg/docker-minecraft-server) - Minecraft server
+- [Nginx](https://www.nginx.com/) - Reverse proxy
+- [Paperless NGX](https://docs.paperless-ngx.com/) - Document management
+- [OpenSpeedTest](https://openspeedtest.com/) - Speed test
+- [WireGuard](https://www.wireguard.com/) - VPN
+- [What's Up Docker](https://github.com/fmartinou/whats-up-docker) - Container Update Checker
