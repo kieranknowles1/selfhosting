@@ -239,7 +239,7 @@ def replace_vars [
         } | complete
 
         if ($subst.exit_code != 0) {
-            log fatal $"Failed to replace variables. Details: ($subst.stderr)"
+            log error $"Failed to replace variables. Details: ($subst.stderr)"
         }
 
         return $subst.stdout
