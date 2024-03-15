@@ -14,5 +14,5 @@ export def get_env []: nothing -> record {{
 
 # Get the local IP address of the machine
 def get_local_ip [] {
-    hostname -I | from ssv --noheaders --minimum-spaces 1 | get column1.0
+    hostname -I | split row " " | get 0
 }
