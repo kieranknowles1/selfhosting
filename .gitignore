@@ -8,8 +8,12 @@ logs/
 *.log
 
 # Template output
+# DO NOT MODIFY ANY FILES IN THIS SECTION
 services/adguard/conf/AdGuardHome.yaml
 services/gatus/config/config.yaml
 services/homepage/config/services.yaml
+# TODO: Deprecated
 services/minecraft/mods.txt
 services/nginx/nginx.conf
+
+*.zip

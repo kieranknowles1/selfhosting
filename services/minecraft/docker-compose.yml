@@ -12,12 +12,21 @@ services:
     volumes:
       - "${DATA_ROOT}/minecraft:/data"
       - ./config:/config
+      - ./datapacks:/datapacks
+      # TODO: Remove this once service-specific env is cached
       - type: bind
         source: "./mods.txt"
         target: "/extra/mods.txt"
     environment:
       - TYPE=FABRIC
       - MODS_FILE=/extra/mods.txt
+      - DATAPACKS=/datapacks
+      - REMOVE_OLD_DATAPACKS=true
+      # TODO: Download vanilla tweaks packs through the image
+      # https://docker-minecraft-server.readthedocs.io/en/latest/misc/world-data/#datapacks
+      # Remove this line when done
+      - REMOVE_OLD_DATAPACKS_INCLUDE=crafting_tweaks.zip
+
       # Pause the server 1 hour after the last player leaves
       - ENABLE_AUTOPAUSE=true
       - EXISTING_OPS_FILE=SYNCHRONIZE

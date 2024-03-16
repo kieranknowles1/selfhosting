@@ -1,0 +1,9 @@
+{
+    "type": "minecraft:stonecutting",
+    "ingredient": {
+        "item": "minecraft:oak_planks"
+    },
+    "result": "minecraft:oak_stairs",
+    "count": 1,
+    "group": "crafting_tweaks:stonecut_wood_stairs"
+}

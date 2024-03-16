@@ -36,6 +36,9 @@ export def main [
         log warn $"Using non-btrfs filesystems for DATA_ROOT is deprecated, found ($datafs)"
     }
 
+    log info "Packing minecraft datapacks"
+    pack_minecraft_datapacks
+
     let domains = service subdomains $environment
 
     log info $"Using subdomains ($domains | get domain | str join ', ')"
@@ -156,6 +159,16 @@ def issue_cert [
             ["-d" $"($subdomain).($domain)"]
         } | flatten)
     )
+}
+
+def pack_minecraft_datapacks [] {
+    cd "services/minecraft/datapacks"
+    ls | where type == "dir" | get name | each {|it|
+        log info $"Zipping ($it)"
+        # We need to change to the directory to make sure pack.mcmeta and data are in the root of the zip, not in a subdirectory named after the pack
+        cd $it
+        ^zip --filesync --recurse-paths $"../($it).zip" .
+    }
 }
 
 # Generate the nginx configuration for the services

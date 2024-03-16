@@ -75,6 +75,9 @@ You will more than likely need to change the paths in `environment.yml` to suit 
 I recommend using a separate drive formatted as btrfs for forward compatibility once [#5](https://github.com/kieranknowles1/selfhosting/issues/5) is implemented.
 Or not, I haven't done any research into whether it suits my needs yet. I'll update this once it's clear what path I want to take.
 
+Where possible, services are statically configured in such a way that all configs are in this repository
+(see [The Unreasonable Effectiveness of Plain Text](https://www.youtube.com/watch?v=WgV6M1LyfNY), not my words, but I agree with them).
+
 ### Serving Static Files
 Files in `${DATA_ROOT}/nginx/static` will be served at `https://${DOMAIN}/static/`. This is primarialy used
 to host a resource pack for Minecraft, but can be used for anything you like. Please be mindful that there is
