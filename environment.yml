@@ -47,10 +47,21 @@ MINECRAFT_VERSION: 1.20.4
 # Service configs that are shared between multiple services
 # Configs used by only one service are in the service's environent file and compose
 
+#----------------
+# SpeedTest
+#----------------
 # Cron expression to run speed test on.
 SPEEDTEST_SCHEDULE: "*/15 * * * *"
 # Days to retain speed test results for
 SPEEDTEST_RETENTION: 30
+
+#----------------
+# Minecraft
+#----------------
+
+# Max view distance to send to the client.
+# NOTE: This will be loaded for all clients, even if they have a lower view distance set.
+MINECRAFT_VIEW_DISTANCE: 16
 
 #==============================================================================
 # Ports

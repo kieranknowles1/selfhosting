@@ -25,8 +25,13 @@ services:
       # Required to avoid a "tick took too long" crash after a pause
       - MAX_TICK_TIME=-1
       - MOTD=A Minecraft Server Powered by Docker
-      # User settings, configured in `userenv.yml`
+
+      # Public user settings, configured in `environment.yml`
+      - VIEW_DISTANCE=${MINECRAFT_VIEW_DISTANCE}
+
+      # Secret user settings, configured in `userenv.yml`
       - EULA=${MINECRAFT_EULA}
       - OPS=${MINECRAFT_OPS}
       - WHITELIST=${MINECRAFT_WHITELIST}
       - RESOURCE_PACK=${MINECRAFT_RESOURCE_PACK}
+      - RESOURCE_PACK_SHA1=${MINECRAFT_RESOURCE_PACK_SHA1}
