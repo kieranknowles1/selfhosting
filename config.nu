@@ -12,7 +12,6 @@ export def get_env []: nothing -> record {
     return {
         CACHE_ROOT: $"(pwd)/cache",
         LOGS_ROOT: $"(pwd)/logs",
-        SSHKEYS: $"/home/(whoami)/.ssh",
         LOCAL_IP: (get_local_ip),
         USER_ID: (id -u),
         GROUP_ID: (id -g),
