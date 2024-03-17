@@ -8,6 +8,7 @@ use config.nu get_env
 use utils/cron.nu "cron describe"
 use utils/log.nu *
 use utils/php.nu "php hash_password"
+use utils/script.nu "script run"
 use utils/service.nu ["service list", "service subdomains", "service scripts"]
 
 def compose_path [] list<string> -> list<string> {each {|it| $"services/($it)/docker-compose.yml"}}
@@ -52,19 +53,10 @@ export def main [
 
         if ($configure != null) {
             log info $"Running configure script for ($service)"
-            # TODO: Use a function for this
-            let result = do {
-                # TODO: Don't pass $environment everywhere and use load-env to start with
-                load-env $environment
-                nu $configure
-            } | complete
+            # TODO: Don't pass $environment everywhere and use load-env to start with
+            load-env $environment
 
-            if ($result.exit_code != 0) {
-                log error $"Failed to run configure script for ($service). Details: ($result.stderr)"
-                exit 1
-            }
-
-            $result.stdout | save serviceenv.yml --force
+            script run $configure | save serviceenv.yml --force
         }
 
         let serviceenv = try { open "serviceenv.yml" } catch { {} }
@@ -117,7 +109,6 @@ def replace_templates [
     environment: record
     domains: list
 ] {
-    log info $"Replacing templates in (pwd)"
     let template_env = {
         ...$environment
         ADGUARD_CONFIG: ($domains | generate_adguard_config $environment.LOCAL_IP)
