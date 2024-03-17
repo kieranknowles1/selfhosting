@@ -10,10 +10,12 @@
     - [Service Configuration](#service-configuration)
       - [API Keys](#api-keys)
     - [Backups](#backups)
-    - [Certificate Renewal](#certificate-renewal)
     - [VPN](#vpn)
   - [Development](#development)
-    - [Template Files](#template-files)
+    - [Service Specification](#service-specification)
+      - [Scripts](#scripts)
+      - [Template Files](#template-files)
+      - [Order of Execution](#order-of-execution)
     - [Included Services](#included-services)
 
 ## Introduction
@@ -88,7 +90,7 @@ Once your secrets are defined, you can install the Nushell terminal and run the 
 to start everything up.
 ```bash
 sudo apt-get update
-sudo apt-get install -y npm # We install nushell via npm
+sudo apt-get install -y npm # Npm is the easiest way to install Nushell
 sudo npm install -g nushell
 ./setup.nu
 ```
@@ -115,10 +117,6 @@ You MUST keep the password for the repository safe, you will not be able to rest
 The following data is intentionally excluded from the backup:
 - Jellyfin media
 
-### Certificate Renewal
-The certificates issued by Let's Encrypt are valid for 90 days. To renew them, simply run the included
-`renew.sh` script. You will receive an email notification when the certificates are due to expire.
-
 ### VPN
 The [WireGuard](https://www.wireguard.com/) VPN is configured to run on port 51820, which you will need
 to forward on your router.
@@ -130,13 +128,34 @@ If you're feeling fancy, you can use `docker logs wireguard` to print these to t
 
 ## Development
 
-### Template Files
+### Service Specification
+Each subdirectory of `services`, at a minimum, contains a `service.yml` and a `docker-compose.yml` file.
+
+See [service.schema.yml](schemas/service.schema.yml) for the schema of `service.yml`.
+
+#### Scripts
+A service can have one or more scripts defined in `service.yml` to be executed during the setup process.
+These have access to the environment variables defined in `environment.yml` and `userenv.yml`.
+
+#### Template Files
 Files with the `.template` extension are preprocessed during setup to replace variables with their values
 through the Bash syntax `${VARIABLE}`. Theses files are then moved to their final location without the `.template`
 extension.
 
 The output of this process is not tracked by git, each file must be manually added to `.gitignore` to prevent
 it from being committed.
+
+#### Order of Execution
+
+Scripts for a service are executed in the following order:
+- `prepare`: Used for any pre-deployment setup such as [packing files](services/minecraft/prepare.nu).
+  Stdout will be logged during deployment.
+- `configure`: Used to generate environment variables that will be available to ALL later steps.
+  Stdout MUST be a valid YAML object and WILL NOT be logged.
+- **Replace Template Variables**: See [Template Files](#template-files)
+- **Deploy Docker Compose**
+- `afterDeploy`: Used for any post-deployment setup such as [running queries on the database](services/speedtest/after-deploy.nu)
+  Stdout will be logged during deployment.
 
 ### Included Services
 The following services are included in this repository. In addition I feel some deserve special attention
