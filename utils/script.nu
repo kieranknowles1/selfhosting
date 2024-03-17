@@ -7,13 +7,17 @@ export def "script run" [
         nu $path
     } | complete
 
-    match $result.exit_code {
+    return (match $result.exit_code {
         0 => $result.stdout
-        _ => { error make {
-            msg: "Script failed",
-            code: $result.exit_code,
-            stdout: $result.stdout,
-            stderr: $result.stderr
-        } }
-    }
+        _ => {
+            print $result.stdout
+            print $result.stderr
+            error make {
+                msg: $"Script failed with code ($result.exit_code)",
+                code: $result.exit_code,
+                stdout: $result.stdout,
+                stderr: $result.stderr
+            }
+        }
+    })
 }
