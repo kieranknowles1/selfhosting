@@ -16,7 +16,7 @@ export def "service subdomains" [
 ] nothing -> list<record<domain: string, name: string, port: int, includeInStatus: bool>> {
     service list | each {|it|
         open $"($env.FILE_PWD)/services/($it)/service.yml"
-    } | get domains | flatten | each {|it| return {
+    } | where ('domains' in $it) | get domains | flatten | each {|it| return {
         domain: $it.domain
         name: $it.name
         port: ($environment | get $it.portVar)

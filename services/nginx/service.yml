@@ -1,1 +1,2 @@
-# Nothing to put in here, this is mainly a backend service
+scripts:
+  afterDeploy: after-deploy.nu

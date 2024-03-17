@@ -31,11 +31,6 @@ export def main [
 
     let environment = get_env
 
-    let datafs = get_fs $environment.DATA_ROOT
-    if ($datafs != "btrfs") {
-        log warn $"Using non-btrfs filesystems for DATA_ROOT is deprecated, found ($datafs)"
-    }
-
     let domains = service subdomains $environment
 
     log info $"Using subdomains ($domains | get domain | str join ', ')"
@@ -61,7 +56,6 @@ export def main [
     }
 
     configure_cron
-    reload_nginx
 
     log info "Running basic audit"
     audit
@@ -101,20 +95,14 @@ def deploy_service [
     let serviceenv = try { open "serviceenv.yml" } catch { {} }
 
     replace_templates { ...$environment, ...$serviceenv } $domains
-    create_container $environment $restart
+    if ($restart) {
+        docker-compose restart
+    } else {
+        docker-compose up --detach --remove-orphans
+    }
 
     if ('afterDeploy' in $scripts) {
         script run $scripts.afterDeploy | print
-    }
-}
-
-def create_container [
-    environment: record
-    restart: bool
-] {
-    let command = if ($restart) {["restart"]} else {["up" "--detach" "--remove-orphans"]}
-    with-env $environment {
-        run-external docker-compose ...$command
     }
 }
 
@@ -122,6 +110,7 @@ def replace_templates [
     environment: record
     domains: list
 ] {
+    # TODO: All of this should be per service
     let template_env = {
         ...$environment
         ADGUARD_CONFIG: ($domains | generate_adguard_config $environment.LOCAL_IP)
@@ -138,12 +127,6 @@ def replace_templates [
         let output_file = $template | str replace ".template" ""
         open $template --raw | replace_vars $template_env | save $output_file --force --raw
     }
-}
-
-def reload_nginx [] {
-    log info "Reloading nginx configuration"
-    # Just calling reload doesn't always work, so we'll restart the container
-    docker-compose -f ("nginx" | compose_path) restart
 }
 
 # Install dependencies and give the current user the needed permissions
@@ -169,9 +152,6 @@ def issue_cert [
     email: string
     data_root: string
 ] {
-    # Make sure we're on the latest nginx config
-    reload_nginx
-
     log info $"Issuing SSL certificates to cover subdomains ($subdomains | str join ', ')"
 
     (run-external sudo docker run "-it" "--rm" "--name" certbot
@@ -259,16 +239,6 @@ def init_restic [
     with-env { RESTIC_REPOSITORY: $repo, RESTIC_PASSWORD: $password } {
         sudo -E restic init
     }
-}
-
-# Get the format of the filesystem on which a path is located
-def get_fs [
-    path: string
-] nothing -> string {
-    # NOTE: This doesn't work if the filesystem contains spaces
-    # You have to be insane to use spaces in a file name
-    # Only a lunatic would put them in the name of the filesystem itself
-    df -T $path | lines | get 1 | split row --regex " +" | get 1
 }
 
 def create_paperless_superuser [
