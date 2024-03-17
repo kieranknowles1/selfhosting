@@ -43,11 +43,11 @@ export def main [
 
     log info $"Using subdomains ($domains | get domain | str join ', ')"
 
-    replace_templates $environment $domains
-
     log info "Creating containers"
-    ($service | default (service list)) | compose_path | each { |compose_file|
-        create_container $compose_file $environment $restart
+    $service | default (service list) | each { |service|
+        log info $"Configuring ($service)"
+        replace_templates $"services/($service)" $environment $domains
+        create_container ($service | compose_path) $environment $restart
     }
 
     if ((not $update) or $expand_cert) {
@@ -85,7 +85,6 @@ def create_container [
     environment: record
     restart: bool
 ] {
-    log info $"Creating or updating containers for ($compose_file)"
     let command = if ($restart) {["restart"]} else {["up" "--detach" "--remove-orphans"]}
     with-env $environment {
         run-external docker-compose "-f" $compose_file ...$command
@@ -93,11 +92,10 @@ def create_container [
 }
 
 def replace_templates [
+    directory: string
     environment: record
     domains: list
 ] {
-    log info "Replacing variables in templates"
-
     let template_env = {
         ...$environment
         ADGUARD_CONFIG: ($domains | generate_adguard_config $environment.LOCAL_IP)
@@ -108,7 +106,10 @@ def replace_templates [
         MINECRAFT_MODS: (generate_minecraft_mods $environment.MINECRAFT_VERSION)
     }
 
-    ls **/*.template | where not ($it | is-empty) | get name | each {|template|
+    # Will be empty if no templates are found
+    let templates = try { ls $"($directory)/**/*.template" } catch {[]}
+
+    $templates | get name | each {|template|
         log info $"Replacing variables in ($template)"
         let output_file = $template | str replace ".template" ""
         open $template --raw | replace_vars $template_env | save $output_file --force --raw
