@@ -1,7 +1,7 @@
 # Service Specification
 Each subdirectory of `services`, at a minimum, contains a `service.yml` and a `docker-compose.yml` file.
 
-See [service.schema.yml](../scschemas/service.schema.yml) for the schema of `service.yml`.
+See [service.schema.yml](../schemas/service.schema.yml) for the schema of `service.yml`.
 
 ## Scripts
 A service can have one or more scripts defined in `service.yml` to be executed during the setup process.
