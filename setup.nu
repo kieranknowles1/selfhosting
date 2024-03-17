@@ -236,6 +236,7 @@ def generate_minecraft_mods [
 ]: nothing -> string {[
     (modrinth_project_download fabric-api $version)
     (modrinth_project_download lithium $version)
+    # TODO: Use an external web server for this to avoid depending on server not being paused
     (modrinth_project_download bluemap $version)
 ] | str join "\n"}
 
