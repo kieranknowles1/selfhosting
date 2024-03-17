@@ -40,38 +40,10 @@ export def main [
 
     log info $"Using subdomains ($domains | get domain | str join ', ')"
 
-    log info "Creating containers"
+    log info "Deploying services"
     $service | default (service list) | each { |service|
-        log info $"Starting or updating ($service)"
-        cd $"services/($service)"
-        let scripts = $service | service scripts
-        let prepare = $scripts.prepare? | default null
-        let configure = $scripts.configure? | default null
-        let afterDeploy = $scripts.afterDeploy? | default null
-
-        # TODO: Don't pass $environment everywhere and use load-env to start with
-        load-env $environment
-
-        if ($prepare != null) {
-            log info $"Running prepare script for ($service)"
-            let stdout = script run $prepare
-            print $stdout
-        }
-        if ($configure != null) {
-            log info $"Running configure script for ($service)"
-            script run $configure | save serviceenv.yml --force
-        }
-
-        let serviceenv = try { open "serviceenv.yml" } catch { {} }
-
-        replace_templates { ...$environment, ...$serviceenv } $domains
-        create_container $environment $restart
-
-        if ($afterDeploy != null) {
-            log info $"Running afterDeploy script for ($service)"
-            let stdout = script run $afterDeploy
-            print $stdout
-        }
+        log info $"Deploying ($service)"
+        deploy_service $service $environment $restart $domains
     }
 
     if ((not $update) or $expand_cert) {
@@ -101,6 +73,39 @@ export def main [
     log info "  - userenv.yml"
     log info "See readme.md for remaining setup steps"
     log info "========================================================================="
+}
+
+# Create or update a service
+def deploy_service [
+    service: string
+    environment: record
+    restart: bool
+    domains: list<record<domain: string, includeInStatus: bool, health_endpoint: string>>
+] {
+    cd $"services/($service)"
+    let scripts = $service | service scripts
+    let prepare = $scripts.prepare? | default null
+    let configure = $scripts.configure? | default null
+    let afterDeploy = $scripts.afterDeploy? | default null
+
+    # TODO: Don't pass $environment everywhere and use load-env to start with
+    load-env $environment
+
+    if ('prepare' in $scripts) {
+        script run $scripts.prepare | print
+    }
+    if ('configure' in $scripts) {
+        script run $scripts.configure | save serviceenv.yml --force
+    }
+
+    let serviceenv = try { open "serviceenv.yml" } catch { {} }
+
+    replace_templates { ...$environment, ...$serviceenv } $domains
+    create_container $environment $restart
+
+    if ('afterDeploy' in $scripts) {
+        script run $scripts.afterDeploy | print
+    }
 }
 
 def create_container [
