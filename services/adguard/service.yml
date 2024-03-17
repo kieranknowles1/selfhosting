@@ -3,3 +3,5 @@ domains:
     name: AdGuard Home
     portVar: ADGUARD_WEB_PORT
 usesData: true
+scripts:
+  configure: configure.nu

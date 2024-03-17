@@ -6,7 +6,7 @@ export def "service list" [] nothing -> list<string> {
 }
 
 # Get the scripts for a service
-export def "service scripts" [] string -> record<prepare: string?, configure: string?> {each {|it|
+export def "service scripts" [] string -> record<prepare: string?, configure: string?, afterDeploy: string?> {each {|it|
     open $"($env.FILE_PWD)/services/($it)/service.yml" | get scripts? | default {}
 }}
 

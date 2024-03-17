@@ -7,7 +7,6 @@ use config.nu get_env
 
 use utils/cron.nu "cron describe"
 use utils/log.nu *
-use utils/php.nu "php hash_password"
 use utils/script.nu "script run"
 use utils/service.nu ["service list", "service subdomains", "service scripts"]
 
@@ -46,8 +45,9 @@ export def main [
         log info $"Starting or updating ($service)"
         cd $"services/($service)"
         let scripts = $service | service scripts
-        let prepare = $scripts | get prepare? | default null
-        let configure = $scripts | get configure? | default null
+        let prepare = $scripts.prepare? | default null
+        let configure = $scripts.configure? | default null
+        let afterDeploy = $scripts.afterDeploy? | default null
 
         # TODO: Don't pass $environment everywhere and use load-env to start with
         load-env $environment
@@ -66,6 +66,12 @@ export def main [
 
         replace_templates { ...$environment, ...$serviceenv } $domains
         create_container $environment $restart
+
+        if ($afterDeploy != null) {
+            log info $"Running afterDeploy script for ($service)"
+            let stdout = script run $afterDeploy
+            print $stdout
+        }
     }
 
     if ((not $update) or $expand_cert) {
@@ -83,7 +89,6 @@ export def main [
     }
 
     configure_cron
-    configure_speedtest $environment.DATA_ROOT $environment.OWNER_EMAIL $environment.ADGUARD_PASSWORD $environment.SPEEDTEST_SCHEDULE $environment.SPEEDTEST_RETENTION
     reload_nginx
 
     log info "Running basic audit"
@@ -117,7 +122,6 @@ def replace_templates [
         ADGUARD_CONFIG: ($domains | generate_adguard_config $environment.LOCAL_IP)
         NGINX_CONFIG: ($domains | generate_nginx_config $environment.DOMAIN_NAME $environment.LOCAL_IP)
         GATUS_CONFIG: ($domains | where includeInStatus | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
-        ADGUARD_PASSWORD_HASH: (php hash_password $environment.ADGUARD_PASSWORD)
         SPEEDTEST_SCHEDULE_HUMAN: (cron describe $environment.SPEEDTEST_SCHEDULE)
     }
 
@@ -288,33 +292,4 @@ def configure_cron [] {
     sudo mv /tmp/cronjobs /etc/cron.d/selfhosted-runner
 
     sudo systemctl restart cron
-}
-
-# Configure the speedtest container with recommended defaults
-# WARN: Credentials MUST come from a trusted source. There are no checks for SQL injection
-def configure_speedtest [
-    $dataRoot: string,
-    $adminEmail: string,
-    $adminPassword: string,
-    $schedule: string,
-    $retention: int
-] {
-    log info "Configuring speedtest"
-
-    let dbPath = $"($dataRoot)/speedtest/database.sqlite"
-    let passwordHash = (php hash_password $adminPassword)
-
-    let commands = [
-        # Run speedtest every 15 minutes
-        $"UPDATE settings SET payload = \"($schedule)\" WHERE name = \"speedtest_schedule\""
-        # Prune old data
-        $"UPDATE settings SET payload = ($retention) WHERE name = \"prune_results_older_than\""
-        # Secure the admin account
-        # TODO: Shouldn't use Wireguard credential vars
-        $"UPDATE users SET email = \"($adminEmail)\", password = \"($passwordHash)\" WHERE name = \"Admin\""
-    ] | str join ";\n"
-
-    # TODO: The schedule never gets applied. Probably need to manually add the cron job. Have a look at source code
-    # to see how it's done
-    sudo sqlite3 $dbPath $commands
 }

@@ -19,6 +19,9 @@ properties:
       configure:
         $ref: "#/definitions/Script"
         description: Script to generate environment variables for the service. Should output a YAML object.
+      afterDeploy:
+        $ref: "#/definitions/Script"
+        description: Script to run after the service has been deployed. Stdout will be logged.
     additionalProperties: false
 additionalProperties: false
 
