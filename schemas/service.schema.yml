@@ -13,6 +13,9 @@ properties:
   scripts:
     type: object
     properties:
+      prepare:
+        $ref: "#/definitions/Script"
+        description: Script to prepare the service for deployment. Stdout will be logged.
       configure:
         $ref: "#/definitions/Script"
         description: Script to generate environment variables for the service. Should output a YAML object.

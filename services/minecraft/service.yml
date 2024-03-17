@@ -7,4 +7,5 @@ domains:
     includeInStatus: false
 usesData: true
 scripts:
+  prepare: prepare.nu
   configure: configure.nu
