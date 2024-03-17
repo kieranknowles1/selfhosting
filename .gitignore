@@ -16,4 +16,6 @@ services/homepage/config/services.yaml
 services/minecraft/mods.txt
 services/nginx/nginx.conf
 
+serviceenv.yml
+
 *.zip

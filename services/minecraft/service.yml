@@ -6,3 +6,5 @@ domains:
     # TODO: Use an external web server for this to avoid depending on server not being paused
     includeInStatus: false
 usesData: true
+scripts:
+  configure: configure.nu

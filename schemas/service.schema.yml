@@ -10,6 +10,13 @@ properties:
   usesData:
     type: boolean
     description: Whether the service uses a data volume and needs to be paused or snapshotted during backups.
+  scripts:
+    type: object
+    properties:
+      configure:
+        $ref: "#/definitions/Script"
+        description: Script to generate environment variables for the service. Should output a YAML object.
+    additionalProperties: false
 additionalProperties: false
 
 definitions:
@@ -32,3 +39,6 @@ definitions:
         description: Whether the domain should be included in the status page. Defaults to true.
     required: [domain, name, portVar]
     additionalProperties: false
+  Script:
+    type: string
+    pattern: ^[a-z-]+\.nu$

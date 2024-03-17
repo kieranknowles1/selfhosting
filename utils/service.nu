@@ -5,6 +5,11 @@ export def "service list" [] nothing -> list<string> {
     ls ($env.FILE_PWD + /services/*/service.yml) | get name | parse ($env.FILE_PWD + "/services/{name}/service.yml") | get name
 }
 
+# Get the scripts for a service
+export def "service scripts" [] string -> record<configure: string?> {each {|it|
+    open $"($env.FILE_PWD)/services/($it)/service.yml" | get scripts? | default {}
+}}
+
 # List subdomains, their service names, and their ports
 export def "service subdomains" [
     $environment: record

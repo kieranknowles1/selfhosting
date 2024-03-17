@@ -8,7 +8,7 @@ use config.nu get_env
 use utils/cron.nu "cron describe"
 use utils/log.nu *
 use utils/php.nu "php hash_password"
-use utils/service.nu ["service list", "service subdomains"]
+use utils/service.nu ["service list", "service subdomains", "service scripts"]
 
 def compose_path [] list<string> -> list<string> {each {|it| $"services/($it)/docker-compose.yml"}}
 
@@ -45,9 +45,32 @@ export def main [
 
     log info "Creating containers"
     $service | default (service list) | each { |service|
-        log info $"Configuring ($service)"
-        replace_templates $"services/($service)" $environment $domains
-        create_container ($service | compose_path) $environment $restart
+        log info $"Starting or updating ($service)"
+        cd $"services/($service)"
+        let scripts = $service | service scripts
+        let configure = $scripts | get configure? | default null
+
+        if ($configure != null) {
+            log info $"Running configure script for ($service)"
+            # TODO: Use a function for this
+            let result = do {
+                # TODO: Don't pass $environment everywhere and use load-env to start with
+                load-env $environment
+                nu $configure
+            } | complete
+
+            if ($result.exit_code != 0) {
+                log error $"Failed to run configure script for ($service). Details: ($result.stderr)"
+                exit 1
+            }
+
+            $result.stdout | save serviceenv.yml --force
+        }
+
+        let serviceenv = try { open "serviceenv.yml" } catch { {} }
+
+        replace_templates { ...$environment, ...$serviceenv } $domains
+        create_container $environment $restart
     }
 
     if ((not $update) or $expand_cert) {
@@ -81,21 +104,20 @@ export def main [
 }
 
 def create_container [
-    compose_file: string
     environment: record
     restart: bool
 ] {
     let command = if ($restart) {["restart"]} else {["up" "--detach" "--remove-orphans"]}
     with-env $environment {
-        run-external docker-compose "-f" $compose_file ...$command
+        run-external docker-compose ...$command
     }
 }
 
 def replace_templates [
-    directory: string
     environment: record
     domains: list
 ] {
+    log info $"Replacing templates in (pwd)"
     let template_env = {
         ...$environment
         ADGUARD_CONFIG: ($domains | generate_adguard_config $environment.LOCAL_IP)
@@ -103,13 +125,12 @@ def replace_templates [
         GATUS_CONFIG: ($domains | where includeInStatus | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
         ADGUARD_PASSWORD_HASH: (php hash_password $environment.ADGUARD_PASSWORD)
         SPEEDTEST_SCHEDULE_HUMAN: (cron describe $environment.SPEEDTEST_SCHEDULE)
-        MINECRAFT_MODS: (generate_minecraft_mods $environment.MINECRAFT_VERSION)
     }
 
     # Will be empty if no templates are found
-    let templates = try { ls $"($directory)/**/*.template" } catch {[]}
+    let templates = try { ls ./**/*.template } catch {[]}
 
-    $templates | get name | each {|template|
+    $templates | where {|it| ($it | describe) != "nothing" } | get name | each {|template|
         log info $"Replacing variables in ($template)"
         let output_file = $template | str replace ".template" ""
         open $template --raw | replace_vars $template_env | save $output_file --force --raw
@@ -216,30 +237,6 @@ def generate_adguard_config [
 ]: list<record<domain: string>> -> string {each {|it| $"
   - ($local_ip) ($it.domain).home.arpa
 "} | str join}
-
-# Get the download URL for a mod from Modrinth of a specific Minecraft version
-def modrinth_project_download [
-    idOrSlug: string
-    minecraftVersion: string
-]: nothing -> string {
-    let url = $"https://api.modrinth.com/v2/project/($idOrSlug)/version?game_versions=[\"($minecraftVersion)\"]&loaders=[\"fabric\"]"
-
-    let response = http get $url
-    # NOTE: This assumes the API returns the latest version first
-    let files = $response.0.files
-
-    return ($files | get url | str join "\n")
-}
-
-# Generate a list of download links for Minecraft mods
-def generate_minecraft_mods [
-    version: string
-]: nothing -> string {[
-    (modrinth_project_download fabric-api $version)
-    (modrinth_project_download lithium $version)
-    # TODO: Use an external web server for this to avoid depending on server not being paused
-    (modrinth_project_download bluemap $version)
-] | str join "\n"}
 
 # Replace variables in a string
 def replace_vars [
