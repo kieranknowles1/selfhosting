@@ -11,12 +11,8 @@
       - [API Keys](#api-keys)
     - [Backups](#backups)
     - [VPN](#vpn)
-  - [Development](#development)
-    - [Service Specification](#service-specification)
-      - [Scripts](#scripts)
-      - [Template Files](#template-files)
-      - [Order of Execution](#order-of-execution)
-    - [Included Services](#included-services)
+  - [Included Services](#included-services)
+  - [Development Information](#development-information)
 
 ## Introduction
 This repository is, first and foremost, a personal project. I am sharing it to help others who may be
@@ -126,38 +122,7 @@ A peer will be configured for each device in `userenv.yml`, QR codes for which a
 
 If you're feeling fancy, you can use `docker logs wireguard` to print these to the terminal and scan them.
 
-## Development
-
-### Service Specification
-Each subdirectory of `services`, at a minimum, contains a `service.yml` and a `docker-compose.yml` file.
-
-See [service.schema.yml](schemas/service.schema.yml) for the schema of `service.yml`.
-
-#### Scripts
-A service can have one or more scripts defined in `service.yml` to be executed during the setup process.
-These have access to the environment variables defined in `environment.yml` and `userenv.yml`.
-
-#### Template Files
-Files with the `.template` extension are preprocessed during setup to replace variables with their values
-through the Bash syntax `${VARIABLE}`. Theses files are then moved to their final location without the `.template`
-extension.
-
-The output of this process is not tracked by git, each file must be manually added to `.gitignore` to prevent
-it from being committed.
-
-#### Order of Execution
-
-Scripts for a service are executed in the following order:
-- `prepare`: Used for any pre-deployment setup such as [packing files](services/minecraft/prepare.nu).
-  Stdout will be logged during deployment.
-- `configure`: Used to generate environment variables that will be available to ALL later steps.
-  Stdout MUST be a valid YAML object and WILL NOT be logged.
-- **Replace Template Variables**: See [Template Files](#template-files)
-- **Deploy Docker Compose**
-- `afterDeploy`: Used for any post-deployment setup such as [running queries on the database](services/speedtest/after-deploy.nu)
-  Stdout will be logged during deployment.
-
-### Included Services
+## Included Services
 The following services are included in this repository. In addition I feel some deserve special attention
 and are marked with a ⭐ along with a brief explanation of why I believe they stand out from the crowd.
 
@@ -176,7 +141,11 @@ and are marked with a ⭐ along with a brief explanation of why I believe they s
 - [Joplin](https://joplinapp.org/) - Note taking
 - [Itzg Minecraft](https://github.com/itzg/docker-minecraft-server) - Minecraft server
 - [Nginx](https://www.nginx.com/) - Reverse proxy
+  <!-- markdown-link-check-disable-next-line returns 403 on actions runner -->
 - [Paperless NGX](https://docs.paperless-ngx.com/) - Document management
 - [OpenSpeedTest](https://openspeedtest.com/) - Speed test
 - [WireGuard](https://www.wireguard.com/) - VPN
 - [What's Up Docker](https://github.com/fmartinou/whats-up-docker) - Container Update Checker
+
+## Development Information
+Further documentation can be found in the [docs](docs/index.md) directory.
