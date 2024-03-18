@@ -7,6 +7,16 @@ See [service.schema.yml](../schemas/service.schema.yml) for the schema of `servi
 A service can have one or more scripts defined in `service.yml` to be executed during the setup process.
 These have access to the environment variables defined in `environment.yml` and `userenv.yml`.
 
+In addition to the aformentioned config, the following additional variables are available:
+
+- `GLOBAL_DOMAINS`: YAML array of domains collected from all services. Each entry is in the following format:
+  ```yml
+  domain: string
+  name: string
+  port: int
+  includeInStatus: bool
+  ```
+
 ## Template Files
 Files with the `.template` extension are preprocessed during setup to replace variables with their values
 through the Bash syntax `${VARIABLE}`. Theses files are then moved to their final location without the `.template`

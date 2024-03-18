@@ -85,6 +85,8 @@ def deploy_service [
     # TODO: Don't pass $environment everywhere and use load-env to start with
     load-env $environment
 
+    $env.GLOBAL_DOMAINS = ($domains | to yaml)
+
     if ('prepare' in $scripts) {
         script run $scripts.prepare | print
     }
@@ -108,13 +110,11 @@ def deploy_service [
 
 def replace_templates [
     environment: record
-    domains: list
+    domains: list # TODO: Remove
 ] {
     # TODO: All of this should be per service
     let template_env = {
         ...$environment
-        ADGUARD_CONFIG: ($domains | generate_adguard_config $environment.LOCAL_IP)
-        NGINX_CONFIG: ($domains | generate_nginx_config $environment.DOMAIN_NAME $environment.LOCAL_IP)
         GATUS_CONFIG: ($domains | where includeInStatus | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
         SPEEDTEST_SCHEDULE_HUMAN: (cron describe $environment.SPEEDTEST_SCHEDULE)
     }
@@ -166,28 +166,6 @@ def issue_cert [
     )
 }
 
-# Generate the nginx configuration for the services
-def generate_nginx_config [
-    domain_name: string
-    local_ip: string
-]: list<record<domain: string, port: int>> -> string {each {|it| $"
-    # ($it.domain), ($it.port)
-    server {
-        include /etc/nginx/includes/global.conf;
-        server_name ($it.domain).($domain_name) ($it.domain).home.arpa;
-
-        location / {
-            proxy_pass http://($local_ip):($it.port)/;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection \"Upgrade\";
-        }
-    }
-"} | str join}
-
 # Generate the gatus configuration for the services
 def generate_gatus_config [
     domain_name: string
@@ -202,13 +180,6 @@ def generate_gatus_config [
     conditions:
       - \"[STATUS] == 200\"
       - \"[RESPONSE_TIME] < ($timeout)\"
-"} | str join}
-
-# Generate config to route subdomains of home.arpa to the local IP
-def generate_adguard_config [
-    local_ip: string
-]: list<record<domain: string>> -> string {each {|it| $"
-  - ($local_ip) ($it.domain).home.arpa
 "} | str join}
 
 # Replace variables in a string

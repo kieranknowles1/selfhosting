@@ -1,2 +1,3 @@
 scripts:
+  configure: configure.nu
   afterDeploy: after-deploy.nu
