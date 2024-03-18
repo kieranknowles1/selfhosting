@@ -78,39 +78,33 @@ def deploy_service [
 ] {
     cd $"services/($service)"
     let scripts = $service | service scripts
-    let prepare = $scripts.prepare? | default null
-    let configure = $scripts.configure? | default null
-    let afterDeploy = $scripts.afterDeploy? | default null
-
-    # TODO: Don't pass $environment everywhere and use load-env to start with
     load-env $environment
 
     $env.GLOBAL_DOMAINS = ($domains | to yaml)
 
-    if ('prepare' in $scripts) {
+    if ('prepare' in $scripts) { with-env $environment {
         script run $scripts.prepare | print
-    }
-    if ('configure' in $scripts) {
+    } }
+    if ('configure' in $scripts) { with-env $environment {
         script run $scripts.configure | save serviceenv.yml --force
-    }
+    } }
 
     let serviceenv = try { open "serviceenv.yml" } catch { {} }
 
-    replace_templates { ...$environment, ...$serviceenv } $domains
+    replace_templates { ...$environment, ...$serviceenv }
     if ($restart) {
         docker-compose restart
     } else {
         docker-compose up --detach --remove-orphans
     }
 
-    if ('afterDeploy' in $scripts) {
+    if ('afterDeploy' in $scripts) { with-env $environment {
         script run $scripts.afterDeploy | print
-    }
+    } }
 }
 
 def replace_templates [
     environment: record
-    domains: list # TODO: Remove
 ] {
     # TODO: All of this should be per service
     let template_env = {
@@ -136,6 +130,7 @@ def install_deps [] {
     sudo apt-get install -y docker docker-compose restic sqlite3 nodejs golang-go
 
     # Used in cron.nu to provide a human-readable description of cron schedules
+    # TODO: Using go is overkill, should just be doing string replace
     sudo npm install --global cronstrue
     # Used as a replacement for envsubst with strict error checking
     go install github.com/icy/genvsub@latest
