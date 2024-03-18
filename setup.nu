@@ -1,15 +1,11 @@
 #!/usr/bin/env nu
 
-# TODO: This is getting a bit long, consider splitting it up
-
 use audit.nu
 use config.nu get_env
 
 use utils/log.nu *
 use utils/script.nu "script run"
 use utils/service.nu ["service list", "service subdomains", "service scripts"]
-
-def compose_path [] list<string> -> list<string> {each {|it| $"services/($it)/docker-compose.yml"}}
 
 # Setup script for self-hosted runner
 # Installs dependencies and creates containers
@@ -37,8 +33,9 @@ export def main [
     log info "Deploying services"
     $service | default (service list) | each { |service|
         log info $"Deploying ($service)"
-        deploy_service $service $environment $restart $domains
+        deploy_service $service $environment $domains --update=$update --restart=$restart
     }
+    exit
 
     if ((not $update) or $expand_cert) {
         log info "Issuing SSL certificate"
@@ -49,9 +46,6 @@ export def main [
         log info "Initializing restic"
         init_restic $environment.RESTIC_REPO $environment.RESTIC_PASSWORD
         init_restic $environment.RESTIC_REMOTE_REPO $environment.RESTIC_PASSWORD
-
-        log info "Creating superuser for paperless container"
-        create_paperless_superuser $environment
     }
 
     configure_cron
@@ -72,21 +66,23 @@ export def main [
 def deploy_service [
     service: string
     environment: record
-    restart: bool
     domains: list<record<domain: string, includeInStatus: bool, health_endpoint: string>>
+    --update
+    --restart
 ] {
     cd $"services/($service)"
     let scripts = $service | service scripts
     load-env $environment
 
     $env.GLOBAL_DOMAINS = ($domains | to yaml)
+    $env.GLOBAL_ISUPDATE = ($update | into string)
 
-    if ('prepare' in $scripts) { with-env $environment {
+    if ('prepare' in $scripts) {
         script run $scripts.prepare | print
-    } }
-    if ('configure' in $scripts) { with-env $environment {
+    }
+    if ('configure' in $scripts) {
         script run $scripts.configure | save serviceenv.yml --force
-    } }
+    }
 
     let serviceenv = try { open "serviceenv.yml" } catch { {} }
 
@@ -97,9 +93,10 @@ def deploy_service [
         docker-compose up --detach --remove-orphans
     }
 
-    if ('afterDeploy' in $scripts) { with-env $environment {
-        script run $scripts.afterDeploy | print
-    } }
+    if ('afterDeploy' in $scripts) {
+        # FIXME: This doesn't check for exit code, but "script run" suppresses stdout until the script is complete
+        run-external nu $scripts.afterDeploy
+    }
 }
 
 def replace_templates [
@@ -127,6 +124,7 @@ def install_deps [] {
 }
 
 # Issue a SSL certificate for the domain name
+# TODO: Move this to nginx container
 def issue_cert [
     domain: string
     subdomains: list<string>
@@ -170,14 +168,6 @@ def init_restic [
     log info $"Creating restic repository at ($repo)"
     with-env { RESTIC_REPOSITORY: $repo, RESTIC_PASSWORD: $password } {
         sudo -E restic init
-    }
-}
-
-def create_paperless_superuser [
-    $environment
-] {
-    with-env $environment {
-        docker-compose  -f ("paperlessngx" | compose_path) run --rm webserver createsuperuser
     }
 }
 

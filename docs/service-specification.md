@@ -16,6 +16,7 @@ In addition to the aformentioned config, the following additional variables are 
   port: int
   includeInStatus: bool
   ```
+- `GLOBAL_ISUPDATE`: True if the `--update` flag was passed to the setup script, false otherwise.
 
 ## Template Files
 Files with the `.template` extension are preprocessed during setup to replace variables with their values

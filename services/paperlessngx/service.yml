@@ -3,4 +3,5 @@ domains:
     name: Paperless
     portVar: PAPERLESS_PORT
 usesData: true
-
+scripts:
+  afterDeploy: after-deploy.nu

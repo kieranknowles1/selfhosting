@@ -7,7 +7,7 @@
 #==============================================================================
 # Enable debugging for containers. May want to disable for production
 # Don't rely on security through obscurity however
-DEBUG: "true"
+DEBUG: "false"
 
 # Maximum response time for a service to be considered healthy, in milliseconds
 HEALTH_TIMEOUT: 1000
