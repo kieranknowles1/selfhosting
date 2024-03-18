@@ -120,13 +120,7 @@ def install_deps [] {
     log info "Installing dependencies"
     log info "This requires root privileges"
     sudo apt-get update
-    sudo apt-get install -y docker docker-compose restic sqlite3 nodejs golang-go
-
-    # Used in cron.nu to provide a human-readable description of cron schedules
-    # TODO: Using go is overkill, should just be doing string replace
-    sudo npm install --global cronstrue
-    # Used as a replacement for envsubst with strict error checking
-    go install github.com/icy/genvsub@latest
+    sudo apt-get install -y docker docker-compose restic sqlite3 nodejs
 
     log info "Giving current user access to docker"
     sudo usermod -aG docker $env.USER
@@ -157,20 +151,16 @@ def issue_cert [
 def replace_vars [
     vars: record
 ] string -> string {each {|it|
-    $env.PATH = [...$env.PATH, $"(go env GOPATH)/bin"]
+    mut out = $it
 
-    with-env $vars {
-        # The "-u" option raises an error if a variable is not defined. Plain envsubst replaces it with an empty string
-        let subst = do {
-            $it | genvsub -u
-        } | complete
+    for $entry in ($vars | transpose key value) {
+        let bash_var = $"${($entry.key)}"
 
-        if ($subst.exit_code != 0) {
-            log error $"Failed to replace variables. Details: ($subst.stderr)"
-        }
-
-        return $subst.stdout
+        let edit = $out | str replace --all $bash_var ($entry.value | into string)
+        $out = $edit
     }
+
+    return $out
 }}
 
 def init_restic [

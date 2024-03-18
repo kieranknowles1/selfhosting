@@ -67,6 +67,7 @@ MINECRAFT_VIEW_DISTANCE: 16
 # Ports
 #==============================================================================
 # Keep this port order for organisation
+# TODO: Would be nice to assign these dynamically
 JOPLIN_PORT: 8008
 WUD_PORT: 8009
 IMMICH_PORT: 8010
