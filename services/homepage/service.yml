@@ -1,1 +1,2 @@
-# Nothing to put in here, Homepage is served on the main domain
+scripts:
+  configure: configure.nu

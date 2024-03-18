@@ -5,7 +5,6 @@
 use audit.nu
 use config.nu get_env
 
-use utils/cron.nu "cron describe"
 use utils/log.nu *
 use utils/script.nu "script run"
 use utils/service.nu ["service list", "service subdomains", "service scripts"]
@@ -106,19 +105,13 @@ def deploy_service [
 def replace_templates [
     environment: record
 ] {
-    # TODO: All of this should be per service
-    let template_env = {
-        ...$environment
-        SPEEDTEST_SCHEDULE_HUMAN: (cron describe $environment.SPEEDTEST_SCHEDULE)
-    }
-
     # Will be empty if no templates are found
     let templates = try { ls ./**/*.template } catch {[]}
 
     $templates | where {|it| ($it | describe) != "nothing" } | get name | each {|template|
         log info $"Replacing variables in ($template)"
         let output_file = $template | str replace ".template" ""
-        open $template --raw | replace_vars $template_env | save $output_file --force --raw
+        open $template --raw | replace_vars $environment | save $output_file --force --raw
     }
 }
 
