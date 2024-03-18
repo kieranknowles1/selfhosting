@@ -11,7 +11,6 @@ use utils/service.nu ["service list", "service subdomains", "service scripts"]
 # Installs dependencies and creates containers
 export def main [
     --update (-u)    # Update containers without reinstalling everything
-    --expand_cert (-e) # Expand the SSL certificate to include new subdomains, even if updating
     --service (-s): string@"service list" # Only update a specific service
     --restart (-r) # Restart the containers instead of updating
 ] {
@@ -36,11 +35,6 @@ export def main [
         deploy_service $service $environment $domains --update=$update --restart=$restart
     }
     exit
-
-    if ((not $update) or $expand_cert) {
-        log info "Issuing SSL certificate"
-        issue_cert $environment.DOMAIN_NAME ($domains | get domain) $environment.OWNER_EMAIL $environment.DATA_ROOT
-    }
 
     if (not $update) {
         log info "Initializing restic"
@@ -95,6 +89,7 @@ def deploy_service [
 
     if ('afterDeploy' in $scripts) {
         # FIXME: This doesn't check for exit code, but "script run" suppresses stdout until the script is complete
+        # Paperless requires user input
         run-external nu $scripts.afterDeploy
     }
 }
@@ -121,28 +116,6 @@ def install_deps [] {
 
     log info "Giving current user access to docker"
     sudo usermod -aG docker $env.USER
-}
-
-# Issue a SSL certificate for the domain name
-# TODO: Move this to nginx container
-def issue_cert [
-    domain: string
-    subdomains: list<string>
-    email: string
-    data_root: string
-] {
-    log info $"Issuing SSL certificates to cover subdomains ($subdomains | str join ', ')"
-
-    (run-external sudo docker run "-it" "--rm" "--name" certbot
-        "-v" $"($data_root)/nginx/certbot/www:/var/www/certbot"
-        "-v" $"($data_root)/nginx/certbot/conf:/etc/letsencrypt"
-        "certbot/certbot" certonly
-        "--webroot" "--webroot-path=/var/www/certbot"
-        "-d" $domain
-        ...($subdomains | each { |subdomain|
-            ["-d" $"($subdomain).($domain)"]
-        } | flatten)
-    )
 }
 
 # Replace variables in a string
