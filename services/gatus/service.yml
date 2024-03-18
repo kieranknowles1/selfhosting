@@ -2,3 +2,5 @@ domains:
   - domain: gatus
     name: Gatus
     portVar: GATUS_PORT
+scripts:
+  configure: configure.nu

@@ -115,7 +115,6 @@ def replace_templates [
     # TODO: All of this should be per service
     let template_env = {
         ...$environment
-        GATUS_CONFIG: ($domains | where includeInStatus | generate_gatus_config $environment.DOMAIN_NAME $environment.HEALTH_TIMEOUT)
         SPEEDTEST_SCHEDULE_HUMAN: (cron describe $environment.SPEEDTEST_SCHEDULE)
     }
 
@@ -165,22 +164,6 @@ def issue_cert [
         } | flatten)
     )
 }
-
-# Generate the gatus configuration for the services
-def generate_gatus_config [
-    domain_name: string
-    timeout: int # The max response time until a service is considered unhealthy, in milliseconds
-]: list<record<domain: string, name: string>> -> string {each {|it| $"
-  - name: ($it.name)
-    group: Services
-    url: https://($it.domain).($domain_name)($it.health_endpoint? | default "/")
-    interval: 5m
-    client:
-        insecure: true
-    conditions:
-      - \"[STATUS] == 200\"
-      - \"[RESPONSE_TIME] < ($timeout)\"
-"} | str join}
 
 # Replace variables in a string
 def replace_vars [
