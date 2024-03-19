@@ -8,9 +8,8 @@ services:
     restart: on-failure:5
     ports:
       - "${MINECRAFT_PORT}:25565"
-      - "${MINECRAFT_BLUEMAP_PORT}:8100"
     volumes:
-      - "${DATA_ROOT}/minecraft:/data"
+      - ${DATA_ROOT}/minecraft:/data
       - ./config:/config
       - ./datapacks:/datapacks
       # TODO: Remove this once service-specific env is cached
@@ -44,3 +43,14 @@ services:
       - WHITELIST=${MINECRAFT_WHITELIST}
       - RESOURCE_PACK=${MINECRAFT_RESOURCE_PACK}
       - RESOURCE_PACK_SHA1=${MINECRAFT_RESOURCE_PACK_SHA1}
+  # We run Bluemap in its own container to avoid it going down when the server is paused
+  bluemap:
+    image: bmoorman/bluemap
+    container_name: bluemap
+    user: ${USER_ID}:${GROUP_ID}
+    restart: unless-stopped
+    ports:
+      - "${MINECRAFT_BLUEMAP_PORT}:8100"
+    volumes:
+      - ${DATA_ROOT}/minecraft/bluemap:/var/lib/bluemap
+      - ${DATA_ROOT}/minecraft:/var/lib/minecraft:ro
