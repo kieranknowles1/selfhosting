@@ -5,7 +5,7 @@ use config.nu get_env
 
 use utils/log.nu *
 use utils/script.nu "script run"
-use utils/service.nu ["service list", "service subdomains", "service scripts"]
+use utils/service.nu ["service list", "service subdomains", "service scripts", "service generatedconfig"]
 
 # Setup script for self-hosted runner
 # Installs dependencies and creates containers
@@ -78,7 +78,8 @@ def deploy_service [
         script run $scripts.configure | save serviceenv.yml --force
     }
 
-    let serviceenv = try { open "serviceenv.yml" } catch { {} }
+    let serviceenv = service generatedconfig $service
+    load-env $serviceenv
 
     replace_templates { ...$environment, ...$serviceenv }
     if ($restart) {

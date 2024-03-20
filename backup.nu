@@ -6,7 +6,7 @@
 
 use config.nu get_env
 use utils/log.nu *
-use utils/service.nu "service usingdata"
+use utils/service.nu ["service usingdata", "service generatedconfig"]
 
 if not (is-admin) {
     log error "This script must be run as root"
@@ -36,7 +36,7 @@ log info "========================="
 log info "Containers going PAUSED for backup"
 for service in $toPause {
     log info $"Pausing ($service)"
-    with-env $environment {
+    with-env { ...$environment, ...(service generatedconfig $service) } {
         docker-compose --file $"($env.FILE_PWD)/services/($service)/docker-compose.yml" pause
     }
 }
@@ -49,7 +49,7 @@ create_backup $environment.RESTIC_REMOTE_REPO $environment.RESTIC_PASSWORD $envi
 log info "Containers going UNPAUSED after backup"
 for service in $toPause {
     log info $"Unpausing ($service)"
-    with-env $environment {
+    with-env { ...$environment, ...(service generatedconfig $service) } {
         docker-compose --file $"($env.FILE_PWD)/services/($service)/docker-compose.yml" unpause
     }
 }

@@ -12,7 +12,7 @@ export def "service scripts" [] string -> record<prepare: string?, configure: st
 
 # List subdomains, their service names, and their ports
 export def "service subdomains" [
-    $environment: record
+    environment: record
 ] nothing -> list<record<domain: string, name: string, port: int, includeInStatus: bool>> {
     service list | each {|it|
         open $"($env.FILE_PWD)/services/($it)/service.yml"
@@ -27,4 +27,16 @@ export def "service subdomains" [
 # List subdomains that use the data folder
 export def "service usingdata" [] nothing -> list<string> {
     service list | where {|it| open $"($env.FILE_PWD)/services/($it)/service.yml" | get usesData? }
+}
+
+# Get the generated config from a configure script, if it exists
+# Returns an empty record if there is no configure script
+export def "service generatedconfig" [
+    service: string
+] nothing -> record<string> {
+    if ($"($env.FILE_PWD)/services/($service)/serviceenv.yml" | path exists) {
+        open $"($env.FILE_PWD)/services/($service)/serviceenv.yml"
+    } else {
+        {}
+    }
 }

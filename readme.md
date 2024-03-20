@@ -141,7 +141,6 @@ and are marked with a ⭐ along with a brief explanation of why I believe they s
 - [Joplin](https://joplinapp.org/) - Note taking
 - [Itzg Minecraft](https://github.com/itzg/docker-minecraft-server) - Minecraft server
 - [Nginx](https://www.nginx.com/) - Reverse proxy
-<!-- markdown-link-check-disable-next-line -->
 - [Paperless NGX](https://docs.paperless-ngx.com/) - Document management
 - [OpenSpeedTest](https://openspeedtest.com/) - Speed test
 - [WireGuard](https://www.wireguard.com/) - VPN
