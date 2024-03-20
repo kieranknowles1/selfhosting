@@ -37,7 +37,7 @@ TIME_ZONE: Europe/London
 # avoid any unexpected changes. What's up Docker will show you the available
 # updates for your containers.
 HOMEPAGE_VERSION: v0.8.9
-IMMICH_VERSION: v1.98.2
+IMMICH_VERSION: v1.99.0
 
 MINECRAFT_VERSION: 1.20.4
 
