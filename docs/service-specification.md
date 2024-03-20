@@ -31,8 +31,8 @@ it from being committed.
 Scripts for a service are executed in the following order:
 - `prepare`: Used for any pre-deployment setup such as [packing files](../services/minecraft/prepare.nu).
   Stdout will be logged during deployment.
-- `configure`: Used to generate environment variables that will be available to ALL later steps.
-  Stdout MUST be a valid YAML object and WILL NOT be logged.
+- `configure`: Used to generate environment variables such as [hashed passwords](../services/adguard/configure.nu)
+  that will be available to ALL later steps. Stdout MUST be a valid YAML object and WILL NOT be logged.
 - **Replace Template Variables**: See [Template Files](#template-files)
 - **Deploy Docker Compose**
 - `afterDeploy`: Used for any post-deployment setup such as [running queries on the database](../services/speedtest/after-deploy.nu)
