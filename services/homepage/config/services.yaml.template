@@ -80,12 +80,12 @@
           password: ${ADGUARD_PASSWORD}
 
 - Development:
-    - Gitea:
-        href: "https://gitea.${DOMAIN_NAME}"
-        description: Git repository hosting
-        icon: gitea
+    - Forgejo:
+        href: "https://forgejo.${DOMAIN_NAME}"
+        description: Git server
+        icon: forgejo
         server: local-docker
-        container: gitea
+        container: forgejo
 
 - Productivity:
     - Paperless:

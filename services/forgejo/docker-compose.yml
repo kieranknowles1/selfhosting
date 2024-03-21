@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  server:
+    image: codeberg.org/forgejo/forgejo:1.21-rootless
+    container_name: forgejo
+    user: ${USER_ID}:${GROUP_ID}
+    environment:
+      - USER_UID=${USER_ID}
+      - USER_GID=${GROUP_ID}
+
+      # Storage locations
+      - FORGEJO__database__DB_TYPE=sqlite3
+      - FORGEJO__database__PATH=/data/forgejo.db
+      - FORGEJO__repository__ROOT=/data/git
+      - FORGEJO__lfs__STORAGE_TYPE=local
+      - FORGEJO__lfs__PATH=/data/lfs
+
+      # Security
+      - FORGEJO__service__DISABLE_REGISTRATION=true
+
+      # Default settings
+      - FORGEJO__ui__DEFAULT_THEME=forgejo-dark
+    restart: unless-stopped
+    volumes:
+      - ${DATA_ROOT}/forgejo:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "${FORGEJO_WEB_PORT}:3000"
+      - "${FORGEJO_SSH_PORT}:2222"

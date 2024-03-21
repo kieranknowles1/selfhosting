@@ -1,0 +1,7 @@
+domains:
+  - domain: forgejo
+    name: Forgejo
+    portVar: FORGEJO_WEB_PORT
+usesData: true
+scripts:
+  afterDeploy: after-deploy.nu

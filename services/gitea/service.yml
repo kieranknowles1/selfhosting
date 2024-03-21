@@ -1,5 +1,0 @@
-domains:
-  - domain: gitea
-    name: Gitea
-    portVar: GITEA_WEB_PORT
-usesData: true

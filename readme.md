@@ -129,7 +129,7 @@ and are marked with a ⭐ along with a brief explanation of why I believe they s
 - [Adguard](https://adguard.com/) - DNS and ad blocking
 - [Firefly III](https://firefly-iii.org/) - Personal finance
 - [Gatus](https://gatus.io) - Service monitoring
-- [Gitea](https://gitea.io/) - Git hosting
+- [Forgejo](https://forgejo.org/) - Git server
 - [Homepage](https://gethomepage.dev/) - Personal dashboard
 - [Immich](https://immich.app/) ⭐ - Photo Library<br>
   I was simply blown away by the quality of Immich's smart search. It's an amazing way to find exactly the
