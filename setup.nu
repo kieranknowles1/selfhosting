@@ -13,6 +13,7 @@ export def main [
     --update (-u)    # Update containers without reinstalling everything
     --service (-s): string@"service list" # Only update a specific service
     --restart (-r) # Restart the containers instead of updating
+    --upgrade (-U) # Upgrade containers to their latest versions
 ] {
     if (is-admin) {
         log error "This script should not be run as root"
@@ -32,7 +33,7 @@ export def main [
     log info "Deploying services"
     $service | default (service list) | each { |service|
         log info $"Deploying ($service)"
-        deploy_service $service $environment $domains --update=$update --restart=$restart
+        deploy_service $service $environment $domains --update=$update --restart=$restart --upgrade=$upgrade
     }
     exit
 
@@ -63,6 +64,7 @@ def deploy_service [
     domains: list<record<domain: string, includeInStatus: bool, health_endpoint: string>>
     --update
     --restart
+    --upgrade
 ] {
     cd $"services/($service)"
     let scripts = $service | service scripts
@@ -80,6 +82,10 @@ def deploy_service [
 
     let serviceenv = service generatedconfig $service
     load-env $serviceenv
+
+    if ($upgrade) {
+        docker-compose pull
+    }
 
     replace_templates { ...$environment, ...$serviceenv }
     if ($restart) {
