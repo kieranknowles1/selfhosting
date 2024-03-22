@@ -2,6 +2,15 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/latest/configs/services
 
+# ==============================================================================
+# Code Style
+#
+# Services should all have a description and an icon. Use Dashboard Icons if possible.
+# https://github.com/walkxcode/dashboard-icons
+# Widgets should be used, if available, to provide additional information
+# Descriptions should be as concise as possible. 3-5 words is ideal.
+# ==============================================================================
+
 - Server Status:
     - CPU:
         href: "https://glances.${DOMAIN_NAME}"

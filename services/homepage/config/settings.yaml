@@ -2,6 +2,12 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/latest/configs/settings
 
+# ==============================================================================
+# Code Style
+#
+# Each section should have an icon from the Material Design Icons library. (prefix with mdi-)
+# See Pictogrammers for a searchable list of icons: https://materialdesignicons.com/
+
 language: en-GB
 
 theme: dark
