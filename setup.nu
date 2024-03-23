@@ -78,6 +78,8 @@ def deploy_service [
     }
     if ('configure' in $scripts) {
         script run $scripts.configure | save serviceenv.yml --force
+        # Protect the file
+        chmod 600 serviceenv.yml
     }
 
     let serviceenv = service generatedconfig $service
