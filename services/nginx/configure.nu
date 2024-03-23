@@ -1,7 +1,7 @@
 # Generate the nginx configuration for the services
 def generate_config []: {
     $env.GLOBAL_DOMAINS | from yaml | each {|it| $"
-    # ($it.domain), ($it.port)
+    # ($it.name), ($it.domain).($env.DOMAIN_NAME) -> ($env.LOCAL_IP):($it.port)
     server {
         include /etc/nginx/includes/global.conf;
         server_name ($it.domain).($env.DOMAIN_NAME) ($it.domain).home.arpa;

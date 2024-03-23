@@ -28,8 +28,6 @@ export def main [
 
     let domains = service subdomains $environment
 
-    log info $"Using subdomains ($domains | get domain | str join ', ')"
-
     log info "Deploying services"
     $service | default (service list) | each { |service|
         log info $"Deploying ($service)"

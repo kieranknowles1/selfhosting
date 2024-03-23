@@ -7,7 +7,6 @@ export def get_env []: nothing -> record {
 
 
     # Append environment with dynamically generated values
-    # TODO: Maybe also move setup code to per-service config. Cache vars after setup to reload during backups
     return {
         # TODO: This and logs shouldn't leave the containers
         CACHE_ROOT: $"(pwd)/cache",
