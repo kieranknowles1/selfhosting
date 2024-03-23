@@ -14,7 +14,9 @@ services:
       - ./datapacks:/datapacks
     environment:
       - TYPE=FABRIC
-      - MODS=${MINECRAFT_MODS}
+      # CSV list of mods to install from Modrinth
+      - MODRINTH_PROJECTS=fabric-api,lithium,bluemap
+
       - DATAPACKS=/datapacks
       - REMOVE_OLD_DATAPACKS=true
       # TODO: Download vanilla tweaks packs through the image

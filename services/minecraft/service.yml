@@ -5,4 +5,3 @@ domains:
 usesData: true
 scripts:
   prepare: prepare.nu
-  configure: configure.nu
