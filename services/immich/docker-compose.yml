@@ -25,6 +25,8 @@ services:
       - redis
       - database
     restart: always
+    labels:
+      - wud.tag.include=v\d+\.\d+\.\d+
 
   immich-microservices:
     container_name: immich_microservices
@@ -43,6 +45,8 @@ services:
       - redis
       - database
     restart: always
+    labels:
+      - wud.tag.include=v\d+\.\d+\.\d+
 
   immich-machine-learning:
     container_name: immich_machine_learning
@@ -53,6 +57,8 @@ services:
     environment:
       - DB_PASSWORD=${IMMICH_DB_PASSWORD}
     restart: always
+    labels:
+      - wud.tag.include=v\d+\.\d+\.\d+
 
   redis:
     container_name: immich_redis
