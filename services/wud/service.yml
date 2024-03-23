@@ -3,3 +3,5 @@ domains:
     name: What's Up Docker
     portVar: WUD_PORT
 usesData: true
+scripts:
+  configure: configure.nu

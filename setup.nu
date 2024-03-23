@@ -129,8 +129,6 @@ def install_deps [] {
         sqlite3
         # For cronstrue
         nodejs
-        # For htpasswd
-        apache2-utils
     )
 
     # Describe cron expressions in human readable formats
