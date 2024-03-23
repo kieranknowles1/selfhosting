@@ -35,7 +35,6 @@ export def main [
         log info $"Deploying ($service)"
         deploy_service $service $environment $domains --update=$update --restart=$restart --upgrade=$upgrade
     }
-    exit
 
     if (not $update) {
         log info "Initializing restic"
