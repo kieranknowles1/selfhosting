@@ -8,7 +8,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${DATA_ROOT}/whatsupdocker:/store
-    environment:
+    # environment:
       # TODO: Rename env vars to not specify a specific service
       # TODO: Look into openid connect for single sign on
       # This is implemented on main, but not the published image
