@@ -119,7 +119,22 @@ def install_deps [] {
     log info "Installing dependencies"
     log info "This requires root privileges"
     sudo apt-get update
-    sudo apt-get install -y docker docker-compose restic sqlite3 nodejs
+    (sudo apt-get install -y
+        # Backbone of the system
+        docker
+        docker-compose
+        # Backups
+        restic
+        # Configure some services after deployment
+        sqlite3
+        # For cronstrue
+        nodejs
+        # For htpasswd
+        apache2-utils
+    )
+
+    # Describe cron expressions in human readable formats
+    sudo npm install -g cronstrue
 
     log info "Giving current user access to docker"
     sudo usermod -aG docker $env.USER
