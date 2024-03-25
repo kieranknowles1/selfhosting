@@ -51,6 +51,8 @@
         widget:
           type: whatsupdocker
           url: "https://wud.${DOMAIN_NAME}"
+          username: ${ADGUARD_USERNAME}
+          password: ${ADGUARD_PASSWORD}
     - Speed Test:
         href: "https://speedtest.${DOMAIN_NAME}"
         description: Internet speed test, runs ${SPEEDTEST_SCHEDULE_HUMAN}. Results retained for ${SPEEDTEST_RETENTION} days.

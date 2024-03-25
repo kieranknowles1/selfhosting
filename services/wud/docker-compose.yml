@@ -8,11 +8,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${DATA_ROOT}/whatsupdocker:/store
-    # environment:
-      # TODO: Rename env vars to not specify a specific service
-      # TODO: Look into openid connect for single sign on
-      # This is implemented on main, but not the published image
-      # - WUD_AUTH_BASIC_ADMIN_USER=${ADGUARD_USERNAME}
-      # - WUD_AUTH_BASIC_ADMIN_HASH=${WUD_PASSWORD_HASH}
+    environment:
+      - WUD_AUTH_BASIC_ADMIN_USER=${ADGUARD_USERNAME}
+      - WUD_AUTH_BASIC_ADMIN_HASH=${WUD_PASSWORD_HASH}
     ports:
       - ${WUD_PORT}:3000
