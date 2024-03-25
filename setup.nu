@@ -150,6 +150,20 @@ def replace_vars [
         $out = $edit
     }
 
+    # Check that everything was replaced
+    # NOTE: This does not support `${` in replacement strings
+    let start = $out | str index-of "${"
+    if ($start != -1) {
+        let end = $out | str index-of "}" --range $start..
+        let name = $out | str substring $start..($end + 1)
+
+        error make {
+            msg: $"Variable ($name) not replaced",
+            variable: $name,
+        }
+    }
+
+
     return $out
 }}
 
