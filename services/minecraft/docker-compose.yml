@@ -15,7 +15,7 @@ services:
     environment:
       - TYPE=FABRIC
       # CSV list of mods to install from Modrinth
-      - MODRINTH_PROJECTS=fabric-api,lithium,bluemap
+      - MODRINTH_PROJECTS=lithium
 
       - DATAPACKS=/datapacks
       - REMOVE_OLD_DATAPACKS=true
@@ -43,12 +43,16 @@ services:
       - RESOURCE_PACK_SHA1=${MINECRAFT_RESOURCE_PACK_SHA1}
   # We run Bluemap in its own container to avoid it going down when the server is paused
   bluemap:
-    image: bmoorman/bluemap
+    image: ghcr.io/bluemap-minecraft/bluemap:latest
     container_name: bluemap
-    user: ${USER_ID}:${GROUP_ID}
     restart: unless-stopped
     ports:
       - "${MINECRAFT_BLUEMAP_PORT}:8100"
     volumes:
-      - ${DATA_ROOT}/minecraft/bluemap:/var/lib/bluemap
-      - ${DATA_ROOT}/minecraft:/var/lib/minecraft:ro
+      - ./config/bluemap:/app/config
+      - ${DATA_ROOT}/minecraft/map/map:/app/web/maps
+      - ${DATA_ROOT}/minecraft/map/data:/app/data
+      - ${DATA_ROOT}/minecraft/world:/app/world
+      # - ${DATA_ROOT}/minecraft/bluemap:/var/lib/bluemap
+      # - ${DATA_ROOT}/minecraft:/var/lib/minecraft:ro
+    command: --render --watch --webserver --mc-version ${MINECRAFT_VERSION}
