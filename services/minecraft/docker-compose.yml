@@ -13,6 +13,7 @@ services:
       - ./config:/config
       - ./datapacks:/datapacks
     environment:
+      - VERSION=${MINECRAFT_VERSION}
       - TYPE=FABRIC
       # CSV list of mods to install from Modrinth
       - MODRINTH_PROJECTS=lithium
