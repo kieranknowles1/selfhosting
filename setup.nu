@@ -188,6 +188,8 @@ def configure_cron [] {
         $"0 1 * * * root ($nuexe) (pwd)/backup.nu > (pwd)/backup.log 2>&1"
         "# Renew SSL certificate monthly"
         $"0 0 1 * * root ($nuexe) (pwd)/renew.nu > (pwd)/renew.log 2>&1"
+        "# Update services every Monday at midnight"
+        $"0 0 * * 1 (whoami) ($nuexe) (pwd)/setup.nu --update --upgrade > (pwd)/update.log 2>&1"
     ] | str join "\n") + "\n"
 
     echo $jobs | save /tmp/cronjobs --force
