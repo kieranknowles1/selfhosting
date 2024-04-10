@@ -41,7 +41,6 @@ services:
       - OPS=${MINECRAFT_OPS}
       - WHITELIST=${MINECRAFT_WHITELIST}
       - RESOURCE_PACK=${MINECRAFT_RESOURCE_PACK}
-      - RESOURCE_PACK_SHA1=${MINECRAFT_RESOURCE_PACK_SHA1}
   # We run Bluemap in its own container to avoid it going down when the server is paused
   bluemap:
     image: ghcr.io/bluemap-minecraft/bluemap:latest
