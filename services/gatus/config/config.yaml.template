@@ -1,5 +1,5 @@
 endpoints:
-  - name: Homepage
+  - name: Home
     group: Services
     url: https://${DOMAIN_NAME}
     interval: 5m

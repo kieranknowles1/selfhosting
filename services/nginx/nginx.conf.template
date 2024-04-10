@@ -43,7 +43,7 @@ http {
         server_name ${DOMAIN_NAME} home.arpa;
 
         location / {
-            proxy_pass http://${LOCAL_IP}:${HOMEPAGE_PORT}/;
+            alias /var/www/tilde/;
         }
 
         location /static/ {

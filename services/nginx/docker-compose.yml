@@ -18,6 +18,7 @@ services:
         target: /etc/nginx/nginx.conf
       # Provide additional includes in their own directory
       - ./includes:/etc/nginx/includes
+      - ./tilde:/var/www/tilde
       - ${DATA_ROOT}/nginx/certbot/www:/var/www/certbot
       - ${DATA_ROOT}/nginx/certbot/conf:/etc/letsencrypt
       - ${DATA_ROOT}/nginx/static:/var/www/static
