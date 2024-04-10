@@ -6,7 +6,8 @@ import os
 from subprocess import run
 from sys import argv
 import yaml
-from typing import Any
+from typing import Any, Literal, overload, Optional
+import utils.service as service
 
 SETTINGS = {
     # TODO: This may not be necessary, caches are ephemeral by definition and containers can keep
@@ -84,18 +85,56 @@ def stringify_dict(env: dict[str, Any]) -> dict[str, str]:
     '''Convert all values in the dictionary to strings'''
     return {key: str(value) for key, value in env.items()}
 
-def deploy_service(service: str, env: dict[str, str]):
+@overload
+def run_stage(
+    stage: Literal["prepare", "afterDeploy"],
+    spec: service.Service,
+    env: dict[str, str]
+) -> None:
+    ...
+
+@overload
+def run_stage(
+    stage: Literal["configure"],
+    spec: service.Service,
+    env: dict[str, str]
+) -> Optional[dict[str, Any]]:
+    ...
+
+def run_stage(stage: str, spec: service.Service, env: dict[str, str]):
+    if not "scripts" in spec:
+        return
+    script = spec["scripts"].get(stage)
+    if script is None:
+        return
+
+    print(f"Running {stage} script {script}")
+    result = run(f"./{script}", check=True, env=env, capture_output=stage == "configure")
+    if stage == "configure":
+        return yaml.safe_load(result.stdout)
+
+
+def deploy_service(dir: str, env: dict[str, str]):
     '''Deploy a service from the services directory, running any necessary scripts.'''
-    # TODO: Run associated scripts
-    print(f"Deploying {service}")
+    env = env.copy()
+    print(f"Deploying {dir}")
+    spec = service.load_spec(f"services/{dir}/service.yml")
 
     working_dir = os.getcwd()
     try:
-        os.chdir(f"services/{service}")
+        os.chdir(f"services/{dir}")
+
+        run_stage("prepare", spec, env)
+
+        config = run_stage("configure", spec, env)
+        if config is not None:
+            env.update(config)
+
         run(
             ["docker-compose", "up", "--detach", "--remove-orphans"],
             check=True, env=env
         )
+        run_stage("afterDeploy", spec, env)
     finally:
         os.chdir(working_dir)
 
