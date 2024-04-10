@@ -1,5 +1,8 @@
 #!/usr/bin/env nu
 
+### !!!! DO NOT USE DIRECTLY !!!! ###
+# This script is DEPRECATED. Functionality is being REMOVED as it gets ported to Python.
+
 use audit.nu
 use config.nu get_env
 
@@ -19,12 +22,6 @@ export def main [
     let environment = get_env
 
     let domains = service subdomains $environment
-
-    log info "Deploying services"
-    $service | default (service list) | each { |service|
-        log info $"Deploying ($service)"
-        deploy_service $service $environment $domains --update=$update --restart=$restart --upgrade=$upgrade
-    }
 
     if (not $update) {
         log info "Initializing restic"

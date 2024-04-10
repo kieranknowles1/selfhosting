@@ -2,9 +2,21 @@
 
 from argparse import ArgumentParser
 from getpass import getuser
-from os import listdir
+import os
 from subprocess import run
 from sys import argv
+import yaml
+from typing import Any
+
+SETTINGS = {
+    # TODO: This may not be necessary, caches are ephemeral by definition and containers can keep
+    # cache in themselves which is also ephemeral
+    "CACHE_ROOT": "/tmp/self-hosted-runner/cache",
+    # TODO: Logs are tracked by docker itself, so probably don't need to be stored elsewhere
+    "LOGS_ROOT": "/tmp/self-hosted-runner/logs",
+    "USER_ID": os.getuid(),
+    "GROUP_ID": os.getgid(),
+}
 
 DEPS = [
     # Backbone of the system
@@ -14,38 +26,42 @@ DEPS = [
 ]
 
 def list_services():
-    return listdir("services")
+    '''List all available services'''
+    return os.listdir("services")
 
 class Args:
+    '''Strongly typed arguments for the script'''
+
+    @staticmethod
+    def from_cli():
+        parser = ArgumentParser(
+            description="Setup script for self-hosted runner"
+        )
+        parser.add_argument(
+            "--update", "-u", action="store_true",
+            help="Update containers without reinstalling everything"
+        )
+        parser.add_argument(
+            "--services", "-s", type=str, nargs="+", default=list_services(),
+            choices=list_services(), metavar="service",
+            help="Only update the specified services from the services directory."
+        )
+        parser.add_argument(
+            "--restart", "-r", action="store_true",
+            help="Restart the containers instead of updating"
+        )
+        parser.add_argument(
+            "--upgrade", "-U", action="store_true",
+            help="Upgrade containers to their latest versions"
+        )
+        args = Args()
+        return parser.parse_args(namespace=args)
+
     def __init__(self):
         self.update: bool
         self.services: list[str]
         self.restart: bool
         self.upgrade: bool
-
-def parse_args():
-    parser = ArgumentParser(
-        description="Setup script for self-hosted runner"
-    )
-    parser.add_argument(
-        "--update", "-u", action="store_true",
-        help="Update containers without reinstalling everything"
-    )
-    parser.add_argument(
-        "--services", "-s", type=str, nargs="+", default=list_services(),
-        choices=list_services(), metavar="service",
-        help="Only update the specified services from the services directory."
-    )
-    parser.add_argument(
-        "--restart", "-r", action="store_true",
-        help="Restart the containers instead of updating"
-    )
-    parser.add_argument(
-        "--upgrade", "-U", action="store_true",
-        help="Upgrade containers to their latest versions"
-    )
-    args = Args()
-    return parser.parse_args(namespace=args)
 
 def install_deps():
     print("Installing dependencies")
@@ -55,11 +71,44 @@ def install_deps():
     print("Giving current user access to docker")
     run(["sudo", "usermod", "-aG", "docker", getuser()], check=True)
 
+def get_env() -> dict[str, Any]:
+    '''Get the combined hardcoded defaults, settings, and user secrets for the environment'''
+    env = SETTINGS.copy()
+    with open("environment.yml") as file:
+        env.update(yaml.safe_load(file))
+    with open("userenv.yml") as file:
+        env.update(yaml.safe_load(file))
+    return env
+
+def stringify_dict(env: dict[str, Any]) -> dict[str, str]:
+    '''Convert all values in the dictionary to strings'''
+    return {key: str(value) for key, value in env.items()}
+
+def deploy_service(service: str, env: dict[str, str]):
+    '''Deploy a service from the services directory, running any necessary scripts.'''
+    # TODO: Run associated scripts
+    print(f"Deploying {service}")
+
+    working_dir = os.getcwd()
+    try:
+        os.chdir(f"services/{service}")
+        run(
+            ["docker-compose", "up", "--detach", "--remove-orphans"],
+            check=True, env=env
+        )
+    finally:
+        os.chdir(working_dir)
+
 def main():
-    args = parse_args()
+    args = Args.from_cli()
 
     if not args.update:
         install_deps()
+
+    str_env = stringify_dict(get_env())
+
+    for service in args.services:
+        deploy_service(service, str_env)
 
     # TODO: Implement the rest of the script
     run(["./setup.nu"] + argv[1:], check=True)
