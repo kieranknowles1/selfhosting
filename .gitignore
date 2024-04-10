@@ -12,6 +12,7 @@ logs/
 services/adguard/conf/AdGuardHome.yaml
 services/gatus/config/config.yaml
 services/nginx/nginx.conf
+services/nginx/tilde.generated.json
 
 serviceenv.yml
 

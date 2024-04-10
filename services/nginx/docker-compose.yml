@@ -12,12 +12,16 @@ services:
         max-size: "1m"
         max-file: "3"
     volumes:
+      # TODO: This is quite a log of mounts, maybe we can use a custom image that handles this for us
       # Only mount the main nginx.conf file, don't overwrite the default includes
       - type: bind
         source: ./nginx.conf
         target: /etc/nginx/nginx.conf
       # Provide additional includes in their own directory
       - ./includes:/etc/nginx/includes
+      - type: bind
+        source: ./tilde.generated.json
+        target: /var/www/tilde/commands.json
       - ./tilde:/var/www/tilde
       - ${DATA_ROOT}/nginx/certbot/www:/var/www/certbot
       - ${DATA_ROOT}/nginx/certbot/conf:/etc/letsencrypt

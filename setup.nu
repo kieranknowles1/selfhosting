@@ -1,5 +1,7 @@
 #!/usr/bin/env nu
 
+# TODO: This is getting a bit complex, maybe switch to using opentofu for this
+
 use audit.nu
 use config.nu get_env
 

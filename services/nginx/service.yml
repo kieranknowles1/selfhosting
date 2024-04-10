@@ -1,3 +1,4 @@
 scripts:
+  prepare: prepare.nu
   configure: configure.nu
   afterDeploy: after-deploy.nu
