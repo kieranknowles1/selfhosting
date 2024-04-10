@@ -1,5 +1,6 @@
-# Python virtual env
+# Python temporary files
 venv/
+__pycache__/
 
 # Private user data
 userenv.yml

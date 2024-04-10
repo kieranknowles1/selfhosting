@@ -4,4 +4,4 @@ domains:
     portVar: MINECRAFT_BLUEMAP_PORT
 usesData: true
 scripts:
-  prepare: prepare.nu
+  prepare: prepare.py
