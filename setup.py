@@ -88,7 +88,7 @@ def stringify_dict(env: dict[str, Any]) -> dict[str, str]:
 @overload
 def run_stage(
     stage: Literal["prepare", "afterDeploy"],
-    spec: service.Service,
+    spec: Optional[service.Service],
     env: dict[str, str]
 ) -> None:
     ...
@@ -96,13 +96,13 @@ def run_stage(
 @overload
 def run_stage(
     stage: Literal["configure"],
-    spec: service.Service,
+    spec: Optional[service.Service],
     env: dict[str, str]
 ) -> Optional[dict[str, Any]]:
     ...
 
-def run_stage(stage: str, spec: service.Service, env: dict[str, str]):
-    if not "scripts" in spec:
+def run_stage(stage: str, spec: Optional[service.Service], env: dict[str, str]):
+    if not spec or not "scripts" in spec:
         return
     script = spec["scripts"].get(stage)
     if script is None:

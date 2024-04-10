@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
-from typing import TypedDict, NotRequired
+from typing import TypedDict, NotRequired, Optional
 import yaml
 
-def load_spec(path: str) -> Service:
-    '''Load a service schema from a file'''
+def load_spec(path: str) -> Optional[Service]:
+    '''
+    Load a service schema from a file
+
+    Throws if the file is not found, but an empty file is considered valid
+    '''
     with open(path) as file:
         return yaml.safe_load(file)
 

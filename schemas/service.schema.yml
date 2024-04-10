@@ -47,4 +47,4 @@ definitions:
     additionalProperties: false
   Script:
     type: string
-    pattern: ^[a-z-]+\.py$
+    pattern: ^[a-z-]+\.(sh|py)$
