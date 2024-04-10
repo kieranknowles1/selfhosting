@@ -4,4 +4,4 @@ domains:
     portVar: WUD_PORT
 usesData: true
 scripts:
-  configure: configure.nu
+  configure: configure.py
