@@ -1,3 +1,6 @@
+# Python virtual env
+venv/
+
 # Private user data
 userenv.yml
 

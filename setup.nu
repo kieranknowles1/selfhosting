@@ -15,14 +15,6 @@ export def main [
     --restart (-r) # Restart the containers instead of updating
     --upgrade (-U) # Upgrade containers to their latest versions
 ] {
-    if (is-admin) {
-        log error "This script should not be run as root"
-        exit 1
-    }
-
-    if (not $update) {
-        install_deps
-    }
 
     let environment = get_env
 
@@ -111,30 +103,6 @@ def replace_templates [
         let output_file = $template | str replace ".template" ""
         open $template --raw | replace_vars $environment | save $output_file --force --raw
     }
-}
-
-# Install dependencies and give the current user the needed permissions
-def install_deps [] {
-    log info "Installing dependencies"
-    log info "This requires root privileges"
-    sudo apt-get update
-    (sudo apt-get install -y
-        # Backbone of the system
-        docker
-        docker-compose
-        # Backups
-        restic
-        # Configure some services after deployment
-        sqlite3
-        # For cronstrue
-        nodejs
-    )
-
-    # Describe cron expressions in human readable formats
-    sudo npm install -g cronstrue
-
-    log info "Giving current user access to docker"
-    sudo usermod -aG docker $env.USER
 }
 
 # Replace variables in a string
