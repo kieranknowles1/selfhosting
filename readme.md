@@ -130,7 +130,6 @@ and are marked with a ⭐ along with a brief explanation of why I believe they s
 - [Firefly III](https://firefly-iii.org/) - Personal finance
 - [Gatus](https://gatus.io) - Service monitoring
 - [Forgejo](https://forgejo.org/) - Git server
-- [Homepage](https://gethomepage.dev/) - Personal dashboard
 - [Immich](https://immich.app/) ⭐ - Photo Library<br>
   I was simply blown away by the quality of Immich's smart search. It's an amazing way to find exactly the
   photo you're thinking of and far surpasses the competition, even the big proprietary players.
@@ -143,7 +142,7 @@ and are marked with a ⭐ along with a brief explanation of why I believe they s
 - [Nginx](https://www.nginx.com/) - Reverse proxy
 - [OpenSpeedTest](https://openspeedtest.com/) - Speed test
 - [Paperless NGX](https://github.com/paperless-ngx/paperless-ngx) - Document management
-- [Tilde](https://github.com/xvvvyz/tilde) - Minimal homepage. No container, just a static site served by Nginx.
+- [Tilde](https://github.com/xvvvyz/tilde) - Minimal home page. No container, just a static site served by Nginx.
   - I use a forked version named [extern-tilde](https://github.com/kieranknowles1/extern-tilde) which uses
     an external config file for easier automation, and supports icons for the links.
 - [WireGuard](https://www.wireguard.com/) - VPN
