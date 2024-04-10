@@ -2,12 +2,17 @@
 
 from argparse import ArgumentParser
 from getpass import getuser
-import os
 from subprocess import run
 from sys import argv
-import yaml
 from typing import Any, Literal, overload, Optional
+import logging
+import os
+import yaml
+
 import utils.service as service
+
+logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
+logger = logging.getLogger(__name__)
 
 SETTINGS = {
     # TODO: This may not be necessary, caches are ephemeral by definition and containers can keep
@@ -65,11 +70,11 @@ class Args:
         self.upgrade: bool
 
 def install_deps():
-    print("Installing dependencies")
+    logger.info("Installing dependencies")
     run(["sudo", "apt-get", "update"], check=True)
     run(["sudo", "apt-get", "install", "-y"] + DEPS, check=True)
 
-    print("Giving current user access to docker")
+    logger.info("Giving current user access to docker")
     run(["sudo", "usermod", "-aG", "docker", getuser()], check=True)
 
 def get_env() -> dict[str, Any]:
@@ -108,7 +113,7 @@ def run_stage(stage: str, spec: Optional[service.Service], env: dict[str, str]):
     if script is None:
         return
 
-    print(f"Running {stage} script {script}")
+    logger.info(f"Running {stage} script {script}")
     result = run(f"./{script}", check=True, env=env, capture_output=stage == "configure")
     if stage == "configure":
         return yaml.safe_load(result.stdout)
@@ -117,7 +122,7 @@ def run_stage(stage: str, spec: Optional[service.Service], env: dict[str, str]):
 def deploy_service(dir: str, env: dict[str, str]):
     '''Deploy a service from the services directory, running any necessary scripts.'''
     env = env.copy()
-    print(f"Deploying {dir}")
+    logger.info(f"Deploying {dir}")
     spec = service.load_spec(f"services/{dir}/service.yml")
 
     working_dir = os.getcwd()
