@@ -132,6 +132,30 @@ def prepare_global_data():
     with open("/tmp/self-hosted-setup/combined-specs.yml", "w") as file:
         yaml.safe_dump(specs, file)
 
+def replace_templates(dir: str, env: dict[str, str]):
+    '''Replace all templates in the directory and its subdirectories with the environment variables, uses bash ${} syntax'''
+
+    logger.info(f"Replacing templates in {dir}")
+
+    for root, _, files in os.walk(dir):
+        for file in files:
+            if not file.endswith(".template"):
+                continue
+
+            logger.info(f"Replacing templates in {root}/{file}")
+
+            with open(f"{root}/{file}") as template:
+                template = template.read()
+                for key, value in env.items():
+                    template = template.replace(f"${{{key}}}", value)
+
+            with open(f"{root}/{file[:-len('.template')]}", "w") as output:
+                output.write(template)
+
+            # Check for unexpanded variables.
+            if "${" in template:
+                raise ValueError(f"Unexpanded variables in {root}/{file}. Search output file for '${{'")
+
 def deploy_service(dir: str, env: dict[str, str]):
     '''Deploy a service from the services directory, running any necessary scripts.'''
     env = env.copy()
@@ -147,6 +171,8 @@ def deploy_service(dir: str, env: dict[str, str]):
         config = run_stage("configure", spec, env)
         if config is not None:
             env.update(config)
+
+        replace_templates(".", env)
 
         run(
             ["docker-compose", "up", "--detach", "--remove-orphans"],
