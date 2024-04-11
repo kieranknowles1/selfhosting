@@ -9,7 +9,7 @@ import logging
 import os
 import yaml
 
-from stages import deploy, prepare
+from stages import check, prepare, deploy
 
 import utils.service as service
 
@@ -96,7 +96,10 @@ def main():
 
     str_env = stringify_dict(get_env())
 
+    check.check_all()
+
     prepare.prepare_global_data()
+
     for service in args.services:
         deploy.deploy_service(service, str_env)
 

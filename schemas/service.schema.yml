@@ -47,4 +47,5 @@ definitions:
     additionalProperties: false
   Script:
     type: string
-    pattern: ^[a-z-]+\.(sh|py)$
+    # TODO: nu support is deprecated and should be removed
+    pattern: ^[a-z-]+\.(sh|py|nu)$
