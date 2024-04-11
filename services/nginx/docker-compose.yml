@@ -1,7 +1,9 @@
 version: '3.8'
 services:
   nginx:
-    image: nginxinc/nginx-unprivileged
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: nginx
     user: ${USER_ID}:${GROUP_ID}
     ports:
@@ -12,13 +14,7 @@ services:
         max-size: "1m"
         max-file: "3"
     volumes:
-      # Only mount the main nginx.conf file, don't overwrite the default includes
-      - type: bind
-        source: ./nginx.conf
-        target: /etc/nginx/nginx.conf
-      # Provide additional includes in their own directory
-      - ./includes:/etc/nginx/includes
-      - ./tilde:/var/www/tilde
+      # No need to mount local config files, these are baked into the image
       - ${DATA_ROOT}/nginx/certbot/www:/var/www/certbot
       - ${DATA_ROOT}/nginx/certbot/conf:/etc/letsencrypt
       - ${DATA_ROOT}/nginx/static:/var/www/static

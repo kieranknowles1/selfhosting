@@ -175,7 +175,7 @@ def deploy_service(dir: str, env: dict[str, str]):
         replace_templates(".", env)
 
         run(
-            ["docker-compose", "up", "--detach", "--remove-orphans"],
+            ["docker-compose", "up", "--build", "--detach", "--remove-orphans"],
             check=True, env=env
         )
         run_stage("afterDeploy", spec, env)
