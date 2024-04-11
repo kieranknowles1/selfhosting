@@ -4,10 +4,12 @@ from argparse import ArgumentParser
 from getpass import getuser
 from subprocess import run
 from sys import argv
-from typing import Any, Literal, overload, Optional
+from typing import Any
 import logging
 import os
 import yaml
+
+from stages import deploy, prepare
 
 import utils.service as service
 
@@ -31,10 +33,6 @@ DEPS = [
     "restic",
 ]
 
-def list_services():
-    '''List all available services'''
-    return os.listdir("services")
-
 class Args:
     '''Strongly typed arguments for the script'''
 
@@ -48,8 +46,8 @@ class Args:
             help="Update containers without reinstalling everything"
         )
         parser.add_argument(
-            "--services", "-s", type=str, nargs="+", default=list_services(),
-            choices=list_services(), metavar="service",
+            "--services", "-s", type=str, nargs="+", default=service.list(),
+            choices=service.list(), metavar="service",
             help="Only update the specified services from the services directory."
         )
         parser.add_argument(
@@ -90,98 +88,6 @@ def stringify_dict(env: dict[str, Any]) -> dict[str, str]:
     '''Convert all values in the dictionary to strings'''
     return {key: str(value) for key, value in env.items()}
 
-@overload
-def run_stage(
-    stage: Literal["prepare", "afterDeploy"],
-    spec: Optional[service.Service],
-    env: dict[str, str]
-) -> None:
-    ...
-
-@overload
-def run_stage(
-    stage: Literal["configure"],
-    spec: Optional[service.Service],
-    env: dict[str, str]
-) -> Optional[dict[str, Any]]:
-    ...
-
-def run_stage(stage: str, spec: Optional[service.Service], env: dict[str, str]):
-    if not spec or not "scripts" in spec:
-        return
-    script = spec["scripts"].get(stage)
-    if script is None:
-        return
-
-    logger.info(f"Running {stage} script {script}")
-    result = run(f"./{script}", check=True, env=env, capture_output=stage == "configure")
-    if stage == "configure":
-        return yaml.safe_load(result.stdout)
-
-def prepare_global_data():
-    '''Prepare global data for service scripts to work with'''
-
-    logger.info("Preparing global data")
-
-    specs = {}
-    for item in list_services():
-        spec = service.load_spec(f"services/{item}/service.yml")
-        if spec:
-            specs[item] = spec
-
-    with open("/tmp/self-hosted-setup/combined-specs.yml", "w") as file:
-        yaml.safe_dump(specs, file)
-
-def replace_templates(dir: str, env: dict[str, str]):
-    '''Replace all templates in the directory and its subdirectories with the environment variables, uses bash ${} syntax'''
-
-    logger.info(f"Replacing templates in {dir}")
-
-    for root, _, files in os.walk(dir):
-        for file in files:
-            if not file.endswith(".template"):
-                continue
-
-            logger.info(f"Replacing templates in {root}/{file}")
-
-            with open(f"{root}/{file}") as template:
-                template = template.read()
-                for key, value in env.items():
-                    template = template.replace(f"${{{key}}}", value)
-
-            with open(f"{root}/{file[:-len('.template')]}", "w") as output:
-                output.write(template)
-
-            # Check for unexpanded variables.
-            if "${" in template:
-                raise ValueError(f"Unexpanded variables in {root}/{file}. Search output file for '${{'")
-
-def deploy_service(dir: str, env: dict[str, str]):
-    '''Deploy a service from the services directory, running any necessary scripts.'''
-    env = env.copy()
-    logger.info(f"Deploying {dir}")
-    spec = service.load_spec(f"services/{dir}/service.yml")
-
-    working_dir = os.getcwd()
-    try:
-        os.chdir(f"services/{dir}")
-
-        run_stage("prepare", spec, env)
-
-        config = run_stage("configure", spec, env)
-        if config is not None:
-            env.update(config)
-
-        replace_templates(".", env)
-
-        run(
-            ["docker-compose", "up", "--build", "--detach", "--remove-orphans"],
-            check=True, env=env
-        )
-        run_stage("afterDeploy", spec, env)
-    finally:
-        os.chdir(working_dir)
-
 def main():
     args = Args.from_cli()
 
@@ -190,9 +96,9 @@ def main():
 
     str_env = stringify_dict(get_env())
 
-    prepare_global_data()
+    prepare.prepare_global_data()
     for service in args.services:
-        deploy_service(service, str_env)
+        deploy.deploy_service(service, str_env)
 
     # TODO: Implement the rest of the script
     run(["./setup.nu"] + argv[1:], check=True)

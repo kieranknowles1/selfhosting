@@ -2,8 +2,13 @@
 
 from __future__ import annotations
 
+from os import listdir
 from typing import TypedDict, NotRequired, Optional
 import yaml
+
+def list():
+    '''List all available services'''
+    return listdir("services")
 
 def load_spec(path: str) -> Optional[Service]:
     '''

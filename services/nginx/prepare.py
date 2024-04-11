@@ -11,6 +11,7 @@ def generate_commands(specs: dict[str, Any]):
         if "domains" in spec:
             for domain in spec["domains"]:
                 # TODO: Shortcut field
+                # TODO: Icon
                 shortcut = domain["domain"][0:2]
                 commands.append([shortcut, {
                     "url": f"https://{domain['domain']}.{environ['DOMAIN_NAME']}",
