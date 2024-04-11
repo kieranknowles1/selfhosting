@@ -15,6 +15,7 @@ logs/
 # DO NOT MODIFY ANY FILES IN THIS SECTION
 services/adguard/conf/AdGuardHome.yaml
 services/gatus/config/config.yaml
+services/nginx/commands.generated.json
 services/nginx/nginx.conf
 
 serviceenv.yml
