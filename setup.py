@@ -118,6 +118,19 @@ def run_stage(stage: str, spec: Optional[service.Service], env: dict[str, str]):
     if stage == "configure":
         return yaml.safe_load(result.stdout)
 
+def prepare_global_data():
+    '''Prepare global data for service scripts to work with'''
+
+    logger.info("Preparing global data")
+
+    specs = {}
+    for item in list_services():
+        spec = service.load_spec(f"services/{item}/service.yml")
+        if spec:
+            specs[item] = spec
+
+    with open("/tmp/self-hosted-setup/combined-specs.yml", "w") as file:
+        yaml.safe_dump(specs, file)
 
 def deploy_service(dir: str, env: dict[str, str]):
     '''Deploy a service from the services directory, running any necessary scripts.'''
@@ -151,6 +164,7 @@ def main():
 
     str_env = stringify_dict(get_env())
 
+    prepare_global_data()
     for service in args.services:
         deploy_service(service, str_env)
 

@@ -7,16 +7,9 @@ See [service.schema.yml](../schemas/service.schema.yml) for the schema of `servi
 A service can have one or more scripts defined in `service.yml` to be executed during the setup process.
 These have access to the environment variables defined in `environment.yml` and `userenv.yml`.
 
-In addition to the aformentioned config, the following additional variables are available:
-
-- `GLOBAL_DOMAINS`: YAML array of domains collected from all services. Each entry is in the following format:
-  ```yml
-  domain: string
-  name: string
-  port: int
-  includeInStatus: bool
-  ```
-- `GLOBAL_ISUPDATE`: True if the `--update` flag was passed to the setup script, false otherwise.
+Additionally, global information about all services is available in the `/tmp/self-hosted-setup/` directory.
+- `combined-specs.yml`: A YAML object, where each key is the name of a service and the value is the service's `service.yml`.
+  - See [service.schema.yml](../schemas/service.schema.yml) for the schema of each value.
 
 ## Template Files
 Files with the `.template` extension are preprocessed during setup to replace variables with their values
