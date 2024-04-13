@@ -1,6 +1,9 @@
 domains:
   - domain: adguard
     name: AdGuard Home
+    hotkey: a
+    shortPurpose: AdBlock
+    icon: adguard-home
     portVar: ADGUARD_WEB_PORT
 scripts:
   configure: configure.nu

@@ -115,7 +115,7 @@ def main():
         deploy.deploy_service(service, str_env)
 
     # TODO: Implement the rest of the script
-    run(["./setup.nu"] + argv[1:], check=True)
+    # run(["./setup.nu"] + argv[1:], check=True)
 
 
 if __name__ == "__main__":

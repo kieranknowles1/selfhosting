@@ -6,17 +6,26 @@ import json
 import yaml
 
 def generate_commands(specs: dict[str, Any]):
+    seen_hotkeys = dict()
+
     commands = []
     for service, spec in specs.items():
         if "domains" in spec:
             for domain in spec["domains"]:
-                # TODO: Shortcut field
-                # TODO: Icon
-                shortcut = domain["domain"][0:2]
-                commands.append([shortcut, {
+
+                hotkey = domain["hotkey"]
+                if hotkey in seen_hotkeys:
+                    raise ValueError(f'Hotkey "{hotkey}" is already in use by {seen_hotkeys.get(hotkey)}')
+                seen_hotkeys[hotkey] = domain["domain"]
+
+                value = {
                     "url": f"https://{domain['domain']}.{environ['DOMAIN_NAME']}",
-                    "name": domain["name"],
-                }])
+                    "name": domain["shortPurpose"] if "shortPurpose" in domain else domain["name"],
+                }
+                if "icon" in domain:
+                    value["icon"] = domain["icon"]
+
+                commands.append([hotkey, value])
 
     return commands
 

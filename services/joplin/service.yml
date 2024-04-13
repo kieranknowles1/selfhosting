@@ -1,5 +1,8 @@
 domains:
   - domain: joplin
     name: Joplin
+    hotkey: n
+    shortPurpose: Notes
+    icon: joplin
     portVar: JOPLIN_PORT
 usesData: true

@@ -1,6 +1,9 @@
 domains:
   - domain: paperless
     name: Paperless
+    hotkey: d
+    shortPurpose: Documents
+    icon: paperless
     portVar: PAPERLESS_PORT
 usesData: true
 scripts:

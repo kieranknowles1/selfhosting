@@ -36,6 +36,23 @@ definitions:
       name:
         type: string
         description: User-friendly name to be used in UI.
+      hotkey:
+        type: string
+        description: The hotkey to use to open the domain in the browser.
+        pattern: ^[a-z]{1,2}$
+      icon:
+        type: string
+        description:
+          The name of the icon to use for the domain, from [Dashboard Icons](https://github.com/walkxcode/dashboard-icons)
+      shortPurpose:
+        type: string
+        description:
+          Very brief (1-2 words) description of the purpose of the domain.
+          If unset, the name will be used instead.
+
+          1 word if possible, 2 words is unlikely to fit if there is an icon.
+
+          E.g., "Immich" -> "Photos", "Bluemap" -> "Minecraft map"
       portVar:
         type: string
         description: The name of the environment variable that will be used to set the port for this domain.
@@ -43,7 +60,11 @@ definitions:
       includeInStatus:
         type: boolean
         description: Whether the domain should be included in the status page. Defaults to true.
-    required: [domain, name, portVar]
+    required:
+      - domain
+      - name
+      - hotkey
+      - portVar
     additionalProperties: false
   Script:
     type: string

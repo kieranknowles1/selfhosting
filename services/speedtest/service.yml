@@ -1,6 +1,8 @@
 domains:
   - domain: speedtest
     name: Speedtest
+    hotkey: s
+    icon: speedtest-tracker
     portVar: SPEEDTEST_PORT
 scripts:
   afterDeploy: after-deploy.nu

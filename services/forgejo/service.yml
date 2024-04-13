@@ -1,6 +1,9 @@
 domains:
   - domain: forgejo
     name: Forgejo
+    hotkey: g
+    shortPurpose: Git
+    icon: forgejo
     portVar: FORGEJO_WEB_PORT
 usesData: true
 scripts:

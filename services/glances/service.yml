@@ -1,4 +1,7 @@
 domains:
   - domain: glances
     name: Glances
+    hotkey: t
+    shortPurpose: Processes
+    icon: glances
     portVar: GLANCES_PORT

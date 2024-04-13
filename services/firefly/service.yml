@@ -2,8 +2,13 @@ domains:
   - domain: firefly
     name: Firefly III
     portVar: FIREFLY_APP_PORT
+    hotkey: f
+    shortPurpose: Finance
+    icon: firefly
 
   - domain: firefly-importer
     name: Firefly III Importer
     portVar: FIREFLY_IMPORTER_PORT
+    hotkey: fi
+    shortPurpose: Finance Import
 usesData: true

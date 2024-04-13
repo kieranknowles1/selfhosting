@@ -1,5 +1,8 @@
 domains:
   - domain: immich
     name: Immich
+    hotkey: p
+    shortPurpose: Photos
+    icon: immich
     portVar: IMMICH_PORT
 usesData: true
