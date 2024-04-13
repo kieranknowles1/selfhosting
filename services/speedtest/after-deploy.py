@@ -39,7 +39,7 @@ def configure():
         # Secure the admin account
         cursor.execute(
             "UPDATE users SET email = ?, password = ? WHERE name = 'Admin'",
-            (environ['OWNER_EMAIL'], environ['ADGUARD_PASSWORD'])
+            (environ['OWNER_EMAIL'], password_hash)
         )
         # TODO: The schedule never gets applied. Probably need to manually add the cron job. Have a look at source code
 
