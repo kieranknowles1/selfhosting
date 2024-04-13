@@ -5,4 +5,4 @@ domains:
     icon: speedtest-tracker
     portVar: SPEEDTEST_PORT
 scripts:
-  afterDeploy: after-deploy.nu
+  afterDeploy: after-deploy.py
