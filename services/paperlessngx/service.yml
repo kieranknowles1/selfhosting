@@ -7,4 +7,4 @@ domains:
     portVar: PAPERLESS_PORT
 usesData: true
 scripts:
-  afterDeploy: after-deploy.nu
+  afterDeploy: after-deploy.sh

@@ -112,7 +112,7 @@ def main():
     prepare.prepare_global_data()
 
     for service in args.services:
-        deploy.deploy_service(service, str_env)
+        deploy.deploy_service(service, str_env, args.update)
 
     # TODO: Implement the rest of the script
     # run(["./setup.nu"] + argv[1:], check=True)

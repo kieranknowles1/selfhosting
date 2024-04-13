@@ -11,6 +11,9 @@ Additionally, global information about all services is available in the `/tmp/se
 - `combined-specs.yml`: A YAML object, where each key is the name of a service and the value is the service's `service.yml`.
   - See [service.schema.yml](../schemas/service.schema.yml) for the schema of each value.
 
+The following environment variables are available to all scripts:
+- `IS_UPDATE`: Set to `true` if the `--update` flag was passed to the setup script. Unset otherwise.
+
 ## Template Files
 Files with the `.template` extension are preprocessed during setup to replace variables with their values
 through the Bash syntax `${VARIABLE}`. Theses files are then moved to their final location without the `.template`

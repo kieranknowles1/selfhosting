@@ -24,15 +24,25 @@ def run_stage(
 ) -> Optional[dict[str, Any]]:
     ...
 
-def run_stage(stage: str, spec: Optional[service.Service], env: dict[str, str]):
+def run_stage(stage: str, spec: Optional[service.Service], env: dict[str, str], is_update: bool):
     if not spec or not "scripts" in spec:
         return
     script = spec["scripts"].get(stage)
     if script is None:
         return
 
+    env = env.copy()
+    # Bash is weird, it doesn't support booleans so we have to use the lack of a variable to represent false
+    if is_update:
+        env["IS_UPDATE"] = "true"
+
     logger.info(f"Running {stage} script {script}")
-    result = run(f"./{script}", check=True, env=env, capture_output=stage == "configure")
+    result = run(
+        f"./{script}",
+        check=True,
+        capture_output=stage == "configure",
+        env=env,
+    )
     if stage == "configure":
         return yaml.safe_load(result.stdout)
 
@@ -60,7 +70,7 @@ def replace_templates(dir: str, env: dict[str, str]):
             if "${" in template:
                 raise ValueError(f"Unexpanded variables in {root}/{file}. Search output file for '${{'")
 
-def deploy_service(dir: str, env: dict[str, str]):
+def deploy_service(dir: str, env: dict[str, str], is_update: bool):
     '''Deploy a service from the services directory, running any necessary scripts.'''
     env = env.copy()
     logger.info(f"Deploying {dir}")
@@ -70,9 +80,9 @@ def deploy_service(dir: str, env: dict[str, str]):
     try:
         os.chdir(f"services/{dir}")
 
-        run_stage("prepare", spec, env)
+        run_stage("prepare", spec, env, is_update)
 
-        config = run_stage("configure", spec, env)
+        config = run_stage("configure", spec, env, is_update)
         if config is not None:
             env.update(config)
 
@@ -82,6 +92,6 @@ def deploy_service(dir: str, env: dict[str, str]):
             ["docker-compose", "up", "--build", "--detach", "--remove-orphans"],
             check=True, env=env
         )
-        run_stage("afterDeploy", spec, env)
+        run_stage("afterDeploy", spec, env, is_update)
     finally:
         os.chdir(working_dir)
