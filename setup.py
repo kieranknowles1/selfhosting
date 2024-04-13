@@ -58,6 +58,10 @@ class Args:
             "--upgrade", "-U", action="store_true",
             help="Upgrade containers to their latest versions"
         )
+        parser.add_argument(
+            "--loose-checks", "-C", action="store_true",
+            help="Allow the script to continue even if some checks fail"
+        )
         args = Args()
         return parser.parse_args(namespace=args)
 
@@ -66,6 +70,7 @@ class Args:
         self.services: list[str]
         self.restart: bool
         self.upgrade: bool
+        self.loose_checks: bool
 
 def install_deps():
     logger.info("Installing dependencies")
@@ -96,7 +101,13 @@ def main():
 
     str_env = stringify_dict(get_env())
 
-    check.check_all()
+    try:
+        check.check_all()
+    except Exception as e:
+        if args.loose_checks:
+            logger.warning("Some checks failed, continuing anyway")
+        else:
+            raise e
 
     prepare.prepare_global_data()
 
