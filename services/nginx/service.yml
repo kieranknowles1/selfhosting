@@ -1,4 +1,3 @@
 scripts:
   prepare: prepare.py
   configure: configure.py
-  afterDeploy: after-deploy.py
