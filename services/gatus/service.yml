@@ -6,4 +6,4 @@ domains:
     icon: gatus
     portVar: GATUS_PORT
 scripts:
-  configure: configure.nu
+  prepare: prepare.py

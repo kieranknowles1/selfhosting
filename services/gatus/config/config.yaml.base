@@ -1,10 +1,10 @@
 endpoints:
   - name: Home
     group: Services
-    url: https://${DOMAIN_NAME}
+    url: "" # Filled in by prepare script
     interval: 5m
     conditions:
       - "[STATUS] == 200"
       - "[RESPONSE_TIME] < 500"
       - "[CERTIFICATE_EXPIRATION] > 7d"
-${GATUS_CONFIG}
+  # Additional endpoints added by prepare script
