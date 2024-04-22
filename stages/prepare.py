@@ -1,6 +1,7 @@
 """Prepare the deployment of the application."""
 
 from logging import getLogger
+from os import makedirs
 import yaml
 
 import utils.service as service
@@ -22,5 +23,6 @@ def prepare_global_data():
         if spec:
             specs[item] = spec
 
+    makedirs("/tmp/self-hosted-setup", exist_ok=True)
     with open("/tmp/self-hosted-setup/combined-specs.yml", "w") as file:
         yaml.safe_dump(specs, file)
