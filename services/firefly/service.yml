@@ -11,4 +11,5 @@ domains:
     portVar: FIREFLY_IMPORTER_PORT
     hotkey: fi
     shortPurpose: Finance Import
+    icon: firefly
 usesData: true
