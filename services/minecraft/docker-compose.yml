@@ -16,7 +16,7 @@ services:
       - VERSION=${MINECRAFT_VERSION}
       - TYPE=FABRIC
       # CSV list of mods to install from Modrinth
-      - MODRINTH_PROJECTS=fabric-api,lithium,bluemap
+      - MODRINTH_PROJECTS=${MINECRAFT_MODS}
 
       - DATAPACKS=/datapacks
       - REMOVE_OLD_DATAPACKS=true

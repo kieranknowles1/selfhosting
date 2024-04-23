@@ -89,9 +89,17 @@ def get_env() -> dict[str, Any]:
         env.update(yaml.safe_load(file))
     return env
 
+def stringify_value(value: Any) -> str:
+    """Convert a value to a string"""
+
+    if isinstance(value, list):
+        # TODO: Handle commas in list items
+        return ",".join(str(item) for item in value) # type: ignore item is unknown, but we're converting it to a string anyway
+    return str(value)
+
 def stringify_dict(env: dict[str, Any]) -> dict[str, str]:
     '''Convert all values in the dictionary to strings'''
-    return {key: str(value) for key, value in env.items()}
+    return {key: stringify_value(value) for key, value in env.items()}
 
 def main():
     args = Args.from_cli()

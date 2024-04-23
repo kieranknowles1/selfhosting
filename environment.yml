@@ -1,6 +1,9 @@
 ---
 
 # Environment variables to export to the containers
+# All values will be stringified, so don't worry about types
+# Special cases:
+# - Arrays will be converted to a comma-separated string
 
 #==============================================================================
 # General
@@ -63,6 +66,13 @@ SPEEDTEST_RETENTION: 30
 # Max view distance to send to the client.
 # NOTE: This will be loaded for all clients, even if they have a lower view distance set.
 MINECRAFT_VIEW_DISTANCE: 16
+
+# Mods to install from Modrinth.
+MINECRAFT_MODS:
+  - fabric-api # Dependency for other mods
+  - bluemap # Map
+  - ferrite-core # Saves RAM
+  - lithium # Optimises server performance
 
 #==============================================================================
 # Ports
