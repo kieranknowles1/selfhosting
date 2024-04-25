@@ -3,28 +3,15 @@
 from argparse import ArgumentParser
 from getpass import getuser
 from subprocess import run
-from sys import argv
 from typing import Any
 import logging
-import os
-import yaml
 
-from stages import check, prepare, deploy
+from stages import check, prepare, deploy, environment
 
 import utils.service as service
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
-
-SETTINGS = {
-    # TODO: This may not be necessary, caches are ephemeral by definition and containers can keep
-    # cache in themselves which is also ephemeral
-    "CACHE_ROOT": "/tmp/self-hosted-runner/cache",
-    # TODO: Logs are tracked by docker itself, so probably don't need to be stored elsewhere
-    "LOGS_ROOT": "/tmp/self-hosted-runner/logs",
-    "USER_ID": os.getuid(),
-    "GROUP_ID": os.getgid(),
-}
 
 DEPS = [
     # Backbone of the system
@@ -80,34 +67,13 @@ def install_deps():
     logger.info("Giving current user access to docker")
     run(["sudo", "usermod", "-aG", "docker", getuser()], check=True)
 
-def get_env() -> dict[str, Any]:
-    '''Get the combined hardcoded defaults, settings, and user secrets for the environment'''
-    env = SETTINGS.copy()
-    with open("environment.yml") as file:
-        env.update(yaml.safe_load(file))
-    with open("userenv.yml") as file:
-        env.update(yaml.safe_load(file))
-    return env
-
-def stringify_value(value: Any) -> str:
-    """Convert a value to a string"""
-
-    if isinstance(value, list):
-        # TODO: Handle commas in list items
-        return ",".join(str(item) for item in value) # type: ignore item is unknown, but we're converting it to a string anyway
-    return str(value)
-
-def stringify_dict(env: dict[str, Any]) -> dict[str, str]:
-    '''Convert all values in the dictionary to strings'''
-    return {key: stringify_value(value) for key, value in env.items()}
-
 def main():
     args = Args.from_cli()
 
     if not args.update:
         install_deps()
 
-    str_env = stringify_dict(get_env())
+    str_env = environment.stringify_dict(environment.get_env())
 
     try:
         check.check_all()
