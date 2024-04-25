@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from os import listdir
-from typing import TypedDict, NotRequired, Optional
+from typing import TypedDict, NotRequired, Optional, List
 import yaml
 
 def list():
@@ -20,8 +20,8 @@ def load_spec(path: str) -> Optional[Service]:
         return yaml.safe_load(file)
 
 class Service(TypedDict):
-    domains: NotRequired[list[Domain]]
-    uses: NotRequired[list[str]]
+    domains: NotRequired[List[Domain]]
+    usesData: NotRequired[List[str]]
     scripts: NotRequired[Scripts]
 
 class Domain(TypedDict):
