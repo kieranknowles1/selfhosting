@@ -61,7 +61,7 @@ def configure_cron [] {
 
     let jobs = ([
         "# Back up nightly at 1 AM"
-        $"0 1 * * * root ($nuexe) (pwd)/backup.nu > (pwd)/backup.log 2>&1"
+        $"0 1 * * * root /bin/python3 (pwd)/backup.py > (pwd)/backup.log 2>&1"
         "# Renew SSL certificate monthly"
         $"0 0 1 * * root ($nuexe) (pwd)/renew.nu > (pwd)/renew.log 2>&1"
         "# Update services every Monday at midnight"
