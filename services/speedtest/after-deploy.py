@@ -1,6 +1,5 @@
-#!/bin/python3
+#!/usr/bin/env python3
 
-import docker
 from os import environ
 import sqlite3
 

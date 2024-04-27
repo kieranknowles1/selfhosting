@@ -1,15 +1,23 @@
-#!/bin/python3
+#!/usr/bin/env python3
 
-import docker
 from os import environ
 import yaml
+
+# TODO: Is there a htpasswd library for Python?
+from subprocess import run
 
 SRC_FILE = "./conf/AdGuardHome.yaml.base"
 DST_FILE = "./conf/AdGuardHome.yaml"
 
-def hash_password(password: str) -> str:
-    # TODO: Hash for PHP
-    return password
+def hash_password(username: str, password: str) -> str:
+    result = run(
+        ["htpasswd", "-B", "-C", "10", "-n", "-b", username, password],
+        capture_output=True,
+        text=True,
+        check=True
+    ).stdout.strip()
+
+    return result.split(":")[1]
 
 
 def configure():
@@ -19,7 +27,7 @@ def configure():
         specs = yaml.safe_load(file)
 
     config["users"][0]["name"] = environ["ADGUARD_USERNAME"]
-    config["users"][0]["password"] = hash_password(environ["ADGUARD_PASSWORD"])
+    config["users"][0]["password"] = hash_password(environ["ADGUARD_USERNAME"], environ["ADGUARD_PASSWORD"])
 
     config["user_rules"].append(f"{environ['LOCAL_IP']} home.arpa")
 

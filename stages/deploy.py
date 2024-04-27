@@ -41,7 +41,7 @@ def run_stage(stage: str, spec: Optional[service.Service], env: dict[str, str], 
         f"./{script}",
         check=True,
         capture_output=stage == "configure",
-        env=env,
+        env={**os.environ, **env},
     )
     if stage == "configure":
         return yaml.safe_load(result.stdout)
