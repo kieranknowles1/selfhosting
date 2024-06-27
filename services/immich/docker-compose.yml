@@ -12,7 +12,6 @@ services:
   immich-server:
     container_name: immich_server
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION}
-    command: [ "start.sh", "immich" ]
     volumes:
       - ${DATA_ROOT}/immich/library:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
@@ -27,27 +26,6 @@ services:
     restart: always
     labels:
       - wud.tag.include=v\d+\.\d+\.\d+
-
-  immich-microservices:
-    container_name: immich_microservices
-    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION}
-    # extends:
-    #   file: hwaccel.yml
-    #   service: hwaccel
-    command: [ "start.sh", "microservices" ]
-    volumes:
-      - ${DATA_ROOT}/immich/library:/usr/src/app/upload
-      - /etc/localtime:/etc/localtime:ro
-    env_file: .env
-    environment:
-      - DB_PASSWORD=${IMMICH_DB_PASSWORD}
-    depends_on:
-      - redis
-      - database
-    restart: always
-    labels:
-      - wud.tag.include=v\d+\.\d+\.\d+
-
   immich-machine-learning:
     container_name: immich_machine_learning
     image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION}
