@@ -43,7 +43,7 @@ TIME_ZONE: Europe/London
 # updates for your containers.
 IMMICH_VERSION: v1.106.4
 
-MINECRAFT_VERSION: 1.20.4
+MINECRAFT_VERSION: "1.21"
 
 #==============================================================================
 # Service Config

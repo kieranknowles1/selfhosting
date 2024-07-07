@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   minecraft:
-    image: itzg/minecraft-server
+    image: itzg/minecraft-server:java21
     container_name: minecraft
     user: ${USER_ID}:${GROUP_ID}
     # Restart on crash, retry 5 times
