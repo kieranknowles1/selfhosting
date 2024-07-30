@@ -12,7 +12,7 @@
 # Don't rely on security through obscurity however
 DEBUG: "false"
 
-LOCAL_IP: 192.168.0.202
+LOCAL_IP: 192.168.1.205
 
 # Maximum response time for a service to be considered healthy, in milliseconds
 HEALTH_TIMEOUT: 1000
@@ -41,7 +41,7 @@ TIME_ZONE: Europe/London
 # The tags of the images to use. I recommend against using `latest` to
 # avoid any unexpected changes. What's up Docker will show you the available
 # updates for your containers.
-IMMICH_VERSION: v1.106.4
+IMMICH_VERSION: v1.110.0
 
 MINECRAFT_VERSION: "1.21"
 
