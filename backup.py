@@ -27,8 +27,11 @@ def create_backup(repo: str, password: str, source: str, env: dict[str, str]):
     }
     run(["restic", "backup", source], env=full_env, check=True)
 
-def main():
-
+def prepare_script():
+    """
+    Do pre-backup setup, such as changing directory and setting environment variables.
+    Returns the environment dict.
+    """
     script_dir = path.dirname(__file__)
     print(f"chdir to {script_dir}")
     chdir(script_dir)
@@ -36,13 +39,14 @@ def main():
     env = stringify_dict(get_env())
     # We run this as root, so let Restic use root's cache dir
     env["XDG_CACHE_HOME"] = "/root/.cache"
+    return env
 
-    start = datetime.now()
-    print("=========================")
-    print(" --- Starting backup --- ")
-    print(f"Backup started at {start}")
-    print("=========================")
+def pause_all(env: dict[str, str]):
+    """
+    Pause all services that use the data directory.
 
+    Returns a list of services that were paused.
+    """
     to_pause: list[str] = []
     for s in service.list():
         spec = service.load_spec(f"services/{s}/service.yml")
@@ -53,12 +57,33 @@ def main():
     for s in to_pause:
         pause(s, env)
 
+    return to_pause
+
+def unpause_all(services: list[str], env: dict[str, str]):
+    """
+    Unpause all services that were paused.
+
+    Takes a list of services that were paused.
+    """
+    print("Containers going UNPAUSED after backup")
+    for s in services:
+        unpause(s, env)
+
+def main():
+    env = prepare_script()
+
+    start = datetime.now()
+    print("=========================")
+    print(" --- Starting backup --- ")
+    print(f"Backup started at {start}")
+    print("=========================")
+
+    paused = pause_all(env)
+
     create_backup(env["RESTIC_REPO"], env["RESTIC_PASSWORD"], env["DATA_ROOT"], env)
     create_backup(env["RESTIC_REMOTE_REPO"], env["RESTIC_PASSWORD"], env["DATA_ROOT"], env)
 
-    print("Containers going UNPAUSED after backup")
-    for s in to_pause:
-        unpause(s, env)
+    unpause_all(paused, env)
 
     time_taken = datetime.now() - start
     print(f"Backup complete at {datetime.now()}. Took {time_taken}")
