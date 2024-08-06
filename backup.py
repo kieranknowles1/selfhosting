@@ -19,12 +19,13 @@ def unpause(service: str, env: dict[str, str]):
     print(f"Unpausing {service}")
     run(["docker-compose", "--file", f"services/{service}/docker-compose.yml", "unpause"], env=env, check=True)
 
-def create_backup(repo: str, password: str, source: str):
+def create_backup(repo: str, password: str, source: str, env: dict[str, str]):
     print(f"Starting backup of {source} to {repo}")
-    run(["restic", "backup", source], env={
+    full_env = env | {
         "RESTIC_REPOSITORY": repo,
-        "RESTIC_PASSWORD": password
-    }, check=True)
+        "RESTIC_PASSWORD": password,
+    }
+    run(["restic", "backup", source], env=full_env, check=True)
 
 def main():
 
@@ -33,6 +34,8 @@ def main():
     chdir(script_dir)
 
     env = stringify_dict(get_env())
+    # We run this as root, so let Restic use root's cache dir
+    env["XDG_CACHE_HOME"] = "/root/.cache"
 
     start = datetime.now()
     print("=========================")
@@ -50,8 +53,8 @@ def main():
     for s in to_pause:
         pause(s, env)
 
-    create_backup(env["RESTIC_REPO"], env["RESTIC_PASSWORD"], env["DATA_ROOT"])
-    create_backup(env["RESTIC_REMOTE_REPO"], env["RESTIC_PASSWORD"], env["DATA_ROOT"])
+    create_backup(env["RESTIC_REPO"], env["RESTIC_PASSWORD"], env["DATA_ROOT"], env)
+    create_backup(env["RESTIC_REMOTE_REPO"], env["RESTIC_PASSWORD"], env["DATA_ROOT"], env)
 
     print("Containers going UNPAUSED after backup")
     for s in to_pause:
