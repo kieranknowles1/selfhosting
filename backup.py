@@ -69,6 +69,25 @@ def unpause_all(services: list[str], env: dict[str, str]):
     for s in services:
         unpause(s, env)
 
+CLEAN_POLICY = [
+    "--keep-daily", "7", # Keep daily backups of the last week
+    "--keep-weekly", "52", # Keep weekly backups of the last year
+    "--keep-monthly", "10000", # Keep monthly backups practically forever
+]
+
+def clean(repo: str, password: str, env: dict[str, str]):
+    print(f"Cleaning up old backups in {repo}")
+
+    full_env = env | {
+        "RESTIC_REPOSITORY": repo,
+        "RESTIC_PASSWORD": password,
+    }
+
+    # Delete snapshots according to our policy
+    run(["restic", "forget", *CLEAN_POLICY], env=full_env, check=True)
+    # Delete unused data
+    run(["restic", "prune"], env=full_env, check=True)
+
 def main():
     env = prepare_script()
 
@@ -84,6 +103,16 @@ def main():
     create_backup(env["RESTIC_REMOTE_REPO"], env["RESTIC_PASSWORD"], env["DATA_ROOT"], env)
 
     unpause_all(paused, env)
+
+    print("=========================")
+    print(" --- Cleaning old backups --- ")
+    print("=========================")
+
+    # Clean up old backups
+    # This is kept separate as it doesn't need services to be paused, so we can resume service
+    # before cleaning
+    clean(env["RESTIC_REPO"], env["RESTIC_PASSWORD"], env)
+    clean(env["RESTIC_REMOTE_REPO"], env["RESTIC_PASSWORD"], env)
 
     time_taken = datetime.now() - start
     print(f"Backup complete at {datetime.now()}. Took {time_taken}")
