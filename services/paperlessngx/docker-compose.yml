@@ -71,7 +71,7 @@ services:
       PAPERLESS_DEBUG: ${DEBUG}
 
   gotenberg:
-    image: docker.io/gotenberg/gotenberg:7.10
+    image: docker.io/gotenberg/gotenberg:8.7
     container_name: paperless_gotenberg
     restart: unless-stopped
 

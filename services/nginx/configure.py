@@ -10,7 +10,8 @@ def configure_reverse_proxy(service: str, domain: dict[str, Any]):
         # {service}, {domain["domain"]}.{environ["DOMAIN_NAME"]} -> {environ["LOCAL_IP"]}:{port}
         server {{
             include /etc/nginx/includes/global.conf;
-            server_name {domain["domain"]}.{environ["DOMAIN_NAME"]} {domain["domain"]}.home.arpa {domain["domain"]}.raspberrypi.local;
+            # TODO: Set the .local domain dynamically to the hostName
+            server_name {domain["domain"]}.{environ["DOMAIN_NAME"]} {domain["domain"]}.home.arpa {domain["domain"]}.razorback.local;
 
             location / {{
                 proxy_pass http://{environ["LOCAL_IP"]}:{port}/;
