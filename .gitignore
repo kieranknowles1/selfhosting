@@ -21,3 +21,6 @@ services/nginx/nginx.conf
 serviceenv.yml
 
 *.zip
+lib/
+lib64
+

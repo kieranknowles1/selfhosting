@@ -32,6 +32,15 @@ http {
         }
     }
 
+    server {
+        include /etc/nginx/includes/global.conf;
+        server_name static.${DOMAIN_NAME};
+
+        location / {
+	    alias /var/www/static/;
+        }
+    }
+
     # TODO: Once this is added to the main repo, remove this
     server {
         include /etc/nginx/includes/global.conf;

@@ -19,7 +19,7 @@ services:
     environment:
       - DB_PASSWORD=${IMMICH_DB_PASSWORD}
     ports:
-      - ${IMMICH_PORT}:3001
+      - ${IMMICH_PORT}:2283
     depends_on:
       - redis
       - database
