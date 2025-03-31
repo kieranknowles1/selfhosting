@@ -24,7 +24,7 @@ http {
         server_name ${DOMAIN_NAME} home.arpa;
 
         location / {
-            alias /var/www/tilde/;
+            alias /var/www/html/;
         }
 
         location /static/ {
