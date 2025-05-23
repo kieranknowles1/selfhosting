@@ -1,3 +1,7 @@
+> [!WARNING]
+> This repository is mostly unmaintained. Issues are unlikely to be fixed. Minimal changes (mostly
+> just updating Immich) are being done on the `python-again` branch.
+
 # Self-hosted Web Services
 - [Self-hosted Web Services](#self-hosted-web-services)
   - [Introduction](#introduction)
