@@ -41,7 +41,7 @@ TIME_ZONE: Europe/London
 # The tags of the images to use. I recommend against using `latest` to
 # avoid any unexpected changes. What's up Docker will show you the available
 # updates for your containers.
-IMMICH_VERSION: v1.133.1
+IMMICH_VERSION: v1.136.0
 
 MINECRAFT_VERSION: "1.21.5"
 
