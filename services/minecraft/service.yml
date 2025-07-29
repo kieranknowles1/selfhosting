@@ -1,7 +1,10 @@
 domains:
   - domain: bluemap
     name: Bluemap
+    hotkey: mc
+    shortPurpose: Minecraft
+    icon: minecraft
     portVar: MINECRAFT_BLUEMAP_PORT
 usesData: true
 scripts:
-  prepare: prepare.nu
+  prepare: prepare.py

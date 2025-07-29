@@ -1,3 +1,7 @@
+# Python temporary files
+venv/
+__pycache__/
+
 # Private user data
 userenv.yml
 
@@ -11,9 +15,13 @@ logs/
 # DO NOT MODIFY ANY FILES IN THIS SECTION
 services/adguard/conf/AdGuardHome.yaml
 services/gatus/config/config.yaml
+services/nginx/commands.generated.json
 services/nginx/nginx.conf
 services/nginx/tilde.generated.json
 
 serviceenv.yml
 
 *.zip
+lib/
+lib64
+

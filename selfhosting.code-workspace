@@ -9,7 +9,7 @@
 
 		// We use .template files for files that will be processed by envsubst
 		"files.associations": {
-			"nginx.conf.template": "apacheconf",
+			"nginx.conf.template": "properties",
 			"*.yaml.template": "yaml",
 		},
 

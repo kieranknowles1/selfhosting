@@ -1,4 +1,7 @@
 domains:
   - domain: jellyfin
     name: Jellyfin
+    hotkey: m
+    shortPurpose: Media
+    icon: jellyfin
     portVar: JELLYFIN_PORT

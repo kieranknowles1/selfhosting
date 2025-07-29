@@ -1,9 +1,0 @@
-domains:
-  - domain: firefly
-    name: Firefly III
-    portVar: FIREFLY_APP_PORT
-
-  - domain: firefly-importer
-    name: Firefly III Importer
-    portVar: FIREFLY_IMPORTER_PORT
-usesData: true

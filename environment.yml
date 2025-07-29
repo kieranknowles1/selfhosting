@@ -1,6 +1,9 @@
 ---
 
 # Environment variables to export to the containers
+# All values will be stringified, so don't worry about types
+# Special cases:
+# - Arrays will be converted to a comma-separated string
 
 #==============================================================================
 # General
@@ -8,6 +11,8 @@
 # Enable debugging for containers. May want to disable for production
 # Don't rely on security through obscurity however
 DEBUG: "false"
+
+LOCAL_IP: 192.168.1.205
 
 # Maximum response time for a service to be considered healthy, in milliseconds
 HEALTH_TIMEOUT: 1000
@@ -36,9 +41,9 @@ TIME_ZONE: Europe/London
 # The tags of the images to use. I recommend against using `latest` to
 # avoid any unexpected changes. What's up Docker will show you the available
 # updates for your containers.
-IMMICH_VERSION: v1.99.0
+IMMICH_VERSION: v1.136.0
 
-MINECRAFT_VERSION: 1.20.4
+MINECRAFT_VERSION: "1.21.5"
 
 #==============================================================================
 # Service Config
@@ -62,19 +67,26 @@ SPEEDTEST_RETENTION: 30
 # NOTE: This will be loaded for all clients, even if they have a lower view distance set.
 MINECRAFT_VIEW_DISTANCE: 16
 
+# Mods to install from Modrinth.
+MINECRAFT_MODS:
+  - fabric-api # Dependency for other mods
+  - bluemap # Map
+  - ferrite-core # Saves RAM
+  - lithium # Optimises server performance
+
 #==============================================================================
 # Ports
 #==============================================================================
 # Keep this port order for organisation
 # TODO: Would be nice to assign these dynamically, but that would require reconfiguring
 # nginx every time in case the port changes, and checking for conflicts before assigning (not trivial in nushell)
-JOPLIN_PORT: 8008
+
 WUD_PORT: 8009
 IMMICH_PORT: 8010
 FORGEJO_WEB_PORT: 8011
 
-FIREFLY_APP_PORT: 8013
-FIREFLY_IMPORTER_PORT: 8014
+
+
 YACHT_PORT: 8015
 GLANCES_PORT: 8016
 GATUS_PORT: 8017

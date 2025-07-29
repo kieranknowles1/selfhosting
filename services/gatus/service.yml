@@ -1,6 +1,9 @@
 domains:
   - domain: gatus
     name: Gatus
+    hotkey: u
+    shortPurpose: Uptime
+    icon: gatus
     portVar: GATUS_PORT
 scripts:
-  configure: configure.nu
+  prepare: prepare.py

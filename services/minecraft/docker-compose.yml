@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   minecraft:
-    image: itzg/minecraft-server
+    image: itzg/minecraft-server:java21
     container_name: minecraft
     user: ${USER_ID}:${GROUP_ID}
     # Restart on crash, retry 5 times
@@ -16,7 +16,7 @@ services:
       - VERSION=${MINECRAFT_VERSION}
       - TYPE=FABRIC
       # CSV list of mods to install from Modrinth
-      - MODRINTH_PROJECTS=lithium
+      - MODRINTH_PROJECTS=${MINECRAFT_MODS}
 
       - DATAPACKS=/datapacks
       - REMOVE_OLD_DATAPACKS=true
@@ -43,16 +43,12 @@ services:
       - RESOURCE_PACK=${MINECRAFT_RESOURCE_PACK}
   # We run Bluemap in its own container to avoid it going down when the server is paused
   bluemap:
-    image: ghcr.io/bluemap-minecraft/bluemap:latest
+    image: bmoorman/bluemap
     container_name: bluemap
+    user: ${USER_ID}:${GROUP_ID}
     restart: unless-stopped
     ports:
       - "${MINECRAFT_BLUEMAP_PORT}:8100"
     volumes:
-      - ./config/bluemap:/app/config
-      - ${DATA_ROOT}/minecraft/map/map:/app/web/maps
-      - ${DATA_ROOT}/minecraft/map/data:/app/data
-      - ${DATA_ROOT}/minecraft/world:/app/world
-      # - ${DATA_ROOT}/minecraft/bluemap:/var/lib/bluemap
-      # - ${DATA_ROOT}/minecraft:/var/lib/minecraft:ro
-    command: --render --watch --webserver --mc-version ${MINECRAFT_VERSION}
+      - ${DATA_ROOT}/minecraft/bluemap:/var/lib/bluemap
+      - ${DATA_ROOT}/minecraft:/var/lib/minecraft:ro

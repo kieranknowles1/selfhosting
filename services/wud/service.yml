@@ -1,7 +1,10 @@
 domains:
   - domain: wud
     name: What's Up Docker
+    hotkey: up
+    shortPurpose: Updates
+    icon: whats-up-docker-light
     portVar: WUD_PORT
 usesData: true
 scripts:
-  configure: configure.nu
+  configure: configure.py

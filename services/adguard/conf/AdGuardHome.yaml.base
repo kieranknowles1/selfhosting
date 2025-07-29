@@ -5,8 +5,8 @@ http:
   address: 0.0.0.0:80
   session_ttl: 720h
 users:
-  - name: ${ADGUARD_USERNAME}
-    password: ${ADGUARD_PASSWORD_HASH}
+  - name: "" # Set by config
+    password: "" # Set by config
 auth_attempts: 5
 block_auth_min: 15
 http_proxy: ""
@@ -102,9 +102,7 @@ filters:
     name: AdAway Default Blocklist
     id: 2
 whitelist_filters: []
-user_rules:
-  - ${LOCAL_IP} home.arpa
-${ADGUARD_CONFIG}
+user_rules: [] # Config goes here
 dhcp:
   enabled: false
   interface_name: ""
