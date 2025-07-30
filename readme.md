@@ -1,6 +1,6 @@
 > [!WARNING]
-> This repository is mostly unmaintained. Issues are unlikely to be fixed. Minimal changes (mostly
-> just updating Immich) are being done on the `python-again` branch.
+> This repository is obsolete, issues will not be fixed. A subset of features will be moved to
+> my [nixcfg](https://github.com/kieranknowles1/nixcfg) repo.
 
 # Self-hosted Web Services
 - [Self-hosted Web Services](#self-hosted-web-services)
